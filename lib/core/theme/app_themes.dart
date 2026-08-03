@@ -16,8 +16,6 @@ class AppThemes {
       tertiary: AppColors.accent,
       surface: AppColors.surfaceLight,
       onSurface: AppColors.textPrimaryLight,
-      background: AppColors.backgroundLight,
-      onBackground: AppColors.textPrimaryLight,
     ),
     textTheme: const TextTheme(
       headlineLarge: AppTextStyles.headlineLarge,
@@ -46,8 +44,6 @@ class AppThemes {
       tertiary: AppColors.accent,
       surface: AppColors.surfaceDark,
       onSurface: AppColors.textPrimaryDark,
-      background: AppColors.backgroundDark,
-      onBackground: AppColors.textPrimaryDark,
     ),
     textTheme: const TextTheme(
       headlineLarge: AppTextStyles.headlineLarge,

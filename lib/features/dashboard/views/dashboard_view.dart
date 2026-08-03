@@ -2,40 +2,128 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../widgets/dashboard_widgets.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Dashboard')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
+      drawer: const HRMDrawer(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        title: const Text('Dashboard'),
+        centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const CircleAvatar(
+              radius: 16,
+              backgroundColor: AppColors.primary,
+              child: Icon(Icons.person, size: 18, color: Colors.white),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.dashboard_customize_rounded,
-                size: 64,
-                color: Theme.of(context).colorScheme.primary,
+              const DashboardHeader(name: 'HR Manager'),
+              const SizedBox(height: 18),
+              const LiveStatusBar(),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Text('Dashboard Overview', style: AppTextStyles.titleMedium),
+                  const Spacer(),
+                  FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.refresh_rounded, size: 18),
+                    label: const Text('Refresh'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              Text(
-                'HRM Dashboard Ready',
-                style: AppTextStyles.headlineMedium.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+              const SizedBox(height: 12),
+              OverviewCard(
+                items: const [
+                  OverviewItem(
+                    title: 'Active Workforce',
+                    subtitle: '0 team members online',
+                    icon: Icons.group_rounded,
+                    badgeText: 'Live',
+                  ),
+                  OverviewItem(
+                    title: 'Pending Leaves',
+                    subtitle: '0 requests awaiting approval',
+                    icon: Icons.calendar_today_rounded,
+                  ),
+                  OverviewItem(
+                    title: "Today's Attendance",
+                    subtitle: '0 employees checked in',
+                    icon: Icons.fingerprint_rounded,
+                  ),
+                  OverviewItem(
+                    title: 'Department Structure',
+                    subtitle: '0 active operational units',
+                    icon: Icons.account_tree_rounded,
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Feature-first architecture initialized successfully.',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondaryLight,
-                ),
+              const SizedBox(height: 24),
+              Text('Quick Stats', style: AppTextStyles.titleMedium),
+              const SizedBox(height: 12),
+              GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: const [
+                  StatCard(
+                    title: 'Projects',
+                    value: '1',
+                    icon: Icons.folder_open_rounded,
+                    accentColor: Color(0xFF4F46E5),
+                  ),
+                  StatCard(
+                    title: 'Open Tasks',
+                    value: '3',
+                    icon: Icons.task_alt_rounded,
+                    accentColor: Color(0xFF0EA5E9),
+                  ),
+                  StatCard(
+                    title: 'Leave',
+                    value: '0',
+                    icon: Icons.beach_access_rounded,
+                    accentColor: Color(0xFFF97316),
+                  ),
+                  StatCard(
+                    title: 'System',
+                    value: 'Online',
+                    icon: Icons.cloud_done_rounded,
+                    valueColor: AppColors.success,
+                    accentColor: AppColors.success,
+                  ),
+                ],
               ),
+              const SizedBox(height: 24),
+              SystemStatus(
+                statusText: 'All systems operational',
+                lastUpdated: DateTime.now(),
+              ),
+              const SizedBox(height: 36),
             ],
           ),
         ),
