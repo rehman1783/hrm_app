@@ -33,7 +33,9 @@ class SystemStatus extends StatelessWidget {
             Expanded(child: Text(statusText, style: AppTextStyles.bodyLarge)),
             Text(
               'Updated ${TimeOfDay.fromDateTime(lastUpdated).format(context)}',
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondaryLight),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondaryLight,
+              ),
             ),
           ],
         ),

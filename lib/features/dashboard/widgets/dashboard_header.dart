@@ -23,7 +23,11 @@ class DashboardHeader extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         boxShadow: [
-          BoxShadow(color: AppColors.primary.withAlpha(31), blurRadius: 18, offset: const Offset(0, 12)),
+          BoxShadow(
+            color: AppColors.primary.withAlpha(31),
+            blurRadius: 18,
+            offset: const Offset(0, 12),
+          ),
         ],
       ),
       padding: const EdgeInsets.all(20),
@@ -36,20 +40,37 @@ class DashboardHeader extends StatelessWidget {
               color: Colors.white24,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(Icons.dashboard_customize_rounded, color: Colors.white, size: 32),
+            child: const Icon(
+              Icons.dashboard_customize_rounded,
+              color: Colors.white,
+              size: 32,
+            ),
           ),
           const SizedBox(width: 18),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome back', style: AppTextStyles.labelMedium.copyWith(color: Colors.white70)),
+                Text(
+                  'Welcome back',
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: Colors.white70,
+                  ),
+                ),
                 const SizedBox(height: 6),
-                Text('Hi, $name', style: AppTextStyles.headlineMedium.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+                Text(
+                  'Hi, $name',
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 6),
                 Text(
                   '${now.weekdayName()}, ${now.monthName()} ${now.day}, ${now.year}',
-                  style: AppTextStyles.bodyMedium.copyWith(color: Colors.white70),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),
@@ -62,9 +83,19 @@ class DashboardHeader extends StatelessWidget {
             ),
             child: Column(
               children: [
-                const Icon(Icons.access_time_rounded, size: 18, color: Colors.white),
+                const Icon(
+                  Icons.access_time_rounded,
+                  size: 18,
+                  color: Colors.white,
+                ),
                 const SizedBox(height: 6),
-                Text(time, style: AppTextStyles.titleMedium.copyWith(color: Colors.white, fontWeight: FontWeight.w700)),
+                Text(
+                  time,
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ],
             ),
           ),

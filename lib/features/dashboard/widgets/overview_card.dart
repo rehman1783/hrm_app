@@ -20,27 +20,57 @@ class OverviewCard extends StatelessWidget {
               (item) => Column(
                 children: [
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 10,
+                    ),
                     leading: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.backgroundLight,
                         borderRadius: BorderRadius.circular(14),
                       ),
-                      child: Icon(item.icon, color: AppColors.primary, size: 24),
+                      child: Icon(
+                        item.icon,
+                        color: AppColors.primary,
+                        size: 24,
+                      ),
                     ),
-                    title: Text(item.title, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600)),
-                    subtitle: Text(item.subtitle, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondaryLight)),
+                    title: Text(
+                      item.title,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    subtitle: Text(
+                      item.subtitle,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondaryLight,
+                      ),
+                    ),
                     trailing: item.badgeText != null
                         ? Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color.fromRGBO(37, 99, 235, 0.12),
                               borderRadius: BorderRadius.circular(18),
                             ),
-                            child: Text(item.badgeText!, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary, fontWeight: FontWeight.w700)),
+                            child: Text(
+                              item.badgeText!,
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
                           )
-                        : const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.hintLight),
+                        : const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 18,
+                            color: AppColors.hintLight,
+                          ),
                   ),
                   if (item != items.last)
                     const Divider(height: 1, indent: 18, endIndent: 18),

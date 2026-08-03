@@ -8,9 +8,6 @@ class LeaveView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppPlaceholderPage(
-      title: 'Leave Page',
-      drawer: HRMDrawer(),
-    );
+    return const AppPlaceholderPage(title: 'Leave Page', drawer: HRMDrawer());
   }
 }

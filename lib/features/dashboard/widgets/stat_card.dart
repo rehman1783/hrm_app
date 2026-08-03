@@ -30,7 +30,13 @@ class StatCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        boxShadow: [BoxShadow(color: accentColor.withAlpha(26), blurRadius: 12, offset: const Offset(0, 6))],
+        boxShadow: [
+          BoxShadow(
+            color: accentColor.withAlpha(26),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -47,9 +53,19 @@ class StatCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondaryLight)),
+                Text(
+                  title,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondaryLight,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text(value, style: AppTextStyles.headlineMedium.copyWith(color: valueColor ?? AppColors.textPrimaryLight)),
+                Text(
+                  value,
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: valueColor ?? AppColors.textPrimaryLight,
+                  ),
+                ),
               ],
             ),
           ),

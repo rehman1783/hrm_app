@@ -31,10 +31,7 @@ class AppPlaceholderPage extends StatelessWidget {
             builder: (context, value, child) {
               return Opacity(
                 opacity: value,
-                child: Transform.scale(
-                  scale: value,
-                  child: child,
-                ),
+                child: Transform.scale(scale: value, child: child),
               );
             },
             child: Container(
@@ -44,10 +41,19 @@ class AppPlaceholderPage extends StatelessWidget {
                 color: AppColors.cardLight,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
-                  BoxShadow(color: const Color.fromRGBO(15, 23, 42, 0.08), blurRadius: 24, offset: const Offset(0, 12)),
+                  BoxShadow(
+                    color: const Color.fromRGBO(15, 23, 42, 0.08),
+                    blurRadius: 24,
+                    offset: const Offset(0, 12),
+                  ),
                 ],
               ),
-              child: Text(title, style: AppTextStyles.headlineMedium.copyWith(color: AppColors.textPrimaryLight)),
+              child: Text(
+                title,
+                style: AppTextStyles.headlineMedium.copyWith(
+                  color: AppColors.textPrimaryLight,
+                ),
+              ),
             ),
           ),
         ),

@@ -8,9 +8,6 @@ class FinanceView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AppPlaceholderPage(
-      title: 'Finance Page',
-      drawer: HRMDrawer(),
-    );
+    return const AppPlaceholderPage(title: 'Finance Page', drawer: HRMDrawer());
   }
 }
