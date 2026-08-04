@@ -91,7 +91,7 @@ class HRMDrawer extends StatelessWidget {
           boxShadow: [
             if (selected)
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.10),
+                color: AppColors.primary.withAlpha(26),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -106,7 +106,7 @@ class HRMDrawer extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: selected
-                  ? AppColors.primary.withOpacity(0.12)
+                  ? AppColors.primary.withAlpha(31)
                   : AppColors.backgroundLight,
               borderRadius: BorderRadius.circular(12),
             ),
@@ -173,7 +173,7 @@ class HRMDrawer extends StatelessWidget {
                       width: 54,
                       height: 54,
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
+                        color: Colors.white.withAlpha(46),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: const Center(
@@ -231,7 +231,7 @@ class HRMDrawer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.08),
+                        color: AppColors.primary.withAlpha(20),
                         blurRadius: 18,
                         offset: const Offset(0, 10),
                       ),
