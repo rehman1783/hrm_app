@@ -5,22 +5,35 @@ import '../theme/app_text_styles.dart';
 
 class AppPlaceholderPage extends StatelessWidget {
   final String title;
+  final String? subtitle;
+  final Widget? body;
   final Widget? drawer;
 
-  const AppPlaceholderPage({super.key, required this.title, this.drawer});
+  const AppPlaceholderPage({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.body,
+    this.drawer,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final backgroundColors = theme.brightness == Brightness.dark
+        ? [theme.colorScheme.background, theme.colorScheme.surface]
+        : [theme.colorScheme.surface, theme.colorScheme.background];
+
     return Scaffold(
       drawer: drawer,
       appBar: AppBar(title: Text(title)),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF8FAFC), Color(0xFFFFFFFF)],
+            colors: backgroundColors,
           ),
         ),
         child: Center(
@@ -38,20 +51,37 @@ class AppPlaceholderPage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 24),
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
               decoration: BoxDecoration(
-                color: AppColors.cardLight,
+                color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color.fromRGBO(15, 23, 42, 0.08),
+                    color: theme.shadowColor.withOpacity(0.08),
                     blurRadius: 24,
                     offset: const Offset(0, 12),
                   ),
                 ],
               ),
-              child: Text(
-                title,
-                style: AppTextStyles.headlineMedium.copyWith(
-                  color: AppColors.textPrimaryLight,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: AppTextStyles.headlineMedium.copyWith(
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        subtitle!,
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.76),
+                        ),
+                      ),
+                    ],
+                    if (body != null) ...[const SizedBox(height: 22), body!],
+                  ],
                 ),
               ),
             ),

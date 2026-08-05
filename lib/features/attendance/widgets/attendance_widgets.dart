@@ -31,13 +31,14 @@ class _AttendanceHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text('Attendance', style: AppTextStyles.headlineMedium),
               SizedBox(height: 6),
               Text(
@@ -55,7 +56,10 @@ class _AttendanceHeader extends StatelessWidget {
               onPressed: () {},
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.success,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -66,8 +70,11 @@ class _AttendanceHeader extends StatelessWidget {
             FilledButton(
               onPressed: () {},
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                backgroundColor: theme.colorScheme.primary,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -86,15 +93,16 @@ class _TodayAttendanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
-        color: AppColors.cardLight,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withAlpha(18),
+            color: theme.shadowColor.withAlpha(18),
             blurRadius: 28,
             offset: const Offset(0, 14),
           ),
@@ -111,7 +119,11 @@ class _TodayAttendanceCard extends StatelessWidget {
                   color: AppColors.primary.withAlpha(20),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: const Icon(Icons.access_time_rounded, color: AppColors.primary, size: 28),
+                child: const Icon(
+                  Icons.access_time_rounded,
+                  color: AppColors.primary,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 16),
               Column(
@@ -124,9 +136,12 @@ class _TodayAttendanceCard extends StatelessWidget {
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE4F8EF),
+                  color: AppColors.success.withAlpha(24),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Text(
@@ -144,17 +159,24 @@ class _TodayAttendanceCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 24),
             decoration: BoxDecoration(
-              color: const Color(0xFFF7FBFF),
+              color: theme.colorScheme.surfaceVariant,
               borderRadius: BorderRadius.circular(22),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('No Check-in', style: AppTextStyles.headlineMedium),
-                SizedBox(height: 10),
+              children: [
+                Text(
+                  'No Check-in',
+                  style: AppTextStyles.headlineMedium.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Text(
                   'You have not checked in today. Tap Check In to start your day.',
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.82),
+                  ),
                 ),
               ],
             ),
@@ -170,25 +192,29 @@ class _AttendanceHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
         Row(
-          children: const [
-            Icon(Icons.calendar_month_rounded, color: AppColors.primary),
-            SizedBox(width: 10),
-            Text('Attendance History', style: AppTextStyles.titleMedium),
+          children: [
+            Icon(
+              Icons.calendar_month_rounded,
+              color: theme.colorScheme.primary,
+            ),
+            const SizedBox(width: 10),
+            const Text('Attendance History', style: AppTextStyles.titleMedium),
           ],
         ),
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: AppColors.cardLight,
+            color: theme.cardColor,
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withAlpha(12),
+                color: theme.shadowColor.withAlpha(12),
                 blurRadius: 24,
                 offset: const Offset(0, 8),
               ),
@@ -198,26 +224,72 @@ class _AttendanceHistorySection extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF1FBF7),
-                  borderRadius: BorderRadius.only(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceVariant,
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
                   ),
                 ),
                 child: Row(
-                  children: const [
-                    Expanded(child: Text('DATE', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary))),
-                    Expanded(child: Text('CHECK IN', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary))),
-                    Expanded(child: Text('CHECK OUT', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary))),
-                    Expanded(child: Text('WORKING HOURS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary))),
-                    SizedBox(width: 68, child: Text('STATUS', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary))),
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'DATE',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'CHECK IN',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'CHECK OUT',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        'WORKING HOURS',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 68,
+                      child: Text(
+                        'STATUS',
+                        style: AppTextStyles.labelMedium.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
               const Divider(height: 1),
-              ...attendanceHistory.map((record) => AttendanceHistoryItem(record: record)),
+              ...attendanceHistory.map(
+                (record) => AttendanceHistoryItem(record: record),
+              ),
             ],
           ),
         ),
@@ -233,13 +305,14 @@ class AttendanceHistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardLight,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.borderLight),
+        border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,78 +332,51 @@ class AttendanceHistoryItem extends StatelessWidget {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: record.status == 'Present'
-                      ? AppColors.success.withAlpha(41)
-                      : AppColors.warning.withAlpha(41),
-                  borderRadius: BorderRadius.circular(20),
+                  color: record.statusColor.withAlpha(24),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   record.status,
-                  style: TextStyle(
-                    color: record.status == 'Present'
-                        ? AppColors.success
-                        : AppColors.warning,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: record.statusColor,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: _AttendanceLabelValue(
-                  label: 'Check In',
-                  value: record.checkIn,
+                child: Text(
+                  record.checkIn,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.8),
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
               Expanded(
-                child: _AttendanceLabelValue(
-                  label: 'Check Out',
-                  value: record.checkOut,
+                child: Text(
+                  record.checkOut,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.8),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  record.hours,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.8),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          _AttendanceLabelValue(
-            label: 'Working Hours',
-            value: record.workHours,
-          ),
         ],
       ),
-    );
-  }
-}
-
-class _AttendanceLabelValue extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _AttendanceLabelValue({
-    required this.label,
-    required this.value,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondaryLight,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w600),
-        ),
-      ],
     );
   }
 }
@@ -339,38 +385,51 @@ class AttendanceRecord {
   final String date;
   final String checkIn;
   final String checkOut;
-  final String workHours;
+  final String hours;
   final String status;
+  final Color statusColor;
 
   const AttendanceRecord({
     required this.date,
     required this.checkIn,
     required this.checkOut,
-    required this.workHours,
+    required this.hours,
     required this.status,
+    required this.statusColor,
   });
 }
 
 const attendanceHistory = [
   AttendanceRecord(
-    date: 'Wed, Jul 29',
-    checkIn: '10:24 PM',
-    checkOut: '10:25 PM',
-    workHours: '0.01 hrs',
+    date: 'Aug 01',
+    checkIn: '09:05 AM',
+    checkOut: '05:10 PM',
+    hours: '8h 5m',
     status: 'Present',
+    statusColor: AppColors.success,
   ),
   AttendanceRecord(
-    date: 'Tue, Jul 28',
-    checkIn: '08:44 PM',
-    checkOut: '08:45 PM',
-    workHours: '0.01 hrs',
+    date: 'Jul 31',
+    checkIn: '09:15 AM',
+    checkOut: '05:00 PM',
+    hours: '7h 45m',
     status: 'Present',
+    statusColor: AppColors.success,
   ),
   AttendanceRecord(
-    date: 'Mon, Jul 27',
-    checkIn: '11:19 PM',
-    checkOut: '11:19 PM',
-    workHours: '-',
+    date: 'Jul 30',
+    checkIn: '--',
+    checkOut: '--',
+    hours: '--',
+    status: 'Absent',
+    statusColor: AppColors.error,
+  ),
+  AttendanceRecord(
+    date: 'Jul 29',
+    checkIn: '09:00 AM',
+    checkOut: '05:05 PM',
+    hours: '8h 5m',
     status: 'Present',
+    statusColor: AppColors.success,
   ),
 ];

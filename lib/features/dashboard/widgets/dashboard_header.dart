@@ -10,6 +10,7 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final now = DateTime.now();
     final time =
         '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')} ${now.hour >= 12 ? 'PM' : 'AM'}';
@@ -37,12 +38,12 @@ class DashboardHeader extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              color: Colors.white24,
+              color: theme.colorScheme.onPrimary.withOpacity(0.24),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.dashboard_customize_rounded,
-              color: Colors.white,
+              color: theme.colorScheme.onPrimary,
               size: 32,
             ),
           ),
@@ -54,14 +55,14 @@ class DashboardHeader extends StatelessWidget {
                 Text(
                   'Welcome back',
                   style: AppTextStyles.labelMedium.copyWith(
-                    color: Colors.white70,
+                    color: theme.colorScheme.onPrimary.withOpacity(0.72),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   'Hi, $name',
                   style: AppTextStyles.headlineMedium.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -69,7 +70,7 @@ class DashboardHeader extends StatelessWidget {
                 Text(
                   '${now.weekdayName()}, ${now.monthName()} ${now.day}, ${now.year}',
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: Colors.white70,
+                    color: theme.colorScheme.onPrimary.withOpacity(0.72),
                   ),
                 ),
               ],
@@ -78,21 +79,21 @@ class DashboardHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white24,
+              color: theme.colorScheme.onPrimary.withOpacity(0.24),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
               children: [
-                const Icon(
+                Icon(
                   Icons.access_time_rounded,
                   size: 18,
-                  color: Colors.white,
+                  color: theme.colorScheme.onPrimary,
                 ),
                 const SizedBox(height: 6),
                 Text(
                   time,
                   style: AppTextStyles.titleMedium.copyWith(
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

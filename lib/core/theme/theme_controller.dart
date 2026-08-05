@@ -8,6 +8,15 @@ class ThemeController extends GetxController {
 
   bool get isDarkMode => _isDarkMode.value;
 
+  @override
+  void onInit() {
+    super.onInit();
+    final savedTheme = StorageService.read<bool>(AppConstants.storageThemeKey);
+    if (savedTheme != null) {
+      _isDarkMode.value = savedTheme;
+    }
+  }
+
   Future<void> toggleTheme() async {
     _isDarkMode.value = !_isDarkMode.value;
     await StorageService.write(AppConstants.storageThemeKey, _isDarkMode.value);

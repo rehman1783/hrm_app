@@ -152,15 +152,20 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Chip(
       label: Text(
         label,
         style: AppTextStyles.bodyMedium.copyWith(
-          color: selected ? Colors.white : AppColors.textPrimaryLight,
+          color: selected
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurface,
         ),
       ),
-      backgroundColor: selected ? AppColors.primary : AppColors.backgroundLight,
-      side: selected ? null : const BorderSide(color: AppColors.borderLight),
+      backgroundColor: selected
+          ? theme.colorScheme.primary
+          : theme.colorScheme.surface,
+      side: selected ? null : BorderSide(color: theme.dividerColor),
       labelPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
     );
   }
@@ -171,12 +176,13 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextField(
       decoration: InputDecoration(
         hintText: 'Search by name, email, ID, or skills...',
         suffixIcon: const Icon(Icons.search_rounded),
         filled: true,
-        fillColor: AppColors.cardLight,
+        fillColor: theme.inputDecorationTheme.fillColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
@@ -218,14 +224,15 @@ class EmployeeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.cardLight,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withAlpha(20),
+            color: theme.shadowColor.withAlpha(18),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -256,13 +263,14 @@ class EmployeeCard extends StatelessWidget {
                       employee.name,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       employee.email,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondaryLight,
+                        color: theme.colorScheme.onSurface.withOpacity(0.72),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -272,13 +280,13 @@ class EmployeeCard extends StatelessWidget {
                       children: [
                         _InfoChip(
                           label: employee.role,
-                          color: const Color(0xFFFFEDD5),
-                          textColor: const Color(0xFFB45309),
+                          color: theme.colorScheme.secondaryContainer,
+                          textColor: theme.colorScheme.onSecondaryContainer,
                         ),
                         _InfoChip(
                           label: employee.department,
-                          color: const Color(0xFFDBEAFE),
-                          textColor: const Color(0xFF1D4ED8),
+                          color: theme.colorScheme.primary.withAlpha(20),
+                          textColor: theme.colorScheme.primary,
                         ),
                         _InfoChip(
                           label: employee.status,
@@ -298,7 +306,7 @@ class EmployeeCard extends StatelessWidget {
             children: [
               _ActionButton(
                 label: 'View',
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
                 onTap: () {},
               ),
               const SizedBox(width: 10),

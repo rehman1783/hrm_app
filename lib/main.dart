@@ -21,20 +21,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeController = Get.put(ThemeController(), permanent: true);
 
-    return GetBuilder<ThemeController>(
-      init: themeController,
-      builder: (controller) {
-        return GetMaterialApp(
-          title: 'HRM App',
-          debugShowCheckedModeBanner: false,
-          theme: AppThemes.lightTheme,
-          darkTheme: AppThemes.darkTheme,
-          themeMode: controller.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          initialBinding: AppBinding(),
-          initialRoute: AppRoutes.initial,
-          getPages: AppPages.routes,
-        );
-      },
+    return Obx(
+      () => GetMaterialApp(
+        title: 'HRM App',
+        debugShowCheckedModeBanner: false,
+        theme: AppThemes.lightTheme,
+        darkTheme: AppThemes.darkTheme,
+        themeMode: themeController.isDarkMode
+            ? ThemeMode.dark
+            : ThemeMode.light,
+        initialBinding: AppBinding(),
+        initialRoute: AppRoutes.initial,
+        getPages: AppPages.routes,
+      ),
     );
   }
 }

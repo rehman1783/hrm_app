@@ -21,6 +21,7 @@ class HRMDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final width = MediaQuery.of(context).size.width * 0.78;
 
     const menuItems = [
@@ -80,18 +81,28 @@ class HRMDrawer extends StatelessWidget {
 
     Widget menuItem(DrawerMenuItem item) {
       final selected = item.route == currentRoute;
+      final tileColor = selected
+          ? theme.colorScheme.primaryContainer
+          : theme.cardColor;
+      final iconBackgroundColor = selected
+          ? theme.colorScheme.primary.withAlpha(32)
+          : theme.colorScheme.surface;
+      final textColor = selected
+          ? theme.colorScheme.primary
+          : theme.colorScheme.onSurface;
+
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
         decoration: BoxDecoration(
-          color: selected ? Colors.white : AppColors.cardLight,
+          color: tileColor,
           borderRadius: BorderRadius.circular(16),
           border: selected
-              ? Border.all(color: AppColors.primary, width: 1.5)
+              ? Border.all(color: theme.colorScheme.primary, width: 1.5)
               : null,
           boxShadow: [
             if (selected)
               BoxShadow(
-                color: AppColors.primary.withAlpha(26),
+                color: theme.colorScheme.primary.withAlpha(26),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -105,14 +116,14 @@ class HRMDrawer extends StatelessWidget {
           leading: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: selected
-                  ? AppColors.primary.withAlpha(31)
-                  : AppColors.backgroundLight,
+              color: iconBackgroundColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               item.icon,
-              color: selected ? AppColors.primary : AppColors.iconLight,
+              color: selected
+                  ? theme.colorScheme.primary
+                  : theme.iconTheme.color,
               size: 24,
             ),
           ),
@@ -120,15 +131,15 @@ class HRMDrawer extends StatelessWidget {
             item.label,
             style: TextStyle(
               fontSize: 16,
-              color: AppColors.textPrimaryLight,
+              color: textColor,
               fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
             ),
           ),
           trailing: selected
-              ? const Icon(
+              ? Icon(
                   Icons.arrow_forward_ios,
                   size: 16,
-                  color: AppColors.primary,
+                  color: theme.colorScheme.primary,
                 )
               : null,
           onTap: () {
@@ -144,7 +155,7 @@ class HRMDrawer extends StatelessWidget {
     return Drawer(
       width: width,
       child: Container(
-        color: AppColors.backgroundLight,
+        color: theme.colorScheme.background,
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,14 +184,14 @@ class HRMDrawer extends StatelessWidget {
                       width: 54,
                       height: 54,
                       decoration: BoxDecoration(
-                        color: Colors.white.withAlpha(46),
+                        color: theme.colorScheme.onPrimary.withOpacity(0.46),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
                           'W',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: theme.colorScheme.onPrimary,
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
@@ -191,20 +202,22 @@ class HRMDrawer extends StatelessWidget {
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'WholCure HRM',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: theme.colorScheme.onPrimary,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: 6),
                           Text(
                             'Smart people management',
                             style: TextStyle(
-                              color: Colors.white70,
+                              color: theme.colorScheme.onPrimary.withOpacity(
+                                0.72,
+                              ),
                               fontSize: 13,
                             ),
                           ),
@@ -227,11 +240,11 @@ class HRMDrawer extends StatelessWidget {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AppColors.cardLight,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withAlpha(20),
+                        color: theme.shadowColor.withOpacity(0.12),
                         blurRadius: 18,
                         offset: const Offset(0, 10),
                       ),
@@ -252,20 +265,31 @@ class HRMDrawer extends StatelessWidget {
                         ),
                       ),
                       alignment: Alignment.center,
-                      child: const Text(
+                      child: Text(
                         'H',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: theme.colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    title: const Text(
+                    title: Text(
                       'HR Manager',
-                      style: TextStyle(fontWeight: FontWeight.w700),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
-                    subtitle: const Text('hr@example.com'),
-                    trailing: const Icon(Icons.chevron_right_rounded),
+                    subtitle: Text(
+                      'hr@example.com',
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface.withOpacity(0.72),
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right_rounded,
+                      color: theme.colorScheme.onSurface,
+                    ),
                     onTap: () {},
                   ),
                 ),

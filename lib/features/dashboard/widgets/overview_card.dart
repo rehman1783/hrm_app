@@ -10,10 +10,12 @@ class OverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: 3,
-      shadowColor: AppColors.primary.withAlpha(31),
+      shadowColor: theme.colorScheme.primary.withAlpha(31),
       child: Column(
         children: items
             .map(
@@ -27,12 +29,12 @@ class OverviewCard extends StatelessWidget {
                     leading: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.backgroundLight,
+                        color: theme.colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Icon(
                         item.icon,
-                        color: AppColors.primary,
+                        color: theme.colorScheme.primary,
                         size: 24,
                       ),
                     ),
@@ -40,12 +42,13 @@ class OverviewCard extends StatelessWidget {
                       item.title,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     subtitle: Text(
                       item.subtitle,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondaryLight,
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                     trailing: item.badgeText != null
@@ -55,21 +58,21 @@ class OverviewCard extends StatelessWidget {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color.fromRGBO(37, 99, 235, 0.12),
+                              color: theme.colorScheme.primaryContainer,
                               borderRadius: BorderRadius.circular(18),
                             ),
                             child: Text(
                               item.badgeText!,
                               style: AppTextStyles.bodyMedium.copyWith(
-                                color: AppColors.primary,
+                                color: theme.colorScheme.onPrimary,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                           )
-                        : const Icon(
+                        : Icon(
                             Icons.chevron_right_rounded,
                             size: 18,
-                            color: AppColors.hintLight,
+                            color: theme.colorScheme.onSurfaceVariant,
                           ),
                   ),
                   if (item != items.last)

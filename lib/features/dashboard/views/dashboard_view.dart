@@ -25,10 +25,14 @@ class DashboardView extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {},
-            icon: const CircleAvatar(
+            icon: CircleAvatar(
               radius: 16,
               backgroundColor: AppColors.primary,
-              child: Icon(Icons.person, size: 18, color: Colors.white),
+              child: Icon(
+                Icons.person,
+                size: 18,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ),
           const SizedBox(width: 8),

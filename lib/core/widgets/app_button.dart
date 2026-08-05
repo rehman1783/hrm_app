@@ -16,14 +16,19 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isPrimary ? AppColors.primary : Colors.transparent,
-          foregroundColor: isPrimary ? Colors.white : AppColors.primary,
-          side: isPrimary ? null : const BorderSide(color: AppColors.primary),
+          backgroundColor: isPrimary
+              ? theme.colorScheme.primary
+              : Colors.transparent,
+          foregroundColor: isPrimary
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.primary,
+          side: isPrimary ? null : BorderSide(color: theme.colorScheme.primary),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

@@ -15,6 +15,8 @@ class SystemStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
@@ -34,7 +36,7 @@ class SystemStatus extends StatelessWidget {
             Text(
               'Updated ${TimeOfDay.fromDateTime(lastUpdated).format(context)}',
               style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondaryLight,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-
 class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
@@ -18,16 +16,25 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextField(
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
         prefixIcon: prefixIcon,
+        filled: true,
+        fillColor: theme.inputDecorationTheme.fillColor,
+        labelStyle: theme.inputDecorationTheme.labelStyle,
+        hintStyle: theme.inputDecorationTheme.hintStyle,
+        contentPadding: theme.inputDecorationTheme.contentPadding,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.borderLight),
+          borderSide:
+              theme.inputDecorationTheme.border?.borderSide ?? BorderSide.none,
         ),
+        enabledBorder: theme.inputDecorationTheme.enabledBorder,
+        focusedBorder: theme.inputDecorationTheme.focusedBorder,
       ),
     );
   }

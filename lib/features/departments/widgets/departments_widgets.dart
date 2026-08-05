@@ -148,14 +148,15 @@ class DepartmentItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.cardLight,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withAlpha(20),
+            color: theme.shadowColor.withAlpha(18),
             blurRadius: 18,
             offset: const Offset(0, 10),
           ),
@@ -186,13 +187,14 @@ class DepartmentItemCard extends StatelessWidget {
                       item.name,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       item.description,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondaryLight,
+                        color: theme.colorScheme.onSurface.withOpacity(0.72),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -202,13 +204,13 @@ class DepartmentItemCard extends StatelessWidget {
                       children: [
                         _InfoChip(
                           label: item.team,
-                          color: AppColors.primary.withAlpha(31),
-                          textColor: AppColors.primary,
+                          color: theme.colorScheme.primary.withAlpha(24),
+                          textColor: theme.colorScheme.primary,
                         ),
                         _InfoChip(
                           label: item.head,
-                          color: AppColors.backgroundLight,
-                          textColor: AppColors.textSecondaryLight,
+                          color: theme.colorScheme.surfaceVariant,
+                          textColor: theme.colorScheme.onSurface,
                         ),
                         _InfoChip(
                           label: item.status,
@@ -232,7 +234,7 @@ class DepartmentItemCard extends StatelessWidget {
             children: [
               _ActionButton(
                 label: 'Edit',
-                color: AppColors.primary,
+                color: theme.colorScheme.primary,
                 onTap: () {},
               ),
               const SizedBox(width: 10),

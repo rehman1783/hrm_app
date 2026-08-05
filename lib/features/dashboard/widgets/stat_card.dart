@@ -21,11 +21,13 @@ class StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [accentColor.withAlpha(31), AppColors.cardLight],
+          colors: [accentColor.withAlpha(31), theme.cardColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -56,14 +58,14 @@ class StatCard extends StatelessWidget {
                 Text(
                   title,
                   style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondaryLight,
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   value,
                   style: AppTextStyles.headlineMedium.copyWith(
-                    color: valueColor ?? AppColors.textPrimaryLight,
+                    color: valueColor ?? theme.colorScheme.onSurface,
                   ),
                 ),
               ],
