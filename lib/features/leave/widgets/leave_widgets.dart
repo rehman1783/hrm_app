@@ -85,7 +85,7 @@ class _LeaveHeader extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Manage employee leave requests and approvals',
+                      'Manage employee leave requests and\napprovals',
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
