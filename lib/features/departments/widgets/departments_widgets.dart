@@ -119,22 +119,156 @@ class _DepartmentList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 14),
-          child: Text('All Departments', style: AppTextStyles.titleMedium),
-        ),
-        Column(
-          children: departments
-              .map(
-                (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 14),
-                  child: DepartmentItemCard(item: item),
+    final theme = Theme.of(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(16),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 900;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  runSpacing: 10,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'All Departments',
+                          style: AppTextStyles.titleMedium.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        _Badge(label: '${departments.length} total'),
+                      ],
+                    ),
+                    Text(
+                      'Last updated: 8/6/2026',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ),
-              )
-              .toList(),
+              ),
+              const Divider(height: 0, thickness: 1),
+              if (isMobile) ...[
+                const SizedBox(height: 12),
+                ...departments
+                    .map(
+                      (item) => Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                            child: DepartmentItemCardMobile(item: item),
+                          ),
+                          const Divider(height: 0, thickness: 1),
+                        ],
+                      ),
+                    )
+                    .toList(),
+              ] else ...[
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 18,
+                  ),
+                  child: _DepartmentTableHeader(),
+                ),
+                const Divider(height: 0, thickness: 1),
+                const SizedBox(height: 8),
+                ...departments
+                    .map(
+                      (item) => Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 16,
+                            ),
+                            child: DepartmentItemCard(item: item),
+                          ),
+                          const Divider(height: 0, thickness: 1),
+                        ],
+                      ),
+                    )
+                    .toList(),
+              ],
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  final String label;
+
+  const _Badge({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withAlpha(16),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        label,
+        style: AppTextStyles.labelMedium.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _DepartmentTableHeader extends StatelessWidget {
+  const _DepartmentTableHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final headerStyle = AppTextStyles.labelMedium.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+      fontWeight: FontWeight.w700,
+    );
+
+    return Row(
+      children: [
+        Expanded(flex: 3, child: Text('Department', style: headerStyle)),
+        Expanded(flex: 2, child: Text('Description', style: headerStyle)),
+        Expanded(child: Text('Team', style: headerStyle)),
+        Expanded(child: Text('Head', style: headerStyle)),
+        Expanded(child: Text('Status', style: headerStyle)),
+        SizedBox(
+          width: 140,
+          child: Text('Actions', style: headerStyle, textAlign: TextAlign.end),
         ),
       ],
     );
@@ -149,27 +283,20 @@ class DepartmentItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withAlpha(18),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.spaceBetween,
+      runSpacing: 14,
+      children: [
+        SizedBox(
+          width: 280,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.primary.withAlpha(31),
+                radius: 24,
+                backgroundColor: AppColors.primary.withAlpha(24),
                 child: Text(
                   item.shortCode,
                   style: const TextStyle(
@@ -192,44 +319,50 @@ class DepartmentItemCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      item.description,
+                      item.shortCode,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.72),
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _InfoChip(
-                          label: item.team,
-                          color: theme.colorScheme.primary.withAlpha(24),
-                          textColor: theme.colorScheme.primary,
-                        ),
-                        _InfoChip(
-                          label: item.head,
-                          color: theme.colorScheme.surfaceVariant,
-                          textColor: theme.colorScheme.onSurface,
-                        ),
-                        _InfoChip(
-                          label: item.status,
-                          color: item.status == 'Active'
-                              ? AppColors.success.withAlpha(31)
-                              : AppColors.warning.withAlpha(31),
-                          textColor: item.status == 'Active'
-                              ? AppColors.success
-                              : AppColors.warning,
-                        ),
-                      ],
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          Row(
+        ),
+        SizedBox(
+          width: 200,
+          child: Text(
+            item.description,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        SizedBox(
+          width: 120,
+          child: Text(
+            item.team,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 120,
+          child: Text(
+            item.head,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+        ),
+        SizedBox(width: 110, child: _StatusChip(status: item.status)),
+        SizedBox(
+          width: 180,
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               _ActionButton(
@@ -245,7 +378,133 @@ class DepartmentItemCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+}
+
+class DepartmentItemCardMobile extends StatelessWidget {
+  final DepartmentItem item;
+
+  const DepartmentItemCardMobile({super.key, required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: AppColors.primary.withAlpha(24),
+                child: Text(
+                  item.shortCode,
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      item.description,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              _InfoChip(
+                label: item.team,
+                color: theme.colorScheme.primary.withAlpha(24),
+                textColor: theme.colorScheme.primary,
+              ),
+              _InfoChip(
+                label: item.head,
+                color: theme.colorScheme.surfaceVariant,
+                textColor: theme.colorScheme.onSurface,
+              ),
+              _StatusChip(status: item.status),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _ActionButton(
+                  label: 'Edit',
+                  color: theme.colorScheme.primary,
+                  onTap: () {},
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ActionButton(
+                  label: 'Delete',
+                  color: AppColors.error,
+                  onTap: () {},
+                ),
+              ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final String status;
+
+  const _StatusChip({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = status == 'Active';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isActive
+            ? AppColors.success.withAlpha(24)
+            : AppColors.warning.withAlpha(24),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Text(
+        status,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: isActive ? AppColors.success : AppColors.warning,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }
