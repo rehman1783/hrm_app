@@ -62,6 +62,7 @@ class _LeaveHeader extends StatelessWidget {
                     size: 28,
                   ),
                 ),
+                
                 const SizedBox(width: 14),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
