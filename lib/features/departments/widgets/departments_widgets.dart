@@ -133,91 +133,47 @@ class _DepartmentList extends StatelessWidget {
           ),
         ],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isMobile = constraints.maxWidth < 900;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  runSpacing: 10,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'All Departments',
-                          style: AppTextStyles.titleMedium.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'All Departments',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.w700,
                         ),
-                        const SizedBox(width: 10),
-                        _Badge(label: '${departments.length} total'),
-                      ],
-                    ),
-                    Text(
-                      'Last updated: 8/6/2026',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(height: 0, thickness: 1),
-              if (isMobile) ...[
-                const SizedBox(height: 12),
-                ...departments
-                    .map(
-                      (item) => Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                            child: DepartmentItemCardMobile(item: item),
-                          ),
-                          const Divider(height: 0, thickness: 1),
-                        ],
+                      const SizedBox(height: 4),
+                      Text(
+                        'Last updated: 8/6/2026',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
                       ),
-                    )
-                    .toList(),
-              ] else ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 18,
+                    ],
                   ),
-                  child: _DepartmentTableHeader(),
                 ),
-                const Divider(height: 0, thickness: 1),
-                const SizedBox(height: 8),
-                ...departments
-                    .map(
-                      (item) => Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 16,
-                            ),
-                            child: DepartmentItemCard(item: item),
-                          ),
-                          const Divider(height: 0, thickness: 1),
-                        ],
-                      ),
-                    )
-                    .toList(),
+                _Badge(label: '${departments.length} total'),
               ],
-            ],
-          );
-        },
+            ),
+          ),
+          const Divider(height: 0, thickness: 1),
+          const SizedBox(height: 8),
+          ...departments.map(
+            (item) => Padding(
+              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+              child: DepartmentItemCardMobile(item: item),
+            ),
+          ),
+          const SizedBox(height: 8),
+        ],
       ),
     );
   }

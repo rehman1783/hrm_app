@@ -260,119 +260,24 @@ class _AttendanceHistorySection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final isMobile = constraints.maxWidth < 760;
-
-            return Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: theme.shadowColor.withAlpha(12),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: theme.shadowColor.withAlpha(12),
+                blurRadius: 24,
+                offset: const Offset(0, 8),
               ),
-              child: isMobile
-                  ? Column(
-                      children: attendanceHistory
-                          .map(
-                            (record) => AttendanceHistoryCard(record: record),
-                          )
-                          .toList(),
-                    )
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(minWidth: 760),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 16,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.success.withAlpha(18),
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(24),
-                                  topRight: Radius.circular(24),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'DATE',
-                                      style: AppTextStyles.labelMedium.copyWith(
-                                        color: AppColors.success,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'CHECK IN',
-                                      style: AppTextStyles.labelMedium.copyWith(
-                                        color: AppColors.success,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'CHECK OUT',
-                                      style: AppTextStyles.labelMedium.copyWith(
-                                        color: AppColors.success,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'WORKING HOURS',
-                                      style: AppTextStyles.labelMedium.copyWith(
-                                        color: AppColors.success,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 130,
-                                    child: Text(
-                                      'STATUS',
-                                      style: AppTextStyles.labelMedium.copyWith(
-                                        color: AppColors.success,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(height: 1),
-                            ...attendanceHistory
-                                .map(
-                                  (record) =>
-                                      AttendanceHistoryRow(record: record),
-                                )
-                                .toList(),
-                          ],
-                        ),
-                      ),
-                    ),
-            );
-          },
+            ],
+          ),
+          child: Column(
+            children: attendanceHistory
+                .map((record) => AttendanceHistoryCard(record: record))
+                .toList(),
+          ),
         ),
       ],
     );
@@ -405,12 +310,13 @@ class AttendanceHistoryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                record.date,
-                style: AppTextStyles.bodyLarge.copyWith(
-                  fontWeight: FontWeight.w600,
+              Expanded(
+                child: Text(
+                  record.date,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               Container(
@@ -432,54 +338,14 @@ class AttendanceHistoryCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'CHECK IN',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(record.checkIn, style: AppTextStyles.bodyMedium),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'CHECK OUT',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(record.checkOut, style: AppTextStyles.bodyMedium),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'WORKING HOURS',
-                      style: AppTextStyles.labelMedium.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(record.hours, style: AppTextStyles.bodyMedium),
-                  ],
-                ),
-              ),
+              _InfoPill(label: 'In', value: record.checkIn),
+              _InfoPill(label: 'Out', value: record.checkOut),
+              _InfoPill(label: 'Hours', value: record.hours),
             ],
           ),
         ],
@@ -488,77 +354,35 @@ class AttendanceHistoryCard extends StatelessWidget {
   }
 }
 
-class AttendanceHistoryRow extends StatelessWidget {
-  final AttendanceRecord record;
+class _InfoPill extends StatelessWidget {
+  final String label;
+  final String value;
 
-  const AttendanceHistoryRow({super.key, required this.record});
+  const _InfoPill({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      width: double.infinity,
-      color: theme.cardColor,
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
-      child: Row(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              record.date,
-              style: AppTextStyles.bodyMedium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+          Text(
+            label,
+            style: AppTextStyles.labelMedium.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              record.checkIn,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              record.checkOut,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              record.hours,
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.8),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 130,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: record.statusColor.withAlpha(24),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  record.status,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: record.statusColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

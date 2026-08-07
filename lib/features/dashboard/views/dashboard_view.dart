@@ -45,9 +45,84 @@ class DashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const DashboardHeader(name: 'HR Manager'),
-              const SizedBox(height: 18),
+              const SizedBox(height: 16),
               const LiveStatusBar(),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: theme.colorScheme.outlineVariant.withAlpha(80),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withAlpha(12),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Operations overview',
+                                style: AppTextStyles.titleMedium.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'A premium view of daily HR performance.',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.success.withAlpha(24),
+                            borderRadius: BorderRadius.circular(999),
+                          ),
+                          child: Text(
+                            'Healthy',
+                            style: AppTextStyles.labelMedium.copyWith(
+                              color: AppColors.success,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: const [
+                        _Pill(label: '3 active teams'),
+                        _Pill(label: '0 pending approvals'),
+                        _Pill(label: '4 key modules'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
               Row(
                 children: [
                   Text('Dashboard Overview', style: AppTextStyles.titleMedium),
@@ -122,7 +197,7 @@ class DashboardView extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               SystemStatus(
                 statusText: 'All systems operational',
                 lastUpdated: DateTime.now(),
@@ -130,6 +205,30 @@ class DashboardView extends StatelessWidget {
               const SizedBox(height: 36),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  final String label;
+
+  const _Pill({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Text(
+        label,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

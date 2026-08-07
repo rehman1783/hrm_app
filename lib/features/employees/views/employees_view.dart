@@ -8,6 +8,17 @@ class EmployeesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(drawer: HRMDrawer(), body: EmployeesViewBody());
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      drawer: const HRMDrawer(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: theme.scaffoldBackgroundColor,
+        title: const Text('Employees'),
+        centerTitle: false,
+      ),
+      body: const EmployeesViewBody(),
+    );
   }
 }

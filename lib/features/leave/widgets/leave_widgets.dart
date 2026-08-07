@@ -62,7 +62,7 @@ class _LeaveHeader extends StatelessWidget {
                     size: 28,
                   ),
                 ),
-                
+
                 const SizedBox(width: 14),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,39 +122,44 @@ class _LeaveSummaryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 12,
-      children: const [
-        _SummaryCard(
-          title: 'Total Requests',
-          value: '2',
-          subtitle: 'All leave requests',
-          icon: Icons.person_rounded,
-          accentColor: Color(0xFF60A5FA),
-        ),
-        _SummaryCard(
-          title: 'Pending',
-          value: '0',
-          subtitle: 'Awaiting approval',
-          icon: Icons.schedule_rounded,
-          accentColor: Color(0xFFFACC15),
-        ),
-        _SummaryCard(
-          title: 'Approved',
-          value: '1',
-          subtitle: 'Leave approved',
-          icon: Icons.check_circle_rounded,
-          accentColor: Color(0xFF4ADE80),
-        ),
-        _SummaryCard(
-          title: 'Rejected',
-          value: '1',
-          subtitle: 'Leave rejected',
-          icon: Icons.close_rounded,
-          accentColor: Color(0xFFF87272),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 380;
+        return Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: const [
+            _SummaryCard(
+              title: 'Total Requests',
+              value: '2',
+              subtitle: 'All leave requests',
+              icon: Icons.person_rounded,
+              accentColor: Color(0xFF60A5FA),
+            ),
+            _SummaryCard(
+              title: 'Pending',
+              value: '0',
+              subtitle: 'Awaiting approval',
+              icon: Icons.schedule_rounded,
+              accentColor: Color(0xFFFACC15),
+            ),
+            _SummaryCard(
+              title: 'Approved',
+              value: '1',
+              subtitle: 'Leave approved',
+              icon: Icons.check_circle_rounded,
+              accentColor: Color(0xFF4ADE80),
+            ),
+            _SummaryCard(
+              title: 'Rejected',
+              value: '1',
+              subtitle: 'Leave rejected',
+              icon: Icons.close_rounded,
+              accentColor: Color(0xFFF87272),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -177,8 +182,8 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SizedBox(
-      width: 180,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minWidth: 150, maxWidth: 220),
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
@@ -328,10 +333,9 @@ class _LeaveRequestsSection extends StatelessWidget {
                     .map((item) => LeaveRequestCardMobile(item: item))
                     .toList()
               else ...[
-                _LeaveRequestTableHeader(),
-                const Divider(height: 1),
+                const SizedBox(height: 8),
                 ...leaveRequests
-                    .map((item) => LeaveRequestRow(item: item))
+                    .map((item) => LeaveRequestCardMobile(item: item))
                     .toList(),
               ],
             ],

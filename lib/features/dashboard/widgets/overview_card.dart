@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
 class OverviewCard extends StatelessWidget {
@@ -12,10 +11,18 @@ class OverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 3,
-      shadowColor: theme.colorScheme.primary.withAlpha(31),
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(12),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
       child: Column(
         children: items
             .map(
@@ -23,11 +30,11 @@ class OverviewCard extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 18,
-                      vertical: 10,
+                      horizontal: 16,
+                      vertical: 8,
                     ),
                     leading: Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(14),
@@ -35,7 +42,7 @@ class OverviewCard extends StatelessWidget {
                       child: Icon(
                         item.icon,
                         color: theme.colorScheme.primary,
-                        size: 24,
+                        size: 22,
                       ),
                     ),
                     title: Text(
@@ -54,12 +61,12 @@ class OverviewCard extends StatelessWidget {
                     trailing: item.badgeText != null
                         ? Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
+                              horizontal: 10,
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               color: theme.colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(18),
+                              borderRadius: BorderRadius.circular(999),
                             ),
                             child: Text(
                               item.badgeText!,
@@ -76,7 +83,7 @@ class OverviewCard extends StatelessWidget {
                           ),
                   ),
                   if (item != items.last)
-                    const Divider(height: 1, indent: 18, endIndent: 18),
+                    const Divider(height: 1, indent: 16, endIndent: 16),
                 ],
               ),
             )

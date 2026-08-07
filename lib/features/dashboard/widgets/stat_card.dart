@@ -24,18 +24,18 @@ class StatCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [accentColor.withAlpha(31), theme.cardColor],
+          colors: [accentColor.withAlpha(28), theme.cardColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: accentColor.withAlpha(26),
-            blurRadius: 12,
+            color: accentColor.withAlpha(20),
+            blurRadius: 10,
             offset: const Offset(0, 6),
           ),
         ],
@@ -43,14 +43,14 @@ class StatCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: accentColor.withAlpha(36),
+              color: accentColor.withAlpha(30),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: accentColor, size: 24),
+            child: Icon(icon, color: accentColor, size: 20),
           ),
-          const SizedBox(width: 14),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,11 +61,12 @@ class StatCard extends StatelessWidget {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   value,
                   style: AppTextStyles.headlineMedium.copyWith(
                     color: valueColor ?? theme.colorScheme.onSurface,
+                    fontSize: 20,
                   ),
                 ),
               ],
