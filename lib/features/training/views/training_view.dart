@@ -10,6 +10,7 @@ class TrainingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const HRMDrawer(),
+      
       appBar: AppBar(
         title: const Text('Training'),
         centerTitle: false,

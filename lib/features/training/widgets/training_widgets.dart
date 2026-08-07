@@ -47,36 +47,73 @@ class _TrainingHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Training', style: AppTextStyles.headlineMedium),
-              const SizedBox(height: 2),
-              Text(
-                'Manage employee training programs and enrollments',
-                style: AppTextStyles.bodyMedium,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 420;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Training', style: AppTextStyles.headlineMedium),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Manage employee training programs and enrollments',
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                if (!isCompact) ...[
+                  const SizedBox(width: 8),
+                  FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.add_rounded, size: 18),
+                    label: const Text('Create Training'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            if (isCompact) ...[
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.add_rounded, size: 18),
+                  label: const Text('Create Training'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.success,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
               ),
             ],
-          ),
-        ),
-        const SizedBox(width: 8),
-        FilledButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.add_rounded, size: 18),
-          label: const Text('Create Training'),
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.success,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
@@ -441,13 +478,19 @@ class _FilterDropdownState extends State<_FilterDropdown> {
         border: Border.all(color: theme.dividerColor),
       ),
       child: DropdownButton<String>(
+        isExpanded: true,
         value: _selectedValue,
         underline: const SizedBox(),
+        alignment: AlignmentDirectional.centerStart,
         items: widget.options
             .map(
               (option) => DropdownMenuItem(
                 value: option,
-                child: Text(option, style: AppTextStyles.bodyMedium),
+                child: Text(
+                  option,
+                  style: AppTextStyles.bodyMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             )
             .toList(),
@@ -471,16 +514,28 @@ class _TrainingProgramsList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Icon(
-              Icons.library_books_rounded,
-              color: theme.colorScheme.primary,
-              size: 20,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.library_books_rounded,
+                  color: theme.colorScheme.primary,
+                  size: 20,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Training Programs',
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            const Text('Training Programs', style: AppTextStyles.titleMedium),
-            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -495,7 +550,6 @@ class _TrainingProgramsList extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -786,6 +840,8 @@ class TrainingProgramCard extends StatelessWidget {
                   children: [
                     Text(
                       program.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.bodyLarge.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
@@ -812,6 +868,8 @@ class TrainingProgramCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             program.trainer,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.bodyMedium.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -819,6 +877,8 @@ class TrainingProgramCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             program.trainerEmail,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.labelMedium.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -902,6 +962,8 @@ class TrainingProgramCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             'Schedule: ${program.schedule}',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: AppTextStyles.bodyMedium,
           ),
           const SizedBox(height: 12),
