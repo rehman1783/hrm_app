@@ -11,14 +11,14 @@ class LeaveViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _LeaveHeader(),
-            SizedBox(height: 22),
+            SizedBox(height: 12),
             _LeaveSummaryRow(),
-            SizedBox(height: 24),
+            SizedBox(height: 12),
             _LeaveRequestsSection(),
           ],
         ),
@@ -46,8 +46,8 @@ class _LeaveHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Container(
-                  width: 54,
-                  height: 54,
+                  width: 46,
+                  height: 46,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18),
                     gradient: const LinearGradient(
@@ -59,7 +59,7 @@ class _LeaveHeader extends StatelessWidget {
                   child: const Icon(
                     Icons.person_add_alt_1_rounded,
                     color: Colors.white,
-                    size: 28,
+                    size: 24,
                   ),
                 ),
 
@@ -102,8 +102,8 @@ class _LeaveHeader extends StatelessWidget {
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.success,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 14,
+                  horizontal: 14,
+                  vertical: 10,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
@@ -185,7 +185,8 @@ class _SummaryCard extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(minWidth: 150, maxWidth: 220),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        width: MediaQuery.of(context).size.width * 0.45,
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(24),
@@ -222,7 +223,7 @@ class _SummaryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Text(
               value,
               style: AppTextStyles.headlineMedium.copyWith(
@@ -230,7 +231,7 @@ class _SummaryCard extends StatelessWidget {
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             Text(
               subtitle,
               style: AppTextStyles.bodyMedium.copyWith(
@@ -275,7 +276,7 @@ class _LeaveRequestsSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(24),
                         borderRadius: BorderRadius.circular(16),
@@ -285,7 +286,7 @@ class _LeaveRequestsSection extends StatelessWidget {
                         color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Row(
                         children: [
@@ -522,8 +523,8 @@ class LeaveRequestCardMobile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(22),
@@ -633,7 +634,7 @@ class LeaveRequestCardMobile extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
           _ActionButton(label: 'Delete', color: AppColors.error, onTap: () {}),
         ],
       ),

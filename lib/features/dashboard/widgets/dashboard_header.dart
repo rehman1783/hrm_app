@@ -35,7 +35,7 @@ class DashboardHeader extends StatelessWidget {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(18),
+          padding: const EdgeInsets.all(14),
           child: compact
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,8 +43,8 @@ class DashboardHeader extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          width: 56,
-                          height: 56,
+                          width: 48,
+                          height: 48,
                           decoration: BoxDecoration(
                             color: theme.colorScheme.onPrimary.withOpacity(
                               0.24,
@@ -54,7 +54,7 @@ class DashboardHeader extends StatelessWidget {
                           child: Icon(
                             Icons.dashboard_customize_rounded,
                             color: theme.colorScheme.onPrimary,
-                            size: 26,
+                            size: 22,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -124,8 +124,8 @@ class DashboardHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 60,
-                      height: 60,
+                      width: 50,
+                      height: 50,
                       decoration: BoxDecoration(
                         color: theme.colorScheme.onPrimary.withOpacity(0.24),
                         borderRadius: BorderRadius.circular(18),
@@ -133,7 +133,7 @@ class DashboardHeader extends StatelessWidget {
                       child: Icon(
                         Icons.dashboard_customize_rounded,
                         color: theme.colorScheme.onPrimary,
-                        size: 28,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 14),

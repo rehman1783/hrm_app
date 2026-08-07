@@ -40,17 +40,17 @@ class DashboardView extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const DashboardHeader(name: 'HR Manager'),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               const LiveStatusBar(),
               const SizedBox(height: 20),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(24),
@@ -80,7 +80,7 @@ class DashboardView extends StatelessWidget {
                                   fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 2),
                               Text(
                                 'A premium view of daily HR performance.',
                                 style: AppTextStyles.bodyMedium.copyWith(
@@ -109,7 +109,7 @@ class DashboardView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -160,7 +160,7 @@ class DashboardView extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 14),
               Text('Quick Stats', style: AppTextStyles.titleMedium),
               const SizedBox(height: 12),
               GridView.count(
@@ -202,7 +202,7 @@ class DashboardView extends StatelessWidget {
                 statusText: 'All systems operational',
                 lastUpdated: DateTime.now(),
               ),
-              const SizedBox(height: 36),
+              const SizedBox(height: 24),
             ],
           ),
         ),

@@ -24,7 +24,7 @@ class StatCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [accentColor.withAlpha(28), theme.cardColor],
@@ -43,12 +43,12 @@ class StatCard extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: accentColor.withAlpha(30),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: accentColor, size: 20),
+            child: Icon(icon, color: accentColor, size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -66,7 +66,7 @@ class StatCard extends StatelessWidget {
                   value,
                   style: AppTextStyles.headlineMedium.copyWith(
                     color: valueColor ?? theme.colorScheme.onSurface,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
               ],

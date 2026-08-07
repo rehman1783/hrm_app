@@ -11,16 +11,16 @@ class EmployeesViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _EmployeesHeader(),
             SizedBox(height: 22),
             _StatsRow(),
-            SizedBox(height: 24),
+            SizedBox(height: 12),
             _FiltersRow(),
-            SizedBox(height: 18),
+            SizedBox(height: 12),
             _SearchBar(),
             SizedBox(height: 22),
             _EmployeeListSection(),
@@ -52,7 +52,7 @@ class _EmployeesHeader extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 6),
         FilledButton.icon(
           onPressed: () {},
           icon: const Icon(Icons.add_rounded),
@@ -226,7 +226,7 @@ class EmployeeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(22),
@@ -244,7 +244,7 @@ class EmployeeCard extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                radius: 26,
+                radius: 22,
                 backgroundColor: AppColors.primary.withAlpha(31),
                 child: Text(
                   employee.initials,
@@ -254,7 +254,7 @@ class EmployeeCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class EmployeeCard extends StatelessWidget {
                         color: theme.colorScheme.onSurface.withOpacity(0.72),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -300,7 +300,7 @@ class EmployeeCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -376,7 +376,7 @@ class _ActionButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(14),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: color.withAlpha(31),
           borderRadius: BorderRadius.circular(14),

@@ -15,7 +15,7 @@ class LiveStatusBar extends StatelessWidget {
       alignment: WrapAlignment.spaceBetween,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceVariant,
             borderRadius: BorderRadius.circular(999),
@@ -23,12 +23,12 @@ class LiveStatusBar extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.wifi, size: 16, color: theme.colorScheme.primary),
+              Icon(Icons.wifi, size: 14, color: theme.colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 'Live — refresh every 60s',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 12,
                   color: theme.colorScheme.onSurface,
                 ),
               ),

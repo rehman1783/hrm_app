@@ -11,14 +11,14 @@ class DepartmentsViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _DepartmentsHeader(),
-            SizedBox(height: 22),
+            SizedBox(height: 12),
             _SummaryRow(),
-            SizedBox(height: 24),
+            SizedBox(height: 12),
             _DepartmentList(),
           ],
         ),
@@ -137,7 +137,7 @@ class _DepartmentList extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
             child: Row(
               children: [
                 Expanded(
@@ -168,7 +168,7 @@ class _DepartmentList extends StatelessWidget {
           const SizedBox(height: 8),
           ...departments.map(
             (item) => Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
               child: DepartmentItemCardMobile(item: item),
             ),
           ),
@@ -350,7 +350,7 @@ class DepartmentItemCardMobile extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(18),
@@ -371,7 +371,7 @@ class DepartmentItemCardMobile extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

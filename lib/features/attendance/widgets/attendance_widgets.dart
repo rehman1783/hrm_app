@@ -10,14 +10,14 @@ class AttendanceViewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: const [
             _AttendanceHeader(),
-            SizedBox(height: 22),
+            SizedBox(height: 12),
             _TodayAttendanceCard(),
-            SizedBox(height: 24),
+            SizedBox(height: 12),
             _AttendanceHistorySection(),
           ],
         ),
@@ -49,49 +49,49 @@ class _AttendanceHeader extends StatelessWidget {
                     'Check-in and check-out to track your working hours',
                     style: AppTextStyles.bodyMedium,
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            ConstrainedBox(
-              constraints: BoxConstraints(minWidth: isMobile ? 0 : 220),
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                alignment: WrapAlignment.end,
-                children: [
-                  FilledButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.login_rounded, size: 18),
-                    label: const Text('Check In'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.success,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                  ),
-                  FilledButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.logout_rounded, size: 18),
-                    label: const Text('Check Out'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: theme.colorScheme.surface,
-                      foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 14,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      side: BorderSide(
-                        color: theme.colorScheme.primary.withOpacity(0.18),
-                      ),
+                  const SizedBox(height: 12),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: isMobile ? 0 : 220),
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.start,
+                      children: [
+                        FilledButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.login_rounded, size: 18),
+                          label: const Text('Check In'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.success,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 14,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                        FilledButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.logout_rounded, size: 18),
+                          label: const Text('Check Out'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: theme.colorScheme.surface,
+                            foregroundColor: theme.colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 14,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            side: BorderSide(
+                              color: theme.colorScheme.primary.withOpacity(0.18),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -116,7 +116,7 @@ class _TodayAttendanceCard extends StatelessWidget {
 
         return Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(22),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: AppColors.primary.withAlpha(20),
             borderRadius: BorderRadius.circular(26),
@@ -135,7 +135,7 @@ class _TodayAttendanceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withAlpha(40),
                       borderRadius: BorderRadius.circular(18),
@@ -143,10 +143,10 @@ class _TodayAttendanceCard extends StatelessWidget {
                     child: const Icon(
                       Icons.access_time_rounded,
                       color: AppColors.primary,
-                      size: 30,
+                      size: 24,
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,8 +293,8 @@ class AttendanceHistoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
@@ -364,7 +364,7 @@ class _InfoPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(16),

@@ -30,11 +30,11 @@ class OverviewCard extends StatelessWidget {
                 children: [
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+                      horizontal: 12,
+                      vertical: 6,
                     ),
                     leading: Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: theme.colorScheme.surfaceVariant,
                         borderRadius: BorderRadius.circular(14),
@@ -42,7 +42,7 @@ class OverviewCard extends StatelessWidget {
                       child: Icon(
                         item.icon,
                         color: theme.colorScheme.primary,
-                        size: 22,
+                        size: 20,
                       ),
                     ),
                     title: Text(

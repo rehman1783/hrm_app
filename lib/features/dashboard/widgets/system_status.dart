@@ -20,7 +20,7 @@ class SystemStatus extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         child: Row(
           children: [
             Container(
@@ -31,7 +31,7 @@ class SystemStatus extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             Expanded(child: Text(statusText, style: AppTextStyles.bodyLarge)),
             Text(
               'Updated ${TimeOfDay.fromDateTime(lastUpdated).format(context)}',
