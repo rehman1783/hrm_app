@@ -65,10 +65,7 @@ class _PayrollHeader extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
@@ -85,14 +82,34 @@ class _StatsRow extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 500;
         final statList = [
-          ('TOTAL RECORDS', '0', 'Payroll entries', Icons.receipt_rounded,
-              Color(0xFF60A5FA)),
-          ('PAID', '0', 'Completed payments\n+ 12% vs last month',
-              Icons.check_circle_rounded, AppColors.success),
-          ('PENDING', '0', 'Awaiting payment\n↓ 5% vs last month',
-              Icons.schedule_rounded, Color(0xFFF59E0B)),
-          ('TOTAL PAID (PKR)', 'Rs. 0.00', 'Cumulative amount',
-              Icons.account_balance_wallet_rounded, Color(0xFF8B5CF6)),
+          (
+            'TOTAL RECORDS',
+            '0',
+            'Payroll entries',
+            Icons.receipt_rounded,
+            Color(0xFF60A5FA),
+          ),
+          (
+            'PAID',
+            '0',
+            'Completed payments\n+ 12% vs last month',
+            Icons.check_circle_rounded,
+            AppColors.success,
+          ),
+          (
+            'PENDING',
+            '0',
+            'Awaiting payment\n↓ 5% vs last month',
+            Icons.schedule_rounded,
+            Color(0xFFF59E0B),
+          ),
+          (
+            'TOTAL PAID (PKR)',
+            'Rs. 0.00',
+            'Cumulative amount',
+            Icons.account_balance_wallet_rounded,
+            Color(0xFF8B5CF6),
+          ),
         ];
 
         if (isMobile) {
@@ -268,9 +285,7 @@ class _ExchangeRateBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.primary.withAlpha(18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.colorScheme.primary.withAlpha(40),
-        ),
+        border: Border.all(color: theme.colorScheme.primary.withAlpha(40)),
       ),
       child: Row(
         children: [
@@ -342,10 +357,7 @@ class _GeneratePayrollSection extends StatelessWidget {
                 size: 20,
               ),
               const SizedBox(width: 10),
-              const Text(
-                'Generate Payroll',
-                style: AppTextStyles.titleMedium,
-              ),
+              const Text('Generate Payroll', style: AppTextStyles.titleMedium),
             ],
           ),
           const SizedBox(height: 14),
@@ -453,16 +465,10 @@ class _PayrollRecordsSection extends StatelessWidget {
               size: 20,
             ),
             const SizedBox(width: 8),
-            const Text(
-              'Payroll Records',
-              style: AppTextStyles.titleMedium,
-            ),
+            const Text('Payroll Records', style: AppTextStyles.titleMedium),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 4,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary.withAlpha(20),
                 borderRadius: BorderRadius.circular(12),
@@ -490,9 +496,7 @@ class _PayrollRecordsSection extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: theme.dividerColor,
-                  ),
+                  border: Border.all(color: theme.dividerColor),
                 ),
                 child: Row(
                   children: [
@@ -514,10 +518,7 @@ class _PayrollRecordsSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: AppColors.success.withAlpha(30),
                 borderRadius: BorderRadius.circular(12),
@@ -532,16 +533,11 @@ class _PayrollRecordsSection extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: theme.dividerColor,
-                ),
+                border: Border.all(color: theme.dividerColor),
               ),
               child: Text(
                 'USD (\$)',
@@ -555,16 +551,11 @@ class _PayrollRecordsSection extends StatelessWidget {
         const SizedBox(height: 12),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 28,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 28),
           decoration: BoxDecoration(
             color: AppColors.success.withAlpha(12),
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.success.withAlpha(30),
-            ),
+            border: Border.all(color: AppColors.success.withAlpha(30)),
           ),
           child: Column(
             children: [

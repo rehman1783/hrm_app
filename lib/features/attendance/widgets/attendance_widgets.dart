@@ -87,7 +87,9 @@ class _AttendanceHeader extends StatelessWidget {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             side: BorderSide(
-                              color: theme.colorScheme.primary.withOpacity(0.18),
+                              color: theme.colorScheme.primary.withOpacity(
+                                0.18,
+                              ),
                             ),
                           ),
                         ),
