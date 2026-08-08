@@ -18,39 +18,38 @@ class MeetingsView extends StatelessWidget {
         backgroundColor: theme.scaffoldBackgroundColor,
         title: const Text('Meetings'),
         centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 14.0),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.add, size: 18),
-              label: const Text('Request Meeting'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-            ),
-          ),
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              _MeetingsHeader(),
-              SizedBox(height: 18),
-              _MeetingStatsSection(),
-              SizedBox(height: 18),
-              _MeetingFilterRow(),
-              SizedBox(height: 18),
-              _MeetingListSection(),
-              SizedBox(height: 20),
+            children: [
+              const _MeetingsHeader(),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.add, size: 18),
+                label: const Text('Request Meeting'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              const _MeetingStatsSection(),
+              const SizedBox(height: 18),
+              const _MeetingFilterRow(),
+              const SizedBox(height: 18),
+              const _MeetingListSection(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -87,22 +86,47 @@ class _MeetingsHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Meetings', style: AppTextStyles.headlineLarge.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.w700)),
+          Text(
+            'Meetings',
+            style: AppTextStyles.headlineLarge.copyWith(
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
           const SizedBox(height: 10),
-          Text('Schedule and manage your meetings with anyone', style: AppTextStyles.bodyLarge.copyWith(color: theme.colorScheme.onPrimary.withOpacity(0.92))),
+          Text(
+            'Schedule and manage your meetings with anyone',
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: theme.colorScheme.onPrimary.withOpacity(0.92),
+            ),
+          ),
           const SizedBox(height: 16),
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.onPrimary.withOpacity(0.14),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: Text('6 meetings', style: AppTextStyles.titleMedium.copyWith(color: theme.colorScheme.onPrimary, fontWeight: FontWeight.w700)),
+                child: Text(
+                  '6 meetings',
+                  style: AppTextStyles.titleMedium.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
-              Text('All meetings overview', style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onPrimary.withOpacity(0.76))),
+              Text(
+                'All meetings overview',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: theme.colorScheme.onPrimary.withOpacity(0.76),
+                ),
+              ),
             ],
           ),
         ],
@@ -168,11 +192,7 @@ class _MeetingStatsSection extends StatelessWidget {
           );
         }
 
-        return Wrap(
-          spacing: 14,
-          runSpacing: 14,
-          children: cards,
-        );
+        return Wrap(spacing: 14, runSpacing: 14, children: cards);
       },
     );
   }
@@ -227,11 +247,26 @@ class _MeetingStatCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title.toUpperCase(), style: AppTextStyles.labelMedium.copyWith(color: theme.hintColor)),
+                Text(
+                  title.toUpperCase(),
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text(value, style: AppTextStyles.headlineLarge.copyWith(fontWeight: FontWeight.w700)),
+                Text(
+                  value,
+                  style: AppTextStyles.headlineLarge.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(subtitle, style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                Text(
+                  subtitle,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
@@ -280,7 +315,10 @@ class _MeetingFilterRow extends StatelessWidget {
             decoration: InputDecoration(
               filled: true,
               fillColor: theme.cardColor,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
@@ -324,26 +362,48 @@ class _MeetingListSection extends StatelessWidget {
                     color: theme.colorScheme.primary.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: Icon(Icons.calendar_today_rounded, color: theme.colorScheme.primary),
+                  child: Icon(
+                    Icons.calendar_today_rounded,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Meeting List', style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+                      Text(
+                        'Meeting List',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text('6 meetings', style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                      Text(
+                        '6 meetings',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withOpacity(0.14),
                     borderRadius: BorderRadius.circular(999),
                   ),
-                  child: Text('2 pending', style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.primary, fontWeight: FontWeight.w700)),
+                  child: Text(
+                    '2 pending',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: theme.colorScheme.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -353,16 +413,64 @@ class _MeetingListSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             decoration: BoxDecoration(
               color: AppColors.success.withOpacity(0.08),
-              borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
             ),
             child: Row(
               children: [
-                Expanded(child: Text('Meeting', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
-                Expanded(child: Text('From → To', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
-                Expanded(child: Text('Date & Time', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
-                SizedBox(width: 88, child: Text('Type', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
-                SizedBox(width: 88, child: Text('Status', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
-                SizedBox(width: 68, child: Text('', style: AppTextStyles.titleMedium.copyWith(color: AppColors.success))),
+                Expanded(
+                  child: Text(
+                    'Meeting',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'From → To',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    'Date & Time',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 88,
+                  child: Text(
+                    'Type',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 88,
+                  child: Text(
+                    'Status',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 68,
+                  child: Text(
+                    '',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -412,80 +520,31 @@ class _MeetingListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final isCompact = constraints.maxWidth < 700;
-      const sectionSpacing = SizedBox(height: 10);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < 700;
+        const sectionSpacing = SizedBox(height: 10);
 
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: theme.shadowColor.withAlpha(10),
-                blurRadius: 12,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: isCompact
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.14),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(Icons.event_rounded, color: AppColors.primary),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(title, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700)),
-                              const SizedBox(height: 4),
-                              Text(subtitle, style: AppTextStyles.bodyMedium.copyWith(color: theme.hintColor)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    sectionSpacing,
-                    Text('Unknown', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 4),
-                    Text('→ $recipient', style: AppTextStyles.bodyMedium.copyWith(color: theme.hintColor)),
-                    sectionSpacing,
-                    Text(date, style: AppTextStyles.bodyMedium),
-                    sectionSpacing,
-                    Row(
-                      children: [
-                        Chip(
-                          backgroundColor: theme.colorScheme.surface,
-                          label: Text(type, style: AppTextStyles.bodyMedium),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(child: Text(status, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w700))),
-                        TextButton(onPressed: () {}, child: const Text('View')),
-                      ],
-                    ),
-                  ],
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: theme.cardColor,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: theme.shadowColor.withAlpha(10),
+                  blurRadius: 12,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: isCompact
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
                           Container(
                             width: 44,
@@ -494,52 +553,171 @@ class _MeetingListItem extends StatelessWidget {
                               color: AppColors.primary.withOpacity(0.14),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Icon(Icons.event_rounded, color: AppColors.primary),
+                            child: const Icon(
+                              Icons.event_rounded,
+                              color: AppColors.primary,
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(title, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w700)),
+                                Text(
+                                  title,
+                                  style: AppTextStyles.titleMedium.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
                                 const SizedBox(height: 4),
-                                Text(subtitle, style: AppTextStyles.bodyMedium.copyWith(color: theme.hintColor)),
+                                Text(
+                                  subtitle,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: theme.hintColor,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      sectionSpacing,
+                      Text(
+                        'Unknown',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '→ $recipient',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: theme.hintColor,
+                        ),
+                      ),
+                      sectionSpacing,
+                      Text(date, style: AppTextStyles.bodyMedium),
+                      sectionSpacing,
+                      Row(
                         children: [
-                          Text('Unknown', style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w600)),
-                          const SizedBox(height: 4),
-                          Text('→ $recipient', style: AppTextStyles.bodyMedium.copyWith(color: theme.hintColor)),
+                          Chip(
+                            backgroundColor: theme.colorScheme.surface,
+                            label: Text(type, style: AppTextStyles.bodyMedium),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              status,
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text('View'),
+                          ),
                         ],
                       ),
-                    ),
-                    Expanded(flex: 2, child: Text(date, style: AppTextStyles.bodyMedium)),
-                    SizedBox(
-                      width: 98,
-                      child: Chip(label: Text(type, style: AppTextStyles.bodyMedium), backgroundColor: theme.colorScheme.surface),
-                    ),
-                    SizedBox(
-                      width: 100,
-                      child: Text(status, style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w700)),
-                    ),
-                    SizedBox(
-                      width: 66,
-                      child: TextButton(onPressed: () {}, child: const Text('View')),
-                    ),
-                  ],
-                ),
-        ),
-      );
-    });
-    
-  
+                    ],
+                  )
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.14),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.event_rounded,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: AppTextStyles.titleMedium.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    subtitle,
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: theme.hintColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Unknown',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '→ $recipient',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: theme.hintColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(date, style: AppTextStyles.bodyMedium),
+                      ),
+                      SizedBox(
+                        width: 98,
+                        child: Chip(
+                          label: Text(type, style: AppTextStyles.bodyMedium),
+                          backgroundColor: theme.colorScheme.surface,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          status,
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 66,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text('View'),
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
+        );
+      },
+    );
   }
 }
