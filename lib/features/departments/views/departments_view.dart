@@ -8,15 +8,12 @@ class DepartmentsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       drawer: const HRMDrawer(),
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
         title: const Text('Departments'),
         centerTitle: false,
+        elevation: 0,
       ),
       body: const DepartmentsViewBody(),
     );

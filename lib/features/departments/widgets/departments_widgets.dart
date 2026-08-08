@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../dashboard/widgets/dashboard_widgets.dart';
 
 class DepartmentsViewBody extends StatelessWidget {
   const DepartmentsViewBody({super.key});
@@ -17,9 +16,13 @@ class DepartmentsViewBody extends StatelessWidget {
           children: const [
             _DepartmentsHeader(),
             SizedBox(height: 12),
-            _SummaryRow(),
+            _StatsRow(),
             SizedBox(height: 12),
-            _DepartmentList(),
+            _DepartmentInfoBar(),
+            SizedBox(height: 14),
+            _FilterDepartmentsSection(),
+            SizedBox(height: 14),
+            _DepartmentsRecordsSection(),
           ],
         ),
       ),
@@ -32,18 +35,21 @@ class _DepartmentsHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text('Departments', style: AppTextStyles.headlineMedium),
-              SizedBox(height: 6),
+              const SizedBox(height: 2),
               Text(
-                'Manage organizational structure and teams',
-                style: AppTextStyles.bodyMedium,
+                '8/2026',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),
@@ -51,38 +57,499 @@ class _DepartmentsHeader extends StatelessWidget {
         const SizedBox(width: 8),
         FilledButton.icon(
           onPressed: () {},
-          icon: const Icon(Icons.add_rounded),
+          icon: const Icon(Icons.add_rounded, size: 18),
           label: const Text('New Department'),
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
         ),
       ],
     );
   }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow();
+class _StatsRow extends StatelessWidget {
+  const _StatsRow();
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 500;
+        final statList = [
+          (
+            'TOTAL DEPARTMENTS',
+            '3',
+            'All active departments',
+            Icons.apartment_rounded,
+            const Color(0xFF60A5FA),
+          ),
+          (
+            'ACTIVE DEPARTMENTS',
+            '3',
+            'Operating actively\n100% active rate',
+            Icons.check_circle_rounded,
+            AppColors.success,
+          ),
+          (
+            'TOTAL EMPLOYEES',
+            '9',
+            'Team members in depts',
+            Icons.group_rounded,
+            const Color(0xFFF59E0B),
+          ),
+          (
+            'AVG PER DEPT',
+            '3',
+            'Average headcount',
+            Icons.show_chart_rounded,
+            const Color(0xFF8B5CF6),
+          ),
+        ];
+
+        if (isMobile) {
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      title: statList[0].$1,
+                      value: statList[0].$2,
+                      subtitle: statList[0].$3,
+                      icon: statList[0].$4,
+                      color: statList[0].$5,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _StatCard(
+                      title: statList[1].$1,
+                      value: statList[1].$2,
+                      subtitle: statList[1].$3,
+                      icon: statList[1].$4,
+                      color: statList[1].$5,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      title: statList[2].$1,
+                      value: statList[2].$2,
+                      subtitle: statList[2].$3,
+                      icon: statList[2].$4,
+                      color: statList[2].$5,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _StatCard(
+                      title: statList[3].$1,
+                      value: statList[3].$2,
+                      subtitle: statList[3].$3,
+                      icon: statList[3].$4,
+                      color: statList[3].$5,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: statList
+                .asMap()
+                .entries
+                .map(
+                  (entry) => Padding(
+                    padding: EdgeInsets.only(right: entry.key < 3 ? 10 : 0),
+                    child: SizedBox(
+                      width: 180,
+                      child: _StatCard(
+                        title: entry.value.$1,
+                        value: entry.value.$2,
+                        subtitle: entry.value.$3,
+                        icon: entry.value.$4,
+                        color: entry.value.$5,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(12),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: color.withAlpha(24),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: color, size: 18),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: AppTextStyles.headlineMedium.copyWith(
+              fontSize: 18,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            style: AppTextStyles.bodyMedium.copyWith(
+              fontSize: 11,
+              color: theme.colorScheme.onSurfaceVariant,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DepartmentInfoBar extends StatelessWidget {
+  const _DepartmentInfoBar();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withAlpha(18),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.colorScheme.primary.withAlpha(40)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.apartment_rounded,
+            color: theme.colorScheme.primary,
+            size: 18,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Organizational Structure:',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  'Manage departments, team heads, and member allocation',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            'Updated automatically',
+            style: AppTextStyles.labelMedium.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FilterDepartmentsSection extends StatelessWidget {
+  const _FilterDepartmentsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(12),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.filter_list_rounded,
+                color: theme.colorScheme.primary,
+                size: 20,
+              ),
+              const SizedBox(width: 10),
+              const Text('Search & Filter', style: AppTextStyles.titleMedium),
+            ],
+          ),
+          const SizedBox(height: 14),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isMobile = constraints.maxWidth < 600;
+              if (isMobile) {
+                return Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search department name, code...',
+                        prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<String>(
+                            initialValue: 'All Status',
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'All Status',
+                                child: Text('All Status'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Active',
+                                child: Text('Active'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'Inactive',
+                                child: Text('Inactive'),
+                              ),
+                            ],
+                            onChanged: (v) {},
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                              filled: true,
+                              fillColor: theme.colorScheme.surface,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        FilledButton.icon(
+                          onPressed: () {},
+                          icon: const Icon(Icons.tune_rounded, size: 18),
+                          label: const Text('Filter'),
+                          style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search department name, code, description...',
+                        prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 1,
+                    child: DropdownButtonFormField<String>(
+                      initialValue: 'All Status',
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'All Status',
+                          child: Text('All Status'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Active',
+                          child: Text('Active'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Inactive',
+                          child: Text('Inactive'),
+                        ),
+                      ],
+                      onChanged: (v) {},
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.tune_rounded, size: 18),
+                    label: const Text('Apply Filter'),
+                    style: FilledButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DepartmentsRecordsSection extends StatelessWidget {
+  const _DepartmentsRecordsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: const [
-            Expanded(
-              child: StatCard(
-                title: 'Total Departments',
-                value: '3',
-                icon: Icons.apartment_rounded,
-                accentColor: Color(0xFF60A5FA),
-              ),
+          children: [
+            Icon(
+              Icons.business_rounded,
+              color: theme.colorScheme.primary,
+              size: 20,
             ),
-            SizedBox(width: 12),
-            Expanded(
-              child: StatCard(
-                title: 'Active Departments',
-                value: '3',
-                icon: Icons.check_circle_rounded,
-                accentColor: Color(0xFF34D399),
+            const SizedBox(width: 8),
+            const Text('Department Records', style: AppTextStyles.titleMedium),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withAlpha(20),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '${departments.length} entries',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -90,350 +557,250 @@ class _SummaryRow extends StatelessWidget {
         const SizedBox(height: 12),
         Row(
           children: const [
-            Expanded(
-              child: StatCard(
-                title: 'Total Employees',
-                value: '9',
-                icon: Icons.group_rounded,
-                accentColor: Color(0xFFFBBF24),
-              ),
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: StatCard(
-                title: 'Avg Per Dept',
-                value: '3',
-                icon: Icons.show_chart_rounded,
-                accentColor: Color(0xFFA78BFA),
-              ),
-            ),
+            _FilterChip(label: 'All', selected: true),
+            SizedBox(width: 8),
+            _FilterChip(label: 'Active'),
+            SizedBox(width: 8),
+            _FilterChip(label: 'Inactive'),
           ],
+        ),
+        const SizedBox(height: 12),
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: departments.length,
+          separatorBuilder: (_, _) => const SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            return DepartmentCard(item: departments[index]);
+          },
         ),
       ],
     );
   }
 }
 
-class _DepartmentList extends StatelessWidget {
-  const _DepartmentList();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withAlpha(16),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'All Departments',
-                        style: AppTextStyles.titleMedium.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Last updated: 8/6/2026',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _Badge(label: '${departments.length} total'),
-              ],
-            ),
-          ),
-          const Divider(height: 0, thickness: 1),
-          const SizedBox(height: 8),
-          ...departments.map(
-            (item) => Padding(
-              padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-              child: DepartmentItemCardMobile(item: item),
-            ),
-          ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-}
-
-class _Badge extends StatelessWidget {
+class _FilterChip extends StatelessWidget {
   final String label;
+  final bool selected;
 
-  const _Badge({required this.label});
+  const _FilterChip({required this.label, this.selected = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withAlpha(16),
-        borderRadius: BorderRadius.circular(16),
+        color: selected
+            ? theme.colorScheme.primary
+            : theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: selected ? null : Border.all(color: theme.dividerColor),
       ),
       child: Text(
         label,
-        style: AppTextStyles.labelMedium.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w700,
+        style: AppTextStyles.bodyMedium.copyWith(
+          color: selected
+              ? theme.colorScheme.onPrimary
+              : theme.colorScheme.onSurface,
+          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+          fontSize: 12,
         ),
       ),
     );
   }
 }
 
-class _DepartmentTableHeader extends StatelessWidget {
-  const _DepartmentTableHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final headerStyle = AppTextStyles.labelMedium.copyWith(
-      color: theme.colorScheme.onSurfaceVariant,
-      fontWeight: FontWeight.w700,
-    );
-
-    return Row(
-      children: [
-        Expanded(flex: 3, child: Text('Department', style: headerStyle)),
-        Expanded(flex: 2, child: Text('Description', style: headerStyle)),
-        Expanded(child: Text('Team', style: headerStyle)),
-        Expanded(child: Text('Head', style: headerStyle)),
-        Expanded(child: Text('Status', style: headerStyle)),
-        SizedBox(
-          width: 140,
-          child: Text('Actions', style: headerStyle, textAlign: TextAlign.end),
-        ),
-      ],
-    );
-  }
-}
-
-class DepartmentItemCard extends StatelessWidget {
+class DepartmentCard extends StatelessWidget {
   final DepartmentItem item;
 
-  const DepartmentItemCard({super.key, required this.item});
+  const DepartmentCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      alignment: WrapAlignment.spaceBetween,
-      runSpacing: 14,
-      children: [
-        SizedBox(
-          width: 280,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: AppColors.primary.withAlpha(24),
-                child: Text(
-                  item.shortCode,
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      item.name,
-                      style: AppTextStyles.bodyLarge.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      item.shortCode,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          width: 200,
-          child: Text(
-            item.description,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        SizedBox(
-          width: 120,
-          child: Text(
-            item.team,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 120,
-          child: Text(
-            item.head,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-        ),
-        SizedBox(width: 110, child: _StatusChip(status: item.status)),
-        SizedBox(
-          width: 180,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              _ActionButton(
-                label: 'Edit',
-                color: theme.colorScheme.primary,
-                onTap: () {},
-              ),
-              const SizedBox(width: 10),
-              _ActionButton(
-                label: 'Delete',
-                color: AppColors.error,
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class DepartmentItemCardMobile extends StatelessWidget {
-  final DepartmentItem item;
-
-  const DepartmentItemCardMobile({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(10),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 550;
+          if (isMobile) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: theme.colorScheme.primary.withAlpha(25),
+                      child: Text(
+                        item.shortCode,
+                        style: TextStyle(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name,
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            item.description,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              fontSize: 12,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _InfoChip(
+                      label: item.team,
+                      color: theme.colorScheme.primary.withAlpha(18),
+                      textColor: theme.colorScheme.primary,
+                    ),
+                    _InfoChip(
+                      label: 'Head: ${item.head}',
+                      color: theme.colorScheme.surface,
+                      textColor: theme.colorScheme.onSurface,
+                      borderColor: theme.dividerColor,
+                    ),
+                    _StatusChip(status: item.status),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const Divider(height: 1),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _ActionButton(
+                      label: 'Edit',
+                      color: theme.colorScheme.primary,
+                      onTap: () {},
+                    ),
+                    const SizedBox(width: 8),
+                    _ActionButton(
+                      label: 'Delete',
+                      color: AppColors.error,
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }
+
+          return Row(
             children: [
               CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.primary.withAlpha(24),
+                radius: 20,
+                backgroundColor: theme.colorScheme.primary.withAlpha(25),
                 child: Text(
                   item.shortCode,
-                  style: const TextStyle(
-                    color: AppColors.primary,
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w700,
+                    fontSize: 12,
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
               Expanded(
+                flex: 3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       item.name,
-                      style: AppTextStyles.bodyLarge.copyWith(
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: theme.colorScheme.onSurface,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     Text(
                       item.description,
                       style: AppTextStyles.bodyMedium.copyWith(
+                        fontSize: 12,
                         color: theme.colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              _InfoChip(
-                label: item.team,
-                color: theme.colorScheme.primary.withAlpha(24),
-                textColor: theme.colorScheme.primary,
-              ),
-              _InfoChip(
-                label: item.head,
-                color: theme.colorScheme.surfaceVariant,
-                textColor: theme.colorScheme.onSurface,
-              ),
-              _StatusChip(status: item.status),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
+              const SizedBox(width: 12),
               Expanded(
-                child: _ActionButton(
-                  label: 'Edit',
-                  color: theme.colorScheme.primary,
-                  onTap: () {},
+                flex: 3,
+                child: Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _InfoChip(
+                      label: item.team,
+                      color: theme.colorScheme.primary.withAlpha(18),
+                      textColor: theme.colorScheme.primary,
+                    ),
+                    _InfoChip(
+                      label: 'Head: ${item.head}',
+                      color: theme.colorScheme.surface,
+                      textColor: theme.colorScheme.onSurface,
+                      borderColor: theme.dividerColor,
+                    ),
+                    _StatusChip(status: item.status),
+                  ],
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _ActionButton(
-                  label: 'Delete',
-                  color: AppColors.error,
-                  onTap: () {},
-                ),
+              const SizedBox(width: 12),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _ActionButton(
+                    label: 'Edit',
+                    color: theme.colorScheme.primary,
+                    onTap: () {},
+                  ),
+                  const SizedBox(width: 8),
+                  _ActionButton(
+                    label: 'Delete',
+                    color: AppColors.error,
+                    onTap: () {},
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -447,19 +814,19 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isActive = status == 'Active';
+    final color = isActive ? AppColors.success : AppColors.warning;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive
-            ? AppColors.success.withAlpha(24)
-            : AppColors.warning.withAlpha(24),
-        borderRadius: BorderRadius.circular(16),
+        color: color.withAlpha(24),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         status,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: isActive ? AppColors.success : AppColors.warning,
+        style: AppTextStyles.labelMedium.copyWith(
+          color: color,
           fontWeight: FontWeight.w700,
+          fontSize: 11,
         ),
       ),
     );
@@ -470,26 +837,30 @@ class _InfoChip extends StatelessWidget {
   final String label;
   final Color color;
   final Color textColor;
+  final Color? borderColor;
 
   const _InfoChip({
     required this.label,
     required this.color,
     required this.textColor,
+    this.borderColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
+        border: borderColor != null ? Border.all(color: borderColor!) : null,
       ),
       child: Text(
         label,
-        style: AppTextStyles.bodyMedium.copyWith(
+        style: AppTextStyles.labelMedium.copyWith(
           color: textColor,
           fontWeight: FontWeight.w600,
+          fontSize: 11,
         ),
       ),
     );
@@ -511,18 +882,19 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withAlpha(31),
-          borderRadius: BorderRadius.circular(14),
+          color: color.withAlpha(24),
+          borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
           label,
-          style: AppTextStyles.bodyMedium.copyWith(
+          style: AppTextStyles.labelMedium.copyWith(
             color: color,
             fontWeight: FontWeight.w700,
+            fontSize: 11,
           ),
         ),
       ),
@@ -552,25 +924,25 @@ const departments = [
   DepartmentItem(
     shortCode: 'M',
     name: 'Marketing',
-    description: 'WholCure Marketing',
+    description: 'WholCure Marketing & Brand Management',
     team: '5 members',
-    head: '—',
+    head: 'Unassigned',
     status: 'Active',
   ),
   DepartmentItem(
     shortCode: 'RE',
     name: 'Real Estate',
-    description: 'EJG36',
-    team: '1 members',
-    head: '—',
+    description: 'Property & Facilities Management',
+    team: '1 member',
+    head: 'Unassigned',
     status: 'Active',
   ),
   DepartmentItem(
     shortCode: 'WT',
     name: 'WholCure Technology',
-    description: 'This is Company for IT and Engineering',
+    description: 'Company IT Infrastructure & Engineering',
     team: '3 members',
-    head: '—',
+    head: 'Unassigned',
     status: 'Active',
   ),
 ];
