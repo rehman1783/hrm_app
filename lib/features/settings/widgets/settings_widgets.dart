@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/theme_controller.dart';
@@ -17,13 +18,8 @@ class SettingsViewBody extends StatefulWidget {
 }
 
 class _SettingsViewBodyState extends State<SettingsViewBody> {
-  // User Profile State
-  String _name = 'Sarah Jenkins';
-  String _email = 'hr@hrm.com';
+  final String _email = 'hr@hrm.com';
   final String _role = 'HR Manager';
-  String _department = 'Human Resources';
-  String _phone = '+1 (555) 234-5678';
-  final String _joinDate = 'March 15, 2023';
 
   // Preferences
   bool _emailNotifications = true;
@@ -39,14 +35,20 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
             SnackBar(
               content: const Row(
                 children: [
-                  Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   SizedBox(width: 10),
                   Text('Password changed successfully!'),
                 ],
               ),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           );
         },
@@ -64,7 +66,11 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
             SnackBar(
               content: Row(
                 children: [
-                  const Icon(Icons.mail_outline_rounded, color: Colors.white, size: 20),
+                  const Icon(
+                    Icons.mail_outline_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -76,43 +82,9 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
               ),
               backgroundColor: AppColors.primary,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _showFullProfileDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => FullProfileDialog(
-        name: _name,
-        email: _email,
-        role: _role,
-        department: _department,
-        phone: _phone,
-        joinDate: _joinDate,
-        onSave: (newName, newEmail, newPhone, newDept) {
-          setState(() {
-            _name = newName;
-            _email = newEmail;
-            _phone = newPhone;
-            _department = newDept;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Row(
-                children: [
-                  Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
-                  SizedBox(width: 10),
-                  Text('Profile updated successfully!'),
-                ],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
@@ -123,41 +95,49 @@ class _SettingsViewBodyState extends State<SettingsViewBody> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 1. Settings Header matching reference
-            const SettingsHeaderWidget(),
-            const SizedBox(height: 18),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 860),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. Settings Header matching reference image
+                const SettingsHeaderWidget(),
+                const SizedBox(height: 18),
 
-            // 2. Account Section Card
-            AccountSettingsCardWidget(
-              email: _email,
-              role: _role,
-              onViewProfile: _showFullProfileDialog,
-            ),
-            const SizedBox(height: 18),
+                // 2. Account Section Card
+                AccountSettingsCardWidget(
+                  email: _email,
+                  role: _role,
+                  onViewProfile: () => Get.toNamed(AppRoutes.profile),
+                ),
+                const SizedBox(height: 18),
 
-            // 3. Security Section Card
-            SecuritySettingsCardWidget(
-              onChangePassword: _showChangePasswordDialog,
-              onResetPassword: _showResetPasswordDialog,
-            ),
-            const SizedBox(height: 18),
+                // 3. Security Section Card
+                SecuritySettingsCardWidget(
+                  onChangePassword: _showChangePasswordDialog,
+                  onResetPassword: _showResetPasswordDialog,
+                ),
+                const SizedBox(height: 18),
 
-            // 4. Preferences & Theme Card
-            PreferencesSettingsCardWidget(
-              emailNotifications: _emailNotifications,
-              pushNotifications: _pushNotifications,
-              twoFactorAuth: _twoFactorAuth,
-              onEmailNotifChanged: (val) => setState(() => _emailNotifications = val),
-              onPushNotifChanged: (val) => setState(() => _pushNotifications = val),
-              onTwoFactorChanged: (val) => setState(() => _twoFactorAuth = val),
+                // 4. Preferences & Theme Card
+                PreferencesSettingsCardWidget(
+                  emailNotifications: _emailNotifications,
+                  pushNotifications: _pushNotifications,
+                  twoFactorAuth: _twoFactorAuth,
+                  onEmailNotifChanged: (val) =>
+                      setState(() => _emailNotifications = val),
+                  onPushNotifChanged: (val) =>
+                      setState(() => _pushNotifications = val),
+                  onTwoFactorChanged: (val) =>
+                      setState(() => _twoFactorAuth = val),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
-            const SizedBox(height: 24),
-          ],
+          ),
         ),
       ),
     );
@@ -266,10 +246,7 @@ class AccountSettingsCardWidget extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(
-          color: theme.dividerColor.withAlpha(50),
-          width: 1,
-        ),
+        border: Border.all(color: theme.dividerColor.withAlpha(50), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,7 +334,10 @@ class AccountSettingsCardWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF3E8FF), // Soft purple
                   borderRadius: BorderRadius.circular(20),
@@ -441,10 +421,7 @@ class SecuritySettingsCardWidget extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(
-          color: theme.dividerColor.withAlpha(50),
-          width: 1,
-        ),
+        border: Border.all(color: theme.dividerColor.withAlpha(50), width: 1),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
@@ -536,7 +513,10 @@ class SecuritySettingsCardWidget extends StatelessWidget {
                         onTap: onChangePassword,
                         borderRadius: BorderRadius.circular(14),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
                             gradient: const LinearGradient(
@@ -571,11 +551,16 @@ class SecuritySettingsCardWidget extends StatelessWidget {
                         onPressed: onResetPassword,
                         style: OutlinedButton.styleFrom(
                           foregroundColor: theme.colorScheme.onSurface,
-                          side: BorderSide(color: theme.dividerColor.withAlpha(80)),
+                          side: BorderSide(
+                            color: theme.dividerColor.withAlpha(80),
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
                         ),
                         child: Text(
                           'Reset Password',
@@ -637,10 +622,7 @@ class PreferencesSettingsCardWidget extends StatelessWidget {
             offset: const Offset(0, 6),
           ),
         ],
-        border: Border.all(
-          color: theme.dividerColor.withAlpha(50),
-          width: 1,
-        ),
+        border: Border.all(color: theme.dividerColor.withAlpha(50), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -692,10 +674,16 @@ class PreferencesSettingsCardWidget extends StatelessWidget {
             () => SwitchListTile.adaptive(
               contentPadding: EdgeInsets.zero,
               value: themeController.isDarkMode,
-              title: const Text('Dark Mode', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+              title: const Text(
+                'Dark Mode',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
               subtitle: Text(
                 'Switch between light and dark visual themes',
-                style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+                style: TextStyle(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontSize: 12,
+                ),
               ),
               activeTrackColor: AppColors.primary,
               onChanged: (_) async {
@@ -709,10 +697,16 @@ class PreferencesSettingsCardWidget extends StatelessWidget {
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             value: emailNotifications,
-            title: const Text('Email Notifications', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            title: const Text(
+              'Email Notifications',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
             subtitle: Text(
               'Receive monthly payroll, leave and meeting digests',
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
             ),
             activeTrackColor: AppColors.primary,
             onChanged: onEmailNotifChanged,
@@ -723,10 +717,16 @@ class PreferencesSettingsCardWidget extends StatelessWidget {
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             value: pushNotifications,
-            title: const Text('Push Notifications', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            title: const Text(
+              'Push Notifications',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
             subtitle: Text(
               'Instant alerts for expense approvals and leave requests',
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
             ),
             activeTrackColor: AppColors.primary,
             onChanged: onPushNotifChanged,
@@ -737,10 +737,16 @@ class PreferencesSettingsCardWidget extends StatelessWidget {
           SwitchListTile.adaptive(
             contentPadding: EdgeInsets.zero,
             value: twoFactorAuth,
-            title: const Text('Two-Factor Authentication (2FA)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+            title: const Text(
+              'Two-Factor Authentication (2FA)',
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            ),
             subtitle: Text(
               'Require one-time passcode for HR sensitive actions',
-              style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
             ),
             activeTrackColor: AppColors.primary,
             onChanged: onTwoFactorChanged,
@@ -820,7 +826,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       return;
     }
     if (newPass.length < 6) {
-      setState(() => _errorMessage = 'New password must be at least 6 characters.');
+      setState(
+        () => _errorMessage = 'New password must be at least 6 characters.',
+      );
       return;
     }
     if (newPass != confirmPass) {
@@ -847,7 +855,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               color: const Color(0xFF0284C7).withAlpha(24),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.lock_reset_rounded, color: Color(0xFF0284C7), size: 20),
+            child: const Icon(
+              Icons.lock_reset_rounded,
+              color: Color(0xFF0284C7),
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -870,7 +882,10 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               children: [
                 if (_errorMessage != null) ...[
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.error.withAlpha(20),
                       borderRadius: BorderRadius.circular(10),
@@ -878,12 +893,19 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline_rounded, color: AppColors.error, size: 16),
+                        const Icon(
+                          Icons.error_outline_rounded,
+                          color: AppColors.error,
+                          size: 16,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _errorMessage!,
-                            style: const TextStyle(color: AppColors.error, fontSize: 12),
+                            style: const TextStyle(
+                              color: AppColors.error,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                       ],
@@ -940,13 +962,18 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
         ),
         FilledButton(
           onPressed: _handleSubmit,
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: const Text('Update Password'),
         ),
@@ -967,7 +994,9 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       fillColor: theme.colorScheme.surface,
       suffixIcon: IconButton(
         icon: Icon(
-          isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+          isObscured
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
           size: 18,
           color: theme.colorScheme.onSurfaceVariant,
         ),
@@ -1018,7 +1047,11 @@ class ResetPasswordDialog extends StatelessWidget {
               color: AppColors.warning.withAlpha(24),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.mail_lock_rounded, color: AppColors.warning, size: 20),
+            child: const Icon(
+              Icons.mail_lock_rounded,
+              color: AppColors.warning,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -1055,7 +1088,10 @@ class ResetPasswordDialog extends StatelessWidget {
               const SizedBox(height: 6),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -1077,7 +1113,10 @@ class ResetPasswordDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
         ),
         FilledButton(
           onPressed: () {
@@ -1086,215 +1125,13 @@ class ResetPasswordDialog extends StatelessWidget {
           },
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: const Text('Send Reset Link'),
         ),
       ],
-    );
-  }
-}
-
-// =============================================================
-// 7. FULL PROFILE MODAL DIALOG
-// =============================================================
-
-class FullProfileDialog extends StatefulWidget {
-  final String name;
-  final String email;
-  final String role;
-  final String department;
-  final String phone;
-  final String joinDate;
-  final void Function(String name, String email, String phone, String department) onSave;
-
-  const FullProfileDialog({
-    super.key,
-    required this.name,
-    required this.email,
-    required this.role,
-    required this.department,
-    required this.phone,
-    required this.joinDate,
-    required this.onSave,
-  });
-
-  @override
-  State<FullProfileDialog> createState() => _FullProfileDialogState();
-}
-
-class _FullProfileDialogState extends State<FullProfileDialog> {
-  late final TextEditingController _nameController;
-  late final TextEditingController _emailController;
-  late final TextEditingController _phoneController;
-  late final TextEditingController _departmentController;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.name);
-    _emailController = TextEditingController(text: widget.email);
-    _phoneController = TextEditingController(text: widget.phone);
-    _departmentController = TextEditingController(text: widget.department);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _departmentController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      backgroundColor: theme.cardColor,
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0xFF9333EA).withAlpha(24),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.badge_rounded, color: Color(0xFF9333EA), size: 20),
-          ),
-          const SizedBox(width: 12),
-          const Expanded(
-            child: Text(
-              'User Profile Details',
-              style: AppTextStyles.titleMedium,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: SizedBox(
-          width: 420,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Avatar and Role Badge Header
-              Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 36,
-                      backgroundColor: AppColors.primary.withAlpha(30),
-                      child: const Icon(Icons.person_rounded, size: 40, color: AppColors.primary),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF3E8FF),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        widget.role,
-                        style: const TextStyle(
-                          color: Color(0xFF9333EA),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Member since ${widget.joinDate}',
-                      style: TextStyle(
-                        color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 11,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 18),
-
-              Text('Full Name', style: AppTextStyles.labelMedium),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _nameController,
-                decoration: _profileInputDecoration(theme),
-              ),
-              const SizedBox(height: 12),
-
-              Text('Email Address', style: AppTextStyles.labelMedium),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _emailController,
-                decoration: _profileInputDecoration(theme),
-              ),
-              const SizedBox(height: 12),
-
-              Text('Department', style: AppTextStyles.labelMedium),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _departmentController,
-                decoration: _profileInputDecoration(theme),
-              ),
-              const SizedBox(height: 12),
-
-              Text('Phone Number', style: AppTextStyles.labelMedium),
-              const SizedBox(height: 6),
-              TextField(
-                controller: _phoneController,
-                decoration: _profileInputDecoration(theme),
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('Close', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
-        ),
-        FilledButton(
-          onPressed: () {
-            widget.onSave(
-              _nameController.text.trim(),
-              _emailController.text.trim(),
-              _phoneController.text.trim(),
-              _departmentController.text.trim(),
-            );
-            Navigator.of(context).pop();
-          },
-          style: FilledButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          child: const Text('Save Profile'),
-        ),
-      ],
-    );
-  }
-
-  InputDecoration _profileInputDecoration(ThemeData theme) {
-    return InputDecoration(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      filled: true,
-      fillColor: theme.colorScheme.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: theme.dividerColor),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: theme.dividerColor),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-      ),
     );
   }
 }

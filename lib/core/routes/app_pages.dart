@@ -8,6 +8,7 @@ import '../../features/finance/views/finance_view.dart';
 import '../../features/leave/views/leave_view.dart';
 import '../../features/meetings/views/meetings_view.dart';
 import '../../features/payroll/views/payroll_view.dart';
+import '../../features/profile/views/profile_view.dart';
 import '../../features/settings/views/settings_view.dart';
 import '../../features/training/views/training_view.dart';
 import 'app_routes.dart';
@@ -64,6 +65,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.settings,
       page: () => const SettingsView(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: AppRoutes.profile,
+      page: () => const ProfileView(),
       transition: Transition.fadeIn,
     ),
   ];

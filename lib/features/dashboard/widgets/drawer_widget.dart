@@ -290,7 +290,10 @@ class HRMDrawer extends StatelessWidget {
                       Icons.chevron_right_rounded,
                       color: theme.colorScheme.onSurface,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.toNamed(AppRoutes.profile);
+                    },
                   ),
                 ),
               ),
