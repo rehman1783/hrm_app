@@ -60,7 +60,6 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
 
   DateTime _currentTime = DateTime.now();
   DateTime _lastUpdatedTime = DateTime.now();
-  bool _isRefreshing = false;
 
   // Real-time metric counters
   int _totalEmployees = 5;
@@ -86,7 +85,7 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
     // 60-second timer for automated dashboard data sync
     _autoRefreshTimer = Timer.periodic(const Duration(seconds: 60), (timer) {
       if (mounted) {
-        _triggerRefresh(isAuto: true);
+        _triggerRefresh();
       }
     });
   }
@@ -98,14 +97,9 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
     super.dispose();
   }
 
-  Future<void> _triggerRefresh({bool isAuto = false}) async {
-    setState(() => _isRefreshing = true);
-
-    await Future.delayed(const Duration(milliseconds: 600));
-
+  void _triggerRefresh() {
     if (mounted) {
       setState(() {
-        _isRefreshing = false;
         _lastUpdatedTime = DateTime.now();
         // Dynamic operational sync
         _totalEmployees = 5;
@@ -113,23 +107,6 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
         _departments = 3;
         _todayAttendance = 4;
       });
-
-      if (!isAuto) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.check_circle_rounded, color: Colors.white, size: 18),
-                SizedBox(width: 8),
-                Text('Dashboard synced with latest realtime data!'),
-              ],
-            ),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-          ),
-        );
-      }
     }
   }
 
@@ -397,45 +374,15 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
                     ),
                   );
 
-                  final refreshBtn = FilledButton.icon(
-                    onPressed: _isRefreshing
-                        ? null
-                        : () => _triggerRefresh(isAuto: false),
-                    icon: _isRefreshing
-                        ? const SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Icon(Icons.refresh_rounded, size: 16),
-                    label: Text(_isRefreshing ? 'Syncing...' : 'Refresh'),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isTiny ? 12 : 16,
-                        vertical: isTiny ? 10 : 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  );
-
                   if (isCompact) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         leftWelcome,
                         const SizedBox(height: 14),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          alignment: WrapAlignment.spaceBetween,
-                          children: [clockCard, refreshBtn],
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: clockCard,
                         ),
                       ],
                     );
@@ -443,17 +390,11 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
 
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Expanded(child: leftWelcome),
-                      const SizedBox(width: 12),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          clockCard,
-                          const SizedBox(width: 10),
-                          refreshBtn,
-                        ],
-                      ),
+                      const SizedBox(width: 16),
+                      clockCard,
                     ],
                   );
                 },
