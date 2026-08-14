@@ -81,7 +81,6 @@ class FinanceViewBody extends StatefulWidget {
 class _FinanceViewBodyState extends State<FinanceViewBody> {
   FinanceTab _activeTab = FinanceTab.expenseClaims;
 
-  // Search & Filter queries
   String _claimsSearchQuery = '';
   String _claimsStatusFilter = 'All Statuses';
 
@@ -90,7 +89,6 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
   String _invoiceSearchQuery = '';
   String _invoiceStatusFilter = 'All Statuses';
 
-  // State Data
   late List<ExpenseClaimItem> _claims;
   late List<DepartmentBudgetItem> _budgets;
   late List<VendorInvoiceItem> _invoices;
@@ -219,20 +217,12 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     ];
   }
 
-  // Getters for Stats
   int get pendingApprovalsCount =>
       _claims.where((c) => c.status == ClaimStatus.pending).length;
 
   int get unpaidInvoicesCount =>
       _invoices.where((i) => i.status == InvoiceStatus.unpaid).length;
 
-  double get totalBudgetAmount =>
-      _budgets.fold(0.0, (sum, item) => sum + item.totalBudget);
-
-  double get totalSpentAmount =>
-      _budgets.fold(0.0, (sum, item) => sum + item.spentAmount);
-
-  // Actions
   void _approveClaim(ExpenseClaimItem claim) {
     setState(() {
       claim.status = ClaimStatus.approved;
@@ -312,9 +302,12 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Text(
-                    'New Expense Claim',
-                    style: AppTextStyles.titleMedium,
+                  const Expanded(
+                    child: Text(
+                      'New Expense Claim',
+                      style: AppTextStyles.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -345,10 +338,11 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isNarrow = constraints.maxWidth < 340;
+                          if (isNarrow) {
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
@@ -374,20 +368,12 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                                           )
                                           .toList(),
                                   onChanged: (val) {
-                                    if (val != null) {
+                                    if (val != null)
                                       setDialogState(() => category = val);
-                                    }
                                   },
                                   decoration: _dialogInputDecoration(theme, ''),
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                                const SizedBox(height: 12),
                                 Text(
                                   'Amount (\$)',
                                   style: AppTextStyles.labelMedium,
@@ -405,9 +391,75 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                        ],
+                            );
+                          }
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Category',
+                                      style: AppTextStyles.labelMedium,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    DropdownButtonFormField<String>(
+                                      initialValue: category,
+                                      items:
+                                          [
+                                                'Food',
+                                                'Travel',
+                                                'Software',
+                                                'Office Supplies',
+                                                'Equipment',
+                                              ]
+                                              .map(
+                                                (cat) => DropdownMenuItem(
+                                                  value: cat,
+                                                  child: Text(cat),
+                                                ),
+                                              )
+                                              .toList(),
+                                      onChanged: (val) {
+                                        if (val != null)
+                                          setDialogState(() => category = val);
+                                      },
+                                      decoration: _dialogInputDecoration(
+                                        theme,
+                                        '',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Amount (\$)',
+                                      style: AppTextStyles.labelMedium,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    TextField(
+                                      controller: amountController,
+                                      keyboardType:
+                                          const TextInputType.numberWithOptions(
+                                            decimal: true,
+                                          ),
+                                      decoration: _dialogInputDecoration(
+                                        theme,
+                                        '0.00',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 12),
                       Text(
@@ -519,9 +571,12 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
-                'Add Department Budget',
-                style: AppTextStyles.titleMedium,
+              const Expanded(
+                child: Text(
+                  'Add Department Budget',
+                  style: AppTextStyles.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -640,9 +695,12 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
-                'Add Vendor Invoice',
-                style: AppTextStyles.titleMedium,
+              const Expanded(
+                child: Text(
+                  'Add Vendor Invoice',
+                  style: AppTextStyles.titleMedium,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -928,30 +986,125 @@ class _FinanceHeader extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 600;
+        final isMobile = constraints.maxWidth < 650;
+        final isVerySmall = constraints.maxWidth < 420;
+
+        if (isVerySmall) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF10B981), Color(0xFF06B6D4)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.account_balance_wallet_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                'Finance Management',
+                                style: AppTextStyles.headlineMedium.copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.onSurfaceVariant
+                                    .withAlpha(24),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                'Admin',
+                                style: AppTextStyles.labelMedium.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Manage departmental budgets, expense claims, and vendor invoices',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontSize: 12,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: onActionPressed,
+                  icon: Icon(buttonIcon, size: 18),
+                  label: Text(buttonLabel),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: buttonBg,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Teal/Emerald Gradient Icon Container
             Container(
-              width: 52,
-              height: 52,
+              width: 50,
+              height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF10B981), // Emerald
-                    Color(0xFF06B6D4), // Cyan
-                  ],
+                  colors: [Color(0xFF10B981), Color(0xFF06B6D4)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: const Color(0xFF10B981).withAlpha(60),
-                    blurRadius: 14,
-                    offset: const Offset(0, 6),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -961,9 +1114,7 @@ class _FinanceHeader extends StatelessWidget {
                 size: 26,
               ),
             ),
-            const SizedBox(width: 14),
-
-            // Title, Admin Badge, and Subtitle
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -974,7 +1125,7 @@ class _FinanceHeader extends StatelessWidget {
                         child: Text(
                           'Finance Management',
                           style: AppTextStyles.headlineMedium.copyWith(
-                            fontSize: isMobile ? 18 : 22,
+                            fontSize: isMobile ? 17 : 22,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
@@ -1017,7 +1168,6 @@ class _FinanceHeader extends StatelessWidget {
                 ],
               ),
             ),
-
             if (!isMobile) ...[
               const SizedBox(width: 12),
               FilledButton.icon(
@@ -1069,7 +1219,7 @@ class _FinanceStatsRow extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final isMobile = width < 600;
+        final isMobile = width < 680;
 
         final card1 = _FinanceStatCard(
           title: 'TOTAL BUDGET',
@@ -1103,11 +1253,11 @@ class _FinanceStatsRow extends StatelessWidget {
           return Column(
             children: [
               card1,
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Expanded(child: card2),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Expanded(child: card3),
                 ],
               ),
@@ -1153,15 +1303,15 @@ class _FinanceStatCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withAlpha(10),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(color: theme.dividerColor.withAlpha(50), width: 1),
@@ -1170,7 +1320,6 @@ class _FinanceStatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Top Row: Title & Badge Icon
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1185,68 +1334,79 @@ class _FinanceStatCard extends StatelessWidget {
                         color: theme.colorScheme.onSurfaceVariant,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
+                        letterSpacing: 0.5,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      value,
-                      style: AppTextStyles.headlineMedium.copyWith(
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        color: theme.colorScheme.onSurface,
+                    const SizedBox(height: 6),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        value,
+                        style: AppTextStyles.headlineMedium.copyWith(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w800,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
-                width: 44,
-                height: 44,
+                width: 38,
+                height: 38,
                 decoration: BoxDecoration(
                   color: badgeColor.withAlpha(26),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(badgeIcon, color: badgeColor, size: 22),
+                child: Icon(badgeIcon, color: badgeColor, size: 20),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-
-          // Sub Info & Trend
+          const SizedBox(height: 10),
           Text(
             subInfo,
             style: AppTextStyles.bodyMedium.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           if (trendText != null) ...[
-            const SizedBox(height: 6),
-            Row(
-              children: [
-                Icon(
-                  isTrendPositive == true
-                      ? Icons.arrow_outward_rounded
-                      : Icons.arrow_downward_rounded,
-                  size: 14,
-                  color: isTrendPositive == true
-                      ? AppColors.success
-                      : AppColors.error,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  trendText!,
-                  style: AppTextStyles.labelMedium.copyWith(
+            const SizedBox(height: 4),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  Icon(
+                    isTrendPositive == true
+                        ? Icons.arrow_outward_rounded
+                        : Icons.arrow_downward_rounded,
+                    size: 13,
                     color: isTrendPositive == true
                         ? AppColors.success
                         : AppColors.error,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 3),
+                  Text(
+                    trendText!,
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: isTrendPositive == true
+                          ? AppColors.success
+                          : AppColors.error,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ],
@@ -1319,47 +1479,43 @@ class _TabItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Selected style: Vibrant orange/amber gradient matching reference
     if (isSelected) {
       return InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: const LinearGradient(
-              colors: [
-                Color(0xFFF59E0B), // Vibrant Amber
-                Color(0xFFD97706), // Darker Amber
-              ],
+              colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
                 color: const Color(0xFFF59E0B).withAlpha(60),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
             ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: Colors.white, size: 18),
-              const SizedBox(width: 8),
+              Icon(icon, color: Colors.white, size: 17),
+              const SizedBox(width: 6),
               Text(
                 label,
                 style: AppTextStyles.labelMedium.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
+                  fontSize: 13,
                 ),
               ),
               if (hasSparkle) ...[
-                const SizedBox(width: 6),
-                const Icon(Icons.auto_awesome, color: Colors.white, size: 14),
+                const SizedBox(width: 5),
+                const Icon(Icons.auto_awesome, color: Colors.white, size: 13),
               ],
             ],
           ),
@@ -1367,12 +1523,11 @@ class _TabItem extends StatelessWidget {
       );
     }
 
-    // Inactive tab
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
@@ -1381,14 +1536,14 @@ class _TabItem extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: theme.colorScheme.onSurfaceVariant, size: 18),
-            const SizedBox(width: 8),
+            Icon(icon, color: theme.colorScheme.onSurfaceVariant, size: 17),
+            const SizedBox(width: 6),
             Text(
               label,
               style: AppTextStyles.labelMedium.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w600,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
           ],
@@ -1431,12 +1586,12 @@ class _ExpenseClaimsSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withAlpha(12),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
         border: Border.all(color: theme.dividerColor.withAlpha(50)),
@@ -1444,79 +1599,93 @@ class _ExpenseClaimsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Card Header Bar
           Padding(
-            padding: const EdgeInsets.all(18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            padding: const EdgeInsets.all(16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 540;
+
+                final leftTitle = Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: const Color(0xFF0EA5E9).withAlpha(24),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
                         Icons.layers_rounded,
                         color: Color(0xFF0EA5E9),
-                        size: 20,
+                        size: 18,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Text(
                       'Expense Claims',
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
-                        fontSize: 17,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF0EA5E9).withAlpha(20),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         '${claims.length} records',
                         style: AppTextStyles.labelMedium.copyWith(
                           color: const Color(0xFF0284C7),
                           fontWeight: FontWeight.w700,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ),
                   ],
-                ),
-                Row(
+                );
+
+                final rightDate = Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.calendar_today_rounded,
-                      size: 14,
+                      size: 13,
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 5),
                     Text(
                       'Last updated: $dateString',
                       style: AppTextStyles.labelMedium.copyWith(
                         color: theme.colorScheme.onSurfaceVariant,
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
                   ],
-                ),
-              ],
+                );
+
+                if (isCompact) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [leftTitle, const SizedBox(height: 8), rightDate],
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [leftTitle, rightDate],
+                );
+              },
             ),
           ),
 
-          // Search & Filter Row
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final isCompact = constraints.maxWidth < 600;
@@ -1533,22 +1702,22 @@ class _ExpenseClaimsSection extends StatelessWidget {
                             size: 20,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
+                            horizontal: 12,
                             vertical: 10,
                           ),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: theme.dividerColor),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide(color: theme.dividerColor),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       Row(
                         children: [
                           Expanded(
@@ -1579,7 +1748,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                                 filled: true,
                                 fillColor: theme.colorScheme.surface,
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(14),
+                                  borderRadius: BorderRadius.circular(12),
                                   borderSide: BorderSide(
                                     color: theme.dividerColor,
                                   ),
@@ -1594,7 +1763,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                             style: IconButton.styleFrom(
                               backgroundColor: const Color(0xFFF59E0B),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                           ),
@@ -1634,7 +1803,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     Expanded(
                       flex: 2,
                       child: DropdownButtonFormField<String>(
@@ -1653,7 +1822,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                         },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
+                            horizontal: 12,
                             vertical: 10,
                           ),
                           filled: true,
@@ -1669,7 +1838,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 10),
                     FilledButton.icon(
                       onPressed: onAddClaim,
                       icon: const Icon(Icons.add_rounded, size: 18),
@@ -1691,151 +1860,130 @@ class _ExpenseClaimsSection extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-          // Horizontal scrollable table wrapper to support all screen widths
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 720),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width.clamp(720.0, 3000.0),
-                child: Column(
-                  children: [
-                    // Custom Green Header Row matching reference image
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 14,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(
-                          0xFF22C55E,
-                        ).withAlpha(16), // Light green tint
-                        border: Border(
-                          top: BorderSide(
-                            color: const Color(0xFF22C55E).withAlpha(30),
-                          ),
-                          bottom: BorderSide(
-                            color: const Color(0xFF22C55E).withAlpha(30),
+          // Scrollable table container
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final minTableWidth = 720.0;
+              final tableWidth = constraints.maxWidth < minTableWidth
+                  ? minTableWidth
+                  : constraints.maxWidth;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: tableWidth,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF22C55E).withAlpha(16),
+                          border: Border(
+                            top: BorderSide(
+                              color: const Color(0xFF22C55E).withAlpha(30),
+                            ),
+                            bottom: BorderSide(
+                              color: const Color(0xFF22C55E).withAlpha(30),
+                            ),
                           ),
                         ),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              flex: 3,
+                              child: _HeaderCell('EMPLOYEE'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('CATEGORY / DATE'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('AMOUNT'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('STATUS'),
+                            ),
+                            const Expanded(
+                              flex: 3,
+                              child: _HeaderCell('ACTIONS'),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              'EMPLOYEE',
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: const Color(0xFF16A34A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'CATEGORY / DATE',
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: const Color(0xFF16A34A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'AMOUNT',
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: const Color(0xFF16A34A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'STATUS',
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: const Color(0xFF16A34A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              'ACTIONS',
-                              style: AppTextStyles.labelMedium.copyWith(
-                                color: const Color(0xFF16A34A),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Table Rows List
-                    if (claims.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.all(40),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Icons.receipt_long_outlined,
-                                size: 48,
-                                color: theme.colorScheme.onSurfaceVariant
-                                    .withAlpha(100),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                'No expense claims found',
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant,
+                      if (claims.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(36),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.receipt_long_outlined,
+                                  size: 42,
+                                  color: theme.colorScheme.onSurfaceVariant
+                                      .withAlpha(100),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 10),
+                                Text(
+                                  'No expense claims found',
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        )
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: claims.length,
+                          separatorBuilder: (ctx, idx) => Divider(
+                            height: 1,
+                            color: theme.dividerColor.withAlpha(40),
+                          ),
+                          itemBuilder: (context, index) {
+                            final claim = claims[index];
+                            return _ExpenseClaimRow(
+                              claim: claim,
+                              onApprove: () => onApprove(claim),
+                              onReject: () => onReject(claim),
+                            );
+                          },
                         ),
-                      )
-                    else
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: claims.length,
-                        separatorBuilder: (ctx, idx) => Divider(
-                          height: 1,
-                          color: theme.dividerColor.withAlpha(40),
-                        ),
-                        itemBuilder: (context, index) {
-                          final claim = claims[index];
-                          return _ExpenseClaimRow(
-                            claim: claim,
-                            onApprove: () => onApprove(claim),
-                            onReject: () => onReject(claim),
-                          );
-                        },
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  final String text;
+  const _HeaderCell(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: AppTextStyles.labelMedium.copyWith(
+        color: const Color(0xFF16A34A),
+        fontWeight: FontWeight.w800,
+        fontSize: 12,
+        letterSpacing: 0.5,
       ),
     );
   }
@@ -1857,10 +2005,9 @@ class _ExpenseClaimRow extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
       child: Row(
         children: [
-          // 1. Employee
           Expanded(
             flex: 3,
             child: Column(
@@ -1871,8 +2018,10 @@ class _ExpenseClaimRow extends StatelessWidget {
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: theme.colorScheme.onSurface,
-                    fontSize: 14,
+                    fontSize: 13,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 if (claim.employeeEmail.isNotEmpty) ...[
                   const SizedBox(height: 2),
@@ -1880,15 +2029,15 @@ class _ExpenseClaimRow extends StatelessWidget {
                     claim.employeeEmail,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 12,
+                      fontSize: 11,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ],
             ),
           ),
-
-          // 2. Category / Date
           Expanded(
             flex: 2,
             child: Column(
@@ -1899,35 +2048,33 @@ class _ExpenseClaimRow extends StatelessWidget {
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: theme.colorScheme.onSurface,
-                    fontSize: 14,
+                    fontSize: 13,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   claim.date,
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                 ),
               ],
             ),
           ),
-
-          // 3. Amount
           Expanded(
             flex: 2,
             child: Text(
               '\$${_FinanceViewBodyState._formatNumber(claim.amount)}',
               style: AppTextStyles.headlineMedium.copyWith(
                 fontWeight: FontWeight.w800,
-                fontSize: 15,
+                fontSize: 14,
                 color: theme.colorScheme.onSurface,
               ),
             ),
           ),
-
-          // 4. Status Badge
           Expanded(
             flex: 2,
             child: Align(
@@ -1935,53 +2082,49 @@ class _ExpenseClaimRow extends StatelessWidget {
               child: _StatusChip(status: claim.status),
             ),
           ),
-
-          // 5. Actions (Approve / Reject Buttons)
           Expanded(
             flex: 3,
             child: claim.status == ClaimStatus.pending
                 ? Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Approve Button (Green)
                       FilledButton.icon(
                         onPressed: onApprove,
-                        icon: const Icon(Icons.check_rounded, size: 16),
+                        icon: const Icon(Icons.check_rounded, size: 15),
                         label: const Text('Approve'),
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF22C55E),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            horizontal: 10,
+                            vertical: 6,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           textStyle: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-
-                      // Reject Button (Red)
+                      const SizedBox(width: 6),
                       FilledButton.icon(
                         onPressed: onReject,
-                        icon: const Icon(Icons.cancel_outlined, size: 16),
+                        icon: const Icon(Icons.cancel_outlined, size: 15),
                         label: const Text('Reject'),
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFFEF4444),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
+                            horizontal: 10,
+                            vertical: 6,
                           ),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           textStyle: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -2034,22 +2177,22 @@ class _StatusChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: text),
+          Icon(icon, size: 12, color: text),
           const SizedBox(width: 4),
           Text(
             label,
             style: TextStyle(
               color: text,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2082,12 +2225,12 @@ class _BudgetsSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withAlpha(12),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
         border: Border.all(color: theme.dividerColor.withAlpha(50)),
@@ -2096,70 +2239,93 @@ class _BudgetsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            padding: const EdgeInsets.all(16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 540;
+
+                final leftTitle = Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(24),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
                         Icons.account_balance_wallet_rounded,
                         color: AppColors.primary,
-                        size: 20,
+                        size: 18,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Text(
                       'Departmental Budgets',
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
-                        fontSize: 17,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(20),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        '${budgets.length} departments',
+                        '${budgets.length} depts',
                         style: AppTextStyles.labelMedium.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.w700,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ),
                   ],
-                ),
-                FilledButton.icon(
+                );
+
+                final actionBtn = FilledButton.icon(
                   onPressed: onAddBudget,
                   icon: const Icon(Icons.add_rounded, size: 16),
                   label: const Text('Allocate Budget'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
                   ),
-                ),
-              ],
+                );
+
+                if (isCompact) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      leftTitle,
+                      const SizedBox(height: 10),
+                      SizedBox(width: double.infinity, child: actionBtn),
+                    ],
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [leftTitle, actionBtn],
+                );
+              },
             ),
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               onChanged: onSearchChanged,
               decoration: InputDecoration(
@@ -2172,31 +2338,30 @@ class _BudgetsSection extends StatelessWidget {
                 filled: true,
                 fillColor: theme.colorScheme.surface,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: theme.dividerColor),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: theme.dividerColor),
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-          // Department Budget Cards
           ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             itemCount: budgets.length,
-            separatorBuilder: (ctx, idx) => const SizedBox(height: 12),
+            separatorBuilder: (ctx, idx) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final b = budgets[index];
               return _DepartmentBudgetCard(item: b);
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -2231,10 +2396,10 @@ class _DepartmentBudgetCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: theme.dividerColor.withAlpha(60)),
       ),
       child: Column(
@@ -2243,76 +2408,84 @@ class _DepartmentBudgetCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Text(
-                    item.department,
-                    style: AppTextStyles.titleMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
+              Expanded(
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.department,
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    item.fiscalQuarter,
-                    style: AppTextStyles.labelMedium.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                    const SizedBox(width: 8),
+                    Text(
+                      item.fiscalQuarter,
+                      style: AppTextStyles.labelMedium.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  ],
                 ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
                   color: statusBg,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   statusText,
                   style: TextStyle(
                     color: statusFg,
-                    fontSize: 11,
+                    fontSize: 10,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-
-          // Progress Bar
+          const SizedBox(height: 10),
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: item.percentage.clamp(0.0, 1.0),
-              minHeight: 8,
+              minHeight: 7,
               backgroundColor: theme.dividerColor.withAlpha(50),
               valueColor: AlwaysStoppedAnimation<Color>(progressColor),
             ),
           ),
-          const SizedBox(height: 12),
-
-          // Budget Numbers
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Spent: \$${_FinanceViewBodyState._formatNumber(item.spentAmount)} ($percent%)',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSurface,
-                  fontSize: 13,
+              Flexible(
+                child: Text(
+                  'Spent: \$${_FinanceViewBodyState._formatNumber(item.spentAmount)} ($percent%)',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.onSurface,
+                    fontSize: 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              Text(
-                'Total: \$${_FinanceViewBodyState._formatNumber(item.totalBudget)}',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontSize: 13,
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'Total: \$${_FinanceViewBodyState._formatNumber(item.totalBudget)}',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
                 ),
               ),
             ],
@@ -2352,12 +2525,12 @@ class _InvoicesSection extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         boxShadow: [
           BoxShadow(
             color: theme.shadowColor.withAlpha(12),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
         border: Border.all(color: theme.dividerColor.withAlpha(50)),
@@ -2366,217 +2539,371 @@ class _InvoicesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+            padding: const EdgeInsets.all(16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 540;
+
+                final leftTitle = Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
                         color: AppColors.error.withAlpha(24),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
                         Icons.description_rounded,
                         color: AppColors.error,
-                        size: 20,
+                        size: 18,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Text(
                       'Vendor Invoices',
                       style: AppTextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.w700,
-                        fontSize: 17,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.error.withAlpha(20),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         '${invoices.length} invoices',
                         style: AppTextStyles.labelMedium.copyWith(
                           color: AppColors.error,
                           fontWeight: FontWeight.w700,
-                          fontSize: 12,
+                          fontSize: 11,
                         ),
                       ),
                     ),
                   ],
-                ),
-                FilledButton.icon(
+                );
+
+                final actionBtn = FilledButton.icon(
                   onPressed: onAddInvoice,
                   icon: const Icon(Icons.add_rounded, size: 16),
                   label: const Text('Add Invoice'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
                   ),
-                ),
-              ],
+                );
+
+                if (isCompact) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      leftTitle,
+                      const SizedBox(height: 10),
+                      SizedBox(width: double.infinity, child: actionBtn),
+                    ],
+                  );
+                }
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [leftTitle, actionBtn],
+                );
+              },
             ),
           ),
 
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: TextField(
-                    onChanged: onSearchChanged,
-                    decoration: InputDecoration(
-                      hintText: 'Search vendor or invoice #...',
-                      prefixIcon: const Icon(Icons.search_rounded, size: 20),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 10,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isCompact = constraints.maxWidth < 600;
+
+                if (isCompact) {
+                  return Column(
+                    children: [
+                      TextField(
+                        onChanged: onSearchChanged,
+                        decoration: InputDecoration(
+                          hintText: 'Search vendor or invoice #...',
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            size: 20,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          filled: true,
+                          fillColor: theme.colorScheme.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.dividerColor),
+                          ),
+                        ),
                       ),
-                      filled: true,
-                      fillColor: theme.colorScheme.surface,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide(color: theme.dividerColor),
+                      const SizedBox(height: 8),
+                      DropdownButtonFormField<String>(
+                        initialValue: statusFilter,
+                        items: ['All Statuses', 'Unpaid', 'Paid', 'Overdue']
+                            .map(
+                              (s) => DropdownMenuItem(value: s, child: Text(s)),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) onStatusFilterChanged(val);
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          filled: true,
+                          fillColor: theme.colorScheme.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: theme.dividerColor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: onSearchChanged,
+                        decoration: InputDecoration(
+                          hintText: 'Search vendor or invoice #...',
+                          prefixIcon: const Icon(
+                            Icons.search_rounded,
+                            size: 20,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          filled: true,
+                          fillColor: theme.colorScheme.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: theme.dividerColor),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: statusFilter,
-                    items: ['All Statuses', 'Unpaid', 'Paid', 'Overdue']
-                        .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                        .toList(),
-                    onChanged: (val) {
-                      if (val != null) onStatusFilterChanged(val);
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 10,
-                      ),
-                      filled: true,
-                      fillColor: theme.colorScheme.surface,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide(color: theme.dividerColor),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 2,
+                      child: DropdownButtonFormField<String>(
+                        initialValue: statusFilter,
+                        items: ['All Statuses', 'Unpaid', 'Paid', 'Overdue']
+                            .map(
+                              (s) => DropdownMenuItem(value: s, child: Text(s)),
+                            )
+                            .toList(),
+                        onChanged: (val) {
+                          if (val != null) onStatusFilterChanged(val);
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          filled: true,
+                          fillColor: theme.colorScheme.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(color: theme.dividerColor),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
+                  ],
+                );
+              },
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-          // Invoices Table wrapped with horizontal scroll
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 700),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width.clamp(700.0, 3000.0),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: invoices.length,
-                  separatorBuilder: (ctx, idx) => Divider(
-                    height: 1,
-                    color: theme.dividerColor.withAlpha(40),
-                  ),
-                  itemBuilder: (context, index) {
-                    final inv = invoices[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+          // Scrollable invoices table
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final minTableWidth = 700.0;
+              final tableWidth = constraints.maxWidth < minTableWidth
+                  ? minTableWidth
+                  : constraints.maxWidth;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: tableWidth,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withAlpha(14),
+                          border: Border(
+                            top: BorderSide(
+                              color: AppColors.error.withAlpha(24),
+                            ),
+                            bottom: BorderSide(
+                              color: AppColors.error.withAlpha(24),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            const Expanded(
+                              flex: 3,
+                              child: _HeaderCell('VENDOR'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('DUE DATE'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('AMOUNT'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('STATUS'),
+                            ),
+                            const Expanded(
+                              flex: 2,
+                              child: _HeaderCell('ACTIONS'),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: invoices.length,
+                        separatorBuilder: (ctx, idx) => Divider(
+                          height: 1,
+                          color: theme.dividerColor.withAlpha(40),
+                        ),
+                        itemBuilder: (context, index) {
+                          final inv = invoices[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 14,
+                            ),
+                            child: Row(
                               children: [
-                                Text(
-                                  inv.vendorName,
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    fontWeight: FontWeight.w700,
+                                Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        inv.vendorName,
+                                        style: AppTextStyles.bodyMedium
+                                            .copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 13,
+                                            ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        inv.invoiceNumber,
+                                        style: AppTextStyles.labelMedium
+                                            .copyWith(
+                                              color: theme
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                              fontSize: 11,
+                                            ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  inv.invoiceNumber,
-                                  style: AppTextStyles.labelMedium.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    'Due: ${inv.dueDate}',
+                                    style: AppTextStyles.bodyMedium.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                      fontSize: 12,
+                                    ),
                                   ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    '\$${_FinanceViewBodyState._formatNumber(inv.amount)}',
+                                    style: AppTextStyles.headlineMedium
+                                        .copyWith(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: _InvoiceStatusChip(
+                                      status: inv.status,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: inv.status == InvoiceStatus.unpaid
+                                      ? TextButton.icon(
+                                          onPressed: () => onMarkPaid(inv),
+                                          icon: const Icon(
+                                            Icons.check_rounded,
+                                            size: 15,
+                                          ),
+                                          label: const Text('Mark Paid'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: AppColors.success,
+                                            textStyle: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                            padding: EdgeInsets.zero,
+                                            alignment: Alignment.centerLeft,
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
                                 ),
                               ],
                             ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'Due: ${inv.dueDate}',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              '\$${_FinanceViewBodyState._formatNumber(inv.amount)}',
-                              style: AppTextStyles.headlineMedium.copyWith(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: _InvoiceStatusChip(status: inv.status),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: inv.status == InvoiceStatus.unpaid
-                                ? TextButton.icon(
-                                    onPressed: () => onMarkPaid(inv),
-                                    icon: const Icon(
-                                      Icons.check_rounded,
-                                      size: 16,
-                                    ),
-                                    label: const Text('Mark Paid'),
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: AppColors.success,
-                                      textStyle: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),
@@ -2614,7 +2941,7 @@ class _InvoiceStatusChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(16),
@@ -2623,7 +2950,7 @@ class _InvoiceStatusChip extends StatelessWidget {
         label,
         style: TextStyle(
           color: text,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w700,
         ),
       ),
