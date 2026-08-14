@@ -169,7 +169,7 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1. Live Real-Time Welcome Card with Top Rainbow Accent & Digital Clock
+                    // 1. Live Real-Time Welcome Card with Top Rainbow Accent & Full-Width Expanded Clock Section
                     _buildLiveWelcomeCard(theme),
                     const SizedBox(height: 10),
 
@@ -205,7 +205,7 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
     );
   }
 
-  // --- LIVE WELCOME CARD (FULLY RESPONSIVE) ---
+  // --- LIVE WELCOME CARD (WITH EXPANDED REAL-TIME CLOCK SECTION) ---
   Widget _buildLiveWelcomeCard(ThemeData theme) {
     return Container(
       width: double.infinity,
@@ -315,11 +315,12 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
                     ],
                   );
 
-                  // Real-time Digital Clock Card (fitted & scaled for zero overflow)
+                  // Real-time Digital Clock Card expanded across the row
                   final clockCard = Container(
+                    width: isCompact ? double.infinity : null,
                     padding: EdgeInsets.symmetric(
-                      horizontal: isTiny ? 10 : 14,
-                      vertical: isTiny ? 8 : 10,
+                      horizontal: isTiny ? 12 : 16,
+                      vertical: isTiny ? 10 : 12,
                     ),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
@@ -329,47 +330,92 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
                       ),
                     ),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: isCompact
+                          ? MainAxisAlignment.spaceBetween
+                          : MainAxisAlignment.start,
+                      mainAxisSize: isCompact
+                          ? MainAxisSize.max
+                          : MainAxisSize.min,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(isTiny ? 6 : 8),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF0EA5E9).withAlpha(20),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.access_time_rounded,
-                            color: const Color(0xFF0284C7),
-                            size: isTiny ? 18 : 22,
-                          ),
-                        ),
-                        SizedBox(width: isTiny ? 8 : 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              _formatTimeWithSeconds(_currentTime),
-                              style: TextStyle(
-                                color: theme.colorScheme.onSurface,
-                                fontSize: isTiny ? 15 : (isCompact ? 18 : 21),
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 0.5,
-                                fontFamily: 'monospace',
+                            Container(
+                              padding: EdgeInsets.all(isTiny ? 6 : 8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF0EA5E9).withAlpha(20),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.access_time_rounded,
+                                color: const Color(0xFF0284C7),
+                                size: isTiny ? 18 : 22,
                               ),
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'REAL-TIME',
-                              style: TextStyle(
-                                color: theme.colorScheme.onSurfaceVariant,
-                                fontSize: isTiny ? 8.5 : 9.5,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.8,
-                              ),
+                            SizedBox(width: isTiny ? 8 : 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _formatTimeWithSeconds(_currentTime),
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onSurface,
+                                    fontSize: isTiny
+                                        ? 16
+                                        : (isCompact ? 19 : 21),
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
+                                    fontFamily: 'monospace',
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'REAL-TIME',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onSurfaceVariant,
+                                    fontSize: isTiny ? 8.5 : 9.5,
+                                    fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.8,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                        if (isCompact)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF22C55E).withAlpha(20),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color(0xFF22C55E),
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Text(
+                                  'LIVE',
+                                  style: TextStyle(
+                                    color: Color(0xFF16A34A),
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   );
@@ -380,10 +426,7 @@ class _DashboardViewBodyState extends State<DashboardViewBody> {
                       children: [
                         leftWelcome,
                         const SizedBox(height: 14),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: clockCard,
-                        ),
+                        clockCard,
                       ],
                     );
                   }
