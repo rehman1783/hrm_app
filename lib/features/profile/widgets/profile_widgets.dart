@@ -1408,3 +1408,233 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     );
   }
 }
+
+// =============================================================
+// 7. DEDICATED ADD SKILL MODAL DIALOG
+// =============================================================
+
+class AddSkillDialog extends StatefulWidget {
+  final List<String> initialSkills;
+  final ValueChanged<List<String>> onSave;
+
+  const AddSkillDialog({
+    super.key,
+    required this.initialSkills,
+    required this.onSave,
+  });
+
+  @override
+  State<AddSkillDialog> createState() => _AddSkillDialogState();
+}
+
+class _AddSkillDialogState extends State<AddSkillDialog> {
+  late final TextEditingController _skillCtrl;
+  late final List<String> _skills;
+
+  final List<String> _suggestedSkills = const [
+    'Human Resources',
+    'Recruitment',
+    'Payroll Management',
+    'Employee Relations',
+    'Talent Acquisition',
+    'Conflict Resolution',
+    'Performance Review',
+    'Leadership',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _skillCtrl = TextEditingController();
+    _skills = List.from(widget.initialSkills);
+  }
+
+  @override
+  void dispose() {
+    _skillCtrl.dispose();
+    super.dispose();
+  }
+
+  void _addSkill([String? custom]) {
+    final skill = (custom ?? _skillCtrl.text).trim();
+    if (skill.isNotEmpty && !_skills.contains(skill)) {
+      setState(() {
+        _skills.add(skill);
+        if (custom == null) {
+          _skillCtrl.clear();
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: theme.cardColor,
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF00C853).withAlpha(24),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.military_tech_outlined,
+              color: Color(0xFF00C853),
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Add Skills & Expertise',
+              style: AppTextStyles.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 440,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Enter a new skill or choose from suggestions below:',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Input field + Add button
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _skillCtrl,
+                      decoration: InputDecoration(
+                        hintText: 'e.g. Employee Relations',
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                        filled: true,
+                        fillColor: theme.colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: theme.dividerColor),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: theme.dividerColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Color(0xFF00C853), width: 1.5),
+                        ),
+                      ),
+                      onSubmitted: (_) => _addSkill(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: () => _addSkill(),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFF00C853),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text('Add'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 18),
+
+              // Current Skills list
+              Text(
+                'Current Skills (${_skills.length})',
+                style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 8),
+              if (_skills.isEmpty)
+                Text(
+                  'No skills added yet.',
+                  style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+                )
+              else
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: _skills
+                      .map(
+                        (skill) => Chip(
+                          label: Text(
+                            skill,
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                          ),
+                          deleteIcon: const Icon(Icons.close_rounded, size: 14),
+                          onDeleted: () => setState(() => _skills.remove(skill)),
+                          backgroundColor: const Color(0xFF00C853).withAlpha(20),
+                          side: BorderSide(color: const Color(0xFF00C853).withAlpha(40)),
+                        ),
+                      )
+                      .toList(),
+                ),
+
+              const SizedBox(height: 18),
+              // Suggested skills
+              Text(
+                'Suggestions',
+                style: AppTextStyles.labelMedium.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: _suggestedSkills
+                    .where((s) => !_skills.contains(s))
+                    .map(
+                      (suggestion) => ActionChip(
+                        avatar: const Icon(Icons.add, size: 14, color: Color(0xFF00C853)),
+                        label: Text(suggestion, style: const TextStyle(fontSize: 12)),
+                        onPressed: () => _addSkill(suggestion),
+                        backgroundColor: theme.colorScheme.surface,
+                        side: BorderSide(color: theme.dividerColor.withAlpha(80)),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+        ),
+        FilledButton(
+          onPressed: () {
+            widget.onSave(_skills);
+            Navigator.of(context).pop();
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF00C853),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+          child: const Text('Save Skills'),
+        ),
+      ],
+    );
+  }
+}
+
