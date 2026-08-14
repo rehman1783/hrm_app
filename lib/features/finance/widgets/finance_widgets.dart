@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
+// =============================================================
+// ENUMS & DATA MODELS
+// =============================================================
+
 enum FinanceTab { budgets, expenseClaims, invoices }
 
 enum ClaimStatus { pending, approved, rejected }
@@ -70,6 +74,10 @@ class VendorInvoiceItem {
     required this.status,
   });
 }
+
+// =============================================================
+// MAIN BODY WIDGET
+// =============================================================
 
 class FinanceViewBody extends StatefulWidget {
   const FinanceViewBody({super.key});
@@ -230,7 +238,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Expense claim of \$${_formatNumber(claim.amount)} approved successfully!',
+          'Expense claim of \$${formatCurrency(claim.amount)} approved successfully!',
         ),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
@@ -246,7 +254,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Expense claim of \$${_formatNumber(claim.amount)} rejected.',
+          'Expense claim of \$${formatCurrency(claim.amount)} rejected.',
         ),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
@@ -270,543 +278,65 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
   }
 
   void _showAddClaimDialog() {
-    final nameController = TextEditingController();
-    final emailController = TextEditingController();
-    final amountController = TextEditingController();
-    final noteController = TextEditingController();
-    String category = 'Food';
-
     showDialog(
       context: context,
-      builder: (dialogCtx) {
-        final theme = Theme.of(dialogCtx);
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return AlertDialog(
+      builder: (dialogCtx) => AddExpenseClaimDialog(
+        onSubmit: (newItem) {
+          setState(() => _claims.insert(0, newItem));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Expense claim submitted for approval!'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(12),
               ),
-              backgroundColor: theme.cardColor,
-              title: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withAlpha(30),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.receipt_long_rounded,
-                      color: Color(0xFFF59E0B),
-                      size: 20,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Text(
-                      'New Expense Claim',
-                      style: AppTextStyles.titleMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              content: SingleChildScrollView(
-                child: SizedBox(
-                  width: 440,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Employee Name', style: AppTextStyles.labelMedium),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: nameController,
-                        decoration: _dialogInputDecoration(
-                          theme,
-                          'e.g. Hassan Khan',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text('Email Address', style: AppTextStyles.labelMedium),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: emailController,
-                        decoration: _dialogInputDecoration(
-                          theme,
-                          'e.g. hassan@hrm.com',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          final isNarrow = constraints.maxWidth < 340;
-                          if (isNarrow) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Category',
-                                  style: AppTextStyles.labelMedium,
-                                ),
-                                const SizedBox(height: 6),
-                                DropdownButtonFormField<String>(
-                                  initialValue: category,
-                                  items:
-                                      [
-                                            'Food',
-                                            'Travel',
-                                            'Software',
-                                            'Office Supplies',
-                                            'Equipment',
-                                          ]
-                                          .map(
-                                            (cat) => DropdownMenuItem(
-                                              value: cat,
-                                              child: Text(cat),
-                                            ),
-                                          )
-                                          .toList(),
-                                  onChanged: (val) {
-                                    if (val != null)
-                                      setDialogState(() => category = val);
-                                  },
-                                  decoration: _dialogInputDecoration(theme, ''),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  'Amount (\$)',
-                                  style: AppTextStyles.labelMedium,
-                                ),
-                                const SizedBox(height: 6),
-                                TextField(
-                                  controller: amountController,
-                                  keyboardType:
-                                      const TextInputType.numberWithOptions(
-                                        decimal: true,
-                                      ),
-                                  decoration: _dialogInputDecoration(
-                                    theme,
-                                    '0.00',
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Category',
-                                      style: AppTextStyles.labelMedium,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    DropdownButtonFormField<String>(
-                                      initialValue: category,
-                                      items:
-                                          [
-                                                'Food',
-                                                'Travel',
-                                                'Software',
-                                                'Office Supplies',
-                                                'Equipment',
-                                              ]
-                                              .map(
-                                                (cat) => DropdownMenuItem(
-                                                  value: cat,
-                                                  child: Text(cat),
-                                                ),
-                                              )
-                                              .toList(),
-                                      onChanged: (val) {
-                                        if (val != null)
-                                          setDialogState(() => category = val);
-                                      },
-                                      decoration: _dialogInputDecoration(
-                                        theme,
-                                        '',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Amount (\$)',
-                                      style: AppTextStyles.labelMedium,
-                                    ),
-                                    const SizedBox(height: 6),
-                                    TextField(
-                                      controller: amountController,
-                                      keyboardType:
-                                          const TextInputType.numberWithOptions(
-                                            decimal: true,
-                                          ),
-                                      decoration: _dialogInputDecoration(
-                                        theme,
-                                        '0.00',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Description / Note',
-                        style: AppTextStyles.labelMedium,
-                      ),
-                      const SizedBox(height: 6),
-                      TextField(
-                        controller: noteController,
-                        maxLines: 2,
-                        decoration: _dialogInputDecoration(
-                          theme,
-                          'Brief details regarding this expense...',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogCtx).pop(),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-                  ),
-                ),
-                FilledButton(
-                  onPressed: () {
-                    final amount =
-                        double.tryParse(amountController.text.trim()) ?? 0.0;
-                    final name = nameController.text.trim().isEmpty
-                        ? 'N/A'
-                        : nameController.text.trim();
-                    if (amount > 0) {
-                      setState(() {
-                        _claims.insert(
-                          0,
-                          ExpenseClaimItem(
-                            id: DateTime.now().millisecondsSinceEpoch
-                                .toString(),
-                            employeeName: name,
-                            employeeEmail: emailController.text.trim(),
-                            category: category,
-                            date: 'Today',
-                            amount: amount,
-                            status: ClaimStatus.pending,
-                            note: noteController.text.trim(),
-                          ),
-                        );
-                      });
-                      Navigator.of(dialogCtx).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            'Expense claim submitted for approval!',
-                          ),
-                          backgroundColor: AppColors.success,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xFFF59E0B),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text('Submit Claim'),
-                ),
-              ],
-            );
-          },
-        );
-      },
+            ),
+          );
+        },
+      ),
     );
   }
 
   void _showAddBudgetDialog() {
-    final deptController = TextEditingController();
-    final amountController = TextEditingController();
-    final spentController = TextEditingController();
-
     showDialog(
       context: context,
-      builder: (dialogCtx) {
-        final theme = Theme.of(dialogCtx);
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          backgroundColor: theme.cardColor,
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withAlpha(30),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text(
-                  'Add Department Budget',
-                  style: AppTextStyles.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: 400,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Department Name', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: deptController,
-                    decoration: _dialogInputDecoration(
-                      theme,
-                      'e.g. Operations',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text('Total Budget (\$)', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: amountController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    decoration: _dialogInputDecoration(theme, 'e.g. 40000'),
-                  ),
-                  const SizedBox(height: 12),
-                  Text('Initial Spent (\$)', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: spentController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    decoration: _dialogInputDecoration(theme, '0.00'),
-                  ),
-                ],
+      builder: (dialogCtx) => AddDepartmentBudgetDialog(
+        onSubmit: (newItem) {
+          setState(() => _budgets.add(newItem));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Budget allocated for ${newItem.department}!'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-              ),
-            ),
-            FilledButton(
-              onPressed: () {
-                final dept = deptController.text.trim();
-                final total =
-                    double.tryParse(amountController.text.trim()) ?? 0.0;
-                final spent =
-                    double.tryParse(spentController.text.trim()) ?? 0.0;
-                if (dept.isNotEmpty && total > 0) {
-                  setState(() {
-                    _budgets.add(
-                      DepartmentBudgetItem(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        department: dept,
-                        totalBudget: total,
-                        spentAmount: spent,
-                        fiscalQuarter: 'Q3 2026',
-                      ),
-                    );
-                  });
-                  Navigator.of(dialogCtx).pop();
-                }
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Add Budget'),
-            ),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
   void _showAddInvoiceDialog() {
-    final vendorController = TextEditingController();
-    final invNumberController = TextEditingController(
-      text: 'INV-2026-0${_invoices.length + 80}',
-    );
-    final amountController = TextEditingController();
-
     showDialog(
       context: context,
-      builder: (dialogCtx) {
-        final theme = Theme.of(dialogCtx);
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          backgroundColor: theme.cardColor,
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.error.withAlpha(30),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.description_rounded,
-                  color: AppColors.error,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Text(
-                  'Add Vendor Invoice',
-                  style: AppTextStyles.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              width: 400,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Invoice Number', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: invNumberController,
-                    decoration: _dialogInputDecoration(
-                      theme,
-                      'e.g. INV-2026-085',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text('Vendor Name', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: vendorController,
-                    decoration: _dialogInputDecoration(
-                      theme,
-                      'e.g. Microsoft 365',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text('Amount (\$)', style: AppTextStyles.labelMedium),
-                  const SizedBox(height: 6),
-                  TextField(
-                    controller: amountController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    decoration: _dialogInputDecoration(theme, '0.00'),
-                  ),
-                ],
+      builder: (dialogCtx) => AddVendorInvoiceDialog(
+        defaultInvoiceNumber: 'INV-2026-0${_invoices.length + 80}',
+        onSubmit: (newItem) {
+          setState(() => _invoices.insert(0, newItem));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Invoice ${newItem.invoiceNumber} created!'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogCtx).pop(),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-              ),
-            ),
-            FilledButton(
-              onPressed: () {
-                final vendor = vendorController.text.trim();
-                final invNum = invNumberController.text.trim();
-                final amount =
-                    double.tryParse(amountController.text.trim()) ?? 0.0;
-                if (vendor.isNotEmpty && amount > 0) {
-                  setState(() {
-                    _invoices.insert(
-                      0,
-                      VendorInvoiceItem(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        invoiceNumber: invNum.isEmpty ? 'INV-NEW' : invNum,
-                        vendorName: vendor,
-                        issueDate: 'Today',
-                        dueDate: 'Net 30 Days',
-                        amount: amount,
-                        status: InvoiceStatus.unpaid,
-                      ),
-                    );
-                  });
-                  Navigator.of(dialogCtx).pop();
-                }
-              },
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Save Invoice'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  InputDecoration _dialogInputDecoration(ThemeData theme, String hint) {
-    return InputDecoration(
-      hintText: hint,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      filled: true,
-      fillColor: theme.colorScheme.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: theme.dividerColor),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: theme.dividerColor),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          );
+        },
       ),
     );
   }
@@ -819,7 +349,9 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _FinanceHeader(
+            // 1. Header Section Custom Widget
+            FinanceHeaderWidget(
+              activeTab: _activeTab,
               onActionPressed: () {
                 if (_activeTab == FinanceTab.budgets) {
                   _showAddBudgetDialog();
@@ -829,10 +361,11 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                   _showAddClaimDialog();
                 }
               },
-              activeTab: _activeTab,
             ),
             const SizedBox(height: 16),
-            _FinanceStatsRow(
+
+            // 2. Stats Row Custom Widget
+            FinanceStatsRowWidget(
               totalBudget: '\$165',
               utilizedBudget: '\$33',
               pendingApprovals: '$pendingApprovalsCount',
@@ -841,13 +374,17 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
               totalInvoices: '${_invoices.length}',
             ),
             const SizedBox(height: 16),
-            _FinanceNavigationTabs(
+
+            // 3. Navigation Tabs Custom Widget
+            FinanceNavigationTabsWidget(
               activeTab: _activeTab,
               onTabChanged: (tab) => setState(() => _activeTab = tab),
             ),
             const SizedBox(height: 16),
+
+            // 4. Tab Content Custom Widgets
             if (_activeTab == FinanceTab.expenseClaims)
-              _ExpenseClaimsSection(
+              ExpenseClaimsSectionWidget(
                 claims: _filteredClaims,
                 searchQuery: _claimsSearchQuery,
                 statusFilter: _claimsStatusFilter,
@@ -859,14 +396,14 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                 onAddClaim: _showAddClaimDialog,
               )
             else if (_activeTab == FinanceTab.budgets)
-              _BudgetsSection(
+              DepartmentBudgetsSectionWidget(
                 budgets: _filteredBudgets,
                 searchQuery: _budgetSearchQuery,
                 onSearchChanged: (q) => setState(() => _budgetSearchQuery = q),
                 onAddBudget: _showAddBudgetDialog,
               )
             else
-              _InvoicesSection(
+              VendorInvoicesSectionWidget(
                 invoices: _filteredInvoices,
                 searchQuery: _invoiceSearchQuery,
                 statusFilter: _invoiceStatusFilter,
@@ -938,7 +475,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     }).toList();
   }
 
-  static String _formatNumber(double num) {
+  static String formatCurrency(double num) {
     if (num >= 1000) {
       final parts = num.toStringAsFixed(0).split('');
       String res = '';
@@ -956,14 +493,16 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
   }
 }
 
-// -------------------------------------------------------------
-// 1. Finance Header
-// -------------------------------------------------------------
-class _FinanceHeader extends StatelessWidget {
+// =============================================================
+// 1. HEADER CUSTOM WIDGET
+// =============================================================
+
+class FinanceHeaderWidget extends StatelessWidget {
   final VoidCallback onActionPressed;
   final FinanceTab activeTab;
 
-  const _FinanceHeader({
+  const FinanceHeaderWidget({
+    super.key,
     required this.onActionPressed,
     required this.activeTab,
   });
@@ -974,7 +513,7 @@ class _FinanceHeader extends StatelessWidget {
 
     String buttonLabel = 'Create Claim';
     IconData buttonIcon = Icons.add_rounded;
-    Color buttonBg = const Color(0xFFF59E0B);
+    Color buttonBg = AppColors.warning;
 
     if (activeTab == FinanceTab.budgets) {
       buttonLabel = 'Add Budget';
@@ -1001,7 +540,7 @@ class _FinanceHeader extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(14),
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF10B981), Color(0xFF06B6D4)],
+                        colors: [AppColors.accent, Color(0xFF06B6D4)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -1096,13 +635,13 @@ class _FinanceHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF10B981), Color(0xFF06B6D4)],
+                  colors: [AppColors.accent, Color(0xFF06B6D4)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF10B981).withAlpha(60),
+                    color: AppColors.accent.withAlpha(60),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -1194,10 +733,11 @@ class _FinanceHeader extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------------
-// 2. Finance Stat Cards (Top Metric Cards)
-// -------------------------------------------------------------
-class _FinanceStatsRow extends StatelessWidget {
+// =============================================================
+// 2. STATS ROW CUSTOM WIDGETS
+// =============================================================
+
+class FinanceStatsRowWidget extends StatelessWidget {
   final String totalBudget;
   final String utilizedBudget;
   final String pendingApprovals;
@@ -1205,7 +745,8 @@ class _FinanceStatsRow extends StatelessWidget {
   final String unpaidInvoices;
   final String totalInvoices;
 
-  const _FinanceStatsRow({
+  const FinanceStatsRowWidget({
+    super.key,
     required this.totalBudget,
     required this.utilizedBudget,
     required this.pendingApprovals,
@@ -1221,31 +762,31 @@ class _FinanceStatsRow extends StatelessWidget {
         final width = constraints.maxWidth;
         final isMobile = width < 680;
 
-        final card1 = _FinanceStatCard(
+        final card1 = FinanceStatCardWidget(
           title: 'TOTAL BUDGET',
           value: totalBudget,
           subInfo: 'Utilized: $utilizedBudget',
           trendText: '8.5 vs last month',
           isTrendPositive: true,
-          badgeColor: const Color(0xFF22C55E),
+          badgeColor: AppColors.success,
           badgeIcon: Icons.attach_money_rounded,
         );
 
-        final card2 = _FinanceStatCard(
+        final card2 = FinanceStatCardWidget(
           title: 'PENDING APPROVALS',
           value: pendingApprovals,
           subInfo: 'Total Claims: $totalClaims',
-          badgeColor: const Color(0xFFF59E0B),
+          badgeColor: AppColors.warning,
           badgeIcon: Icons.request_quote_rounded,
         );
 
-        final card3 = _FinanceStatCard(
+        final card3 = FinanceStatCardWidget(
           title: 'UNPAID INVOICES',
           value: unpaidInvoices,
           subInfo: 'Total Invoices: $totalInvoices',
           trendText: '3.2 vs last month',
           isTrendPositive: false,
-          badgeColor: const Color(0xFFEF4444),
+          badgeColor: AppColors.error,
           badgeIcon: Icons.description_rounded,
         );
 
@@ -1279,7 +820,7 @@ class _FinanceStatsRow extends StatelessWidget {
   }
 }
 
-class _FinanceStatCard extends StatelessWidget {
+class FinanceStatCardWidget extends StatelessWidget {
   final String title;
   final String value;
   final String subInfo;
@@ -1288,7 +829,8 @@ class _FinanceStatCard extends StatelessWidget {
   final Color badgeColor;
   final IconData badgeIcon;
 
-  const _FinanceStatCard({
+  const FinanceStatCardWidget({
+    super.key,
     required this.title,
     required this.value,
     required this.subInfo,
@@ -1415,14 +957,16 @@ class _FinanceStatCard extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------------
-// 3. Finance Navigation Tabs (Pill Buttons)
-// -------------------------------------------------------------
-class _FinanceNavigationTabs extends StatelessWidget {
+// =============================================================
+// 3. NAVIGATION TABS CUSTOM WIDGETS
+// =============================================================
+
+class FinanceNavigationTabsWidget extends StatelessWidget {
   final FinanceTab activeTab;
   final ValueChanged<FinanceTab> onTabChanged;
 
-  const _FinanceNavigationTabs({
+  const FinanceNavigationTabsWidget({
+    super.key,
     required this.activeTab,
     required this.onTabChanged,
   });
@@ -1433,14 +977,14 @@ class _FinanceNavigationTabs extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _TabItem(
+          FinanceTabItemWidget(
             label: 'Budgets',
             icon: Icons.folder_open_rounded,
             isSelected: activeTab == FinanceTab.budgets,
             onTap: () => onTabChanged(FinanceTab.budgets),
           ),
           const SizedBox(width: 10),
-          _TabItem(
+          FinanceTabItemWidget(
             label: 'Expense Claims',
             icon: Icons.receipt_long_rounded,
             hasSparkle: true,
@@ -1448,7 +992,7 @@ class _FinanceNavigationTabs extends StatelessWidget {
             onTap: () => onTabChanged(FinanceTab.expenseClaims),
           ),
           const SizedBox(width: 10),
-          _TabItem(
+          FinanceTabItemWidget(
             label: 'Invoices',
             icon: Icons.description_outlined,
             isSelected: activeTab == FinanceTab.invoices,
@@ -1460,14 +1004,15 @@ class _FinanceNavigationTabs extends StatelessWidget {
   }
 }
 
-class _TabItem extends StatelessWidget {
+class FinanceTabItemWidget extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool hasSparkle;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _TabItem({
+  const FinanceTabItemWidget({
+    super.key,
     required this.label,
     required this.icon,
     this.hasSparkle = false,
@@ -1488,13 +1033,13 @@ class _TabItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: const LinearGradient(
-              colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+              colors: [AppColors.warning, Color(0xFFD97706)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFF59E0B).withAlpha(60),
+                color: AppColors.warning.withAlpha(60),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -1553,10 +1098,11 @@ class _TabItem extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------------
-// 4. Tab 1: Expense Claims Section
-// -------------------------------------------------------------
-class _ExpenseClaimsSection extends StatelessWidget {
+// =============================================================
+// 4. TAB 1: EXPENSE CLAIMS CUSTOM WIDGETS
+// =============================================================
+
+class ExpenseClaimsSectionWidget extends StatelessWidget {
   final List<ExpenseClaimItem> claims;
   final String searchQuery;
   final String statusFilter;
@@ -1566,7 +1112,8 @@ class _ExpenseClaimsSection extends StatelessWidget {
   final ValueChanged<ExpenseClaimItem> onReject;
   final VoidCallback onAddClaim;
 
-  const _ExpenseClaimsSection({
+  const ExpenseClaimsSectionWidget({
+    super.key,
     required this.claims,
     required this.searchQuery,
     required this.statusFilter,
@@ -1611,12 +1158,12 @@ class _ExpenseClaimsSection extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(7),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0EA5E9).withAlpha(24),
+                        color: AppColors.primary.withAlpha(24),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
                         Icons.layers_rounded,
-                        color: Color(0xFF0EA5E9),
+                        color: AppColors.primary,
                         size: 18,
                       ),
                     ),
@@ -1635,13 +1182,13 @@ class _ExpenseClaimsSection extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0EA5E9).withAlpha(20),
+                        color: AppColors.primary.withAlpha(20),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
                         '${claims.length} records',
                         style: AppTextStyles.labelMedium.copyWith(
-                          color: const Color(0xFF0284C7),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.w700,
                           fontSize: 11,
                         ),
@@ -1761,7 +1308,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                             onPressed: onAddClaim,
                             icon: const Icon(Icons.add_rounded),
                             style: IconButton.styleFrom(
-                              backgroundColor: const Color(0xFFF59E0B),
+                              backgroundColor: AppColors.warning,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -1844,7 +1391,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                       icon: const Icon(Icons.add_rounded, size: 18),
                       label: const Text('Add Claim'),
                       style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFF59E0B),
+                        backgroundColor: AppColors.warning,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -1883,37 +1430,37 @@ class _ExpenseClaimsSection extends StatelessWidget {
                           vertical: 12,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF22C55E).withAlpha(16),
+                          color: AppColors.success.withAlpha(16),
                           border: Border(
                             top: BorderSide(
-                              color: const Color(0xFF22C55E).withAlpha(30),
+                              color: AppColors.success.withAlpha(30),
                             ),
                             bottom: BorderSide(
-                              color: const Color(0xFF22C55E).withAlpha(30),
+                              color: AppColors.success.withAlpha(30),
                             ),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const Expanded(
+                            Expanded(
                               flex: 3,
-                              child: _HeaderCell('EMPLOYEE'),
+                              child: _FinanceTableHeaderCell('EMPLOYEE'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('CATEGORY / DATE'),
+                              child: _FinanceTableHeaderCell('CATEGORY / DATE'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('AMOUNT'),
+                              child: _FinanceTableHeaderCell('AMOUNT'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('STATUS'),
+                              child: _FinanceTableHeaderCell('STATUS'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 3,
-                              child: _HeaderCell('ACTIONS'),
+                              child: _FinanceTableHeaderCell('ACTIONS'),
                             ),
                           ],
                         ),
@@ -1952,7 +1499,7 @@ class _ExpenseClaimsSection extends StatelessWidget {
                           ),
                           itemBuilder: (context, index) {
                             final claim = claims[index];
-                            return _ExpenseClaimRow(
+                            return ExpenseClaimRowWidget(
                               claim: claim,
                               onApprove: () => onApprove(claim),
                               onReject: () => onReject(claim),
@@ -1971,16 +1518,16 @@ class _ExpenseClaimsSection extends StatelessWidget {
   }
 }
 
-class _HeaderCell extends StatelessWidget {
+class _FinanceTableHeaderCell extends StatelessWidget {
   final String text;
-  const _HeaderCell(this.text);
+  const _FinanceTableHeaderCell(this.text);
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       style: AppTextStyles.labelMedium.copyWith(
-        color: const Color(0xFF16A34A),
+        color: AppColors.success,
         fontWeight: FontWeight.w800,
         fontSize: 12,
         letterSpacing: 0.5,
@@ -1989,12 +1536,13 @@ class _HeaderCell extends StatelessWidget {
   }
 }
 
-class _ExpenseClaimRow extends StatelessWidget {
+class ExpenseClaimRowWidget extends StatelessWidget {
   final ExpenseClaimItem claim;
   final VoidCallback onApprove;
   final VoidCallback onReject;
 
-  const _ExpenseClaimRow({
+  const ExpenseClaimRowWidget({
+    super.key,
     required this.claim,
     required this.onApprove,
     required this.onReject,
@@ -2067,7 +1615,7 @@ class _ExpenseClaimRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: Text(
-              '\$${_FinanceViewBodyState._formatNumber(claim.amount)}',
+              '\$${_FinanceViewBodyState.formatCurrency(claim.amount)}',
               style: AppTextStyles.headlineMedium.copyWith(
                 fontWeight: FontWeight.w800,
                 fontSize: 14,
@@ -2079,7 +1627,7 @@ class _ExpenseClaimRow extends StatelessWidget {
             flex: 2,
             child: Align(
               alignment: Alignment.centerLeft,
-              child: _StatusChip(status: claim.status),
+              child: ExpenseClaimStatusChipWidget(status: claim.status),
             ),
           ),
           Expanded(
@@ -2093,7 +1641,7 @@ class _ExpenseClaimRow extends StatelessWidget {
                         icon: const Icon(Icons.check_rounded, size: 15),
                         label: const Text('Approve'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFF22C55E),
+                          backgroundColor: AppColors.success,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -2114,7 +1662,7 @@ class _ExpenseClaimRow extends StatelessWidget {
                         icon: const Icon(Icons.cancel_outlined, size: 15),
                         label: const Text('Reject'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xFFEF4444),
+                          backgroundColor: AppColors.error,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -2139,10 +1687,10 @@ class _ExpenseClaimRow extends StatelessWidget {
   }
 }
 
-class _StatusChip extends StatelessWidget {
+class ExpenseClaimStatusChipWidget extends StatelessWidget {
   final ClaimStatus status;
 
-  const _StatusChip({required this.status});
+  const ExpenseClaimStatusChipWidget({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -2154,23 +1702,23 @@ class _StatusChip extends StatelessWidget {
 
     switch (status) {
       case ClaimStatus.pending:
-        bg = const Color(0xFFFEF3C7);
-        border = const Color(0xFFFDE68A);
-        text = const Color(0xFFD97706);
+        bg = AppColors.warning.withAlpha(26);
+        border = AppColors.warning.withAlpha(60);
+        text = AppColors.warning;
         icon = Icons.schedule_rounded;
         label = 'Pending';
         break;
       case ClaimStatus.approved:
-        bg = const Color(0xFFDCFCE7);
-        border = const Color(0xFFBBF7D0);
-        text = const Color(0xFF16A34A);
+        bg = AppColors.success.withAlpha(26);
+        border = AppColors.success.withAlpha(60);
+        text = AppColors.success;
         icon = Icons.check_circle_outline_rounded;
         label = 'Approved';
         break;
       case ClaimStatus.rejected:
-        bg = const Color(0xFFFEE2E2);
-        border = const Color(0xFFFECACA);
-        text = const Color(0xFFDC2626);
+        bg = AppColors.error.withAlpha(26);
+        border = AppColors.error.withAlpha(60);
+        text = AppColors.error;
         icon = Icons.cancel_outlined;
         label = 'Rejected';
         break;
@@ -2202,16 +1750,18 @@ class _StatusChip extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------------
-// 5. Tab 2: Budgets Section
-// -------------------------------------------------------------
-class _BudgetsSection extends StatelessWidget {
+// =============================================================
+// 5. TAB 2: BUDGETS CUSTOM WIDGETS
+// =============================================================
+
+class DepartmentBudgetsSectionWidget extends StatelessWidget {
   final List<DepartmentBudgetItem> budgets;
   final String searchQuery;
   final ValueChanged<String> onSearchChanged;
   final VoidCallback onAddBudget;
 
-  const _BudgetsSection({
+  const DepartmentBudgetsSectionWidget({
+    super.key,
     required this.budgets,
     required this.searchQuery,
     required this.onSearchChanged,
@@ -2358,7 +1908,7 @@ class _BudgetsSection extends StatelessWidget {
             separatorBuilder: (ctx, idx) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final b = budgets[index];
-              return _DepartmentBudgetCard(item: b);
+              return DepartmentBudgetCardWidget(item: b);
             },
           ),
           const SizedBox(height: 10),
@@ -2368,10 +1918,10 @@ class _BudgetsSection extends StatelessWidget {
   }
 }
 
-class _DepartmentBudgetCard extends StatelessWidget {
+class DepartmentBudgetCardWidget extends StatelessWidget {
   final DepartmentBudgetItem item;
 
-  const _DepartmentBudgetCard({required this.item});
+  const DepartmentBudgetCardWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -2380,19 +1930,19 @@ class _DepartmentBudgetCard extends StatelessWidget {
 
     Color progressColor = AppColors.success;
     String statusText = 'On Track';
-    Color statusBg = const Color(0xFFDCFCE7);
-    Color statusFg = const Color(0xFF16A34A);
+    Color statusBg = AppColors.success.withAlpha(26);
+    Color statusFg = AppColors.success;
 
     if (item.percentage >= 0.9 && item.percentage <= 1.0) {
-      progressColor = const Color(0xFFF59E0B);
+      progressColor = AppColors.warning;
       statusText = 'Near Limit';
-      statusBg = const Color(0xFFFEF3C7);
-      statusFg = const Color(0xFFD97706);
+      statusBg = AppColors.warning.withAlpha(26);
+      statusFg = AppColors.warning;
     } else if (item.percentage > 1.0) {
       progressColor = AppColors.error;
       statusText = 'Over Budget';
-      statusBg = const Color(0xFFFEE2E2);
-      statusFg = const Color(0xFFDC2626);
+      statusBg = AppColors.error.withAlpha(26);
+      statusFg = AppColors.error;
     }
 
     return Container(
@@ -2466,7 +2016,7 @@ class _DepartmentBudgetCard extends StatelessWidget {
             children: [
               Flexible(
                 child: Text(
-                  'Spent: \$${_FinanceViewBodyState._formatNumber(item.spentAmount)} ($percent%)',
+                  'Spent: \$${_FinanceViewBodyState.formatCurrency(item.spentAmount)} ($percent%)',
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w600,
                     color: theme.colorScheme.onSurface,
@@ -2478,7 +2028,7 @@ class _DepartmentBudgetCard extends StatelessWidget {
               const SizedBox(width: 8),
               Flexible(
                 child: Text(
-                  'Total: \$${_FinanceViewBodyState._formatNumber(item.totalBudget)}',
+                  'Total: \$${_FinanceViewBodyState.formatCurrency(item.totalBudget)}',
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w700,
                     color: theme.colorScheme.onSurfaceVariant,
@@ -2496,10 +2046,11 @@ class _DepartmentBudgetCard extends StatelessWidget {
   }
 }
 
-// -------------------------------------------------------------
-// 6. Tab 3: Vendor Invoices Section
-// -------------------------------------------------------------
-class _InvoicesSection extends StatelessWidget {
+// =============================================================
+// 6. TAB 3: INVOICES CUSTOM WIDGETS
+// =============================================================
+
+class VendorInvoicesSectionWidget extends StatelessWidget {
   final List<VendorInvoiceItem> invoices;
   final String searchQuery;
   final String statusFilter;
@@ -2508,7 +2059,8 @@ class _InvoicesSection extends StatelessWidget {
   final ValueChanged<VendorInvoiceItem> onMarkPaid;
   final VoidCallback onAddInvoice;
 
-  const _InvoicesSection({
+  const VendorInvoicesSectionWidget({
+    super.key,
     required this.invoices,
     required this.searchQuery,
     required this.statusFilter,
@@ -2771,27 +2323,27 @@ class _InvoicesSection extends StatelessWidget {
                             ),
                           ),
                         ),
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const Expanded(
+                            Expanded(
                               flex: 3,
-                              child: _HeaderCell('VENDOR'),
+                              child: _FinanceTableHeaderCell('VENDOR'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('DUE DATE'),
+                              child: _FinanceTableHeaderCell('DUE DATE'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('AMOUNT'),
+                              child: _FinanceTableHeaderCell('AMOUNT'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('STATUS'),
+                              child: _FinanceTableHeaderCell('STATUS'),
                             ),
-                            const Expanded(
+                            Expanded(
                               flex: 2,
-                              child: _HeaderCell('ACTIONS'),
+                              child: _FinanceTableHeaderCell('ACTIONS'),
                             ),
                           ],
                         ),
@@ -2806,96 +2358,9 @@ class _InvoicesSection extends StatelessWidget {
                         ),
                         itemBuilder: (context, index) {
                           final inv = invoices[index];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 18,
-                              vertical: 14,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        inv.vendorName,
-                                        style: AppTextStyles.bodyMedium
-                                            .copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 13,
-                                            ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        inv.invoiceNumber,
-                                        style: AppTextStyles.labelMedium
-                                            .copyWith(
-                                              color: theme
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                              fontSize: 11,
-                                            ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    'Due: ${inv.dueDate}',
-                                    style: AppTextStyles.bodyMedium.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    '\$${_FinanceViewBodyState._formatNumber(inv.amount)}',
-                                    style: AppTextStyles.headlineMedium
-                                        .copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: _InvoiceStatusChip(
-                                      status: inv.status,
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: inv.status == InvoiceStatus.unpaid
-                                      ? TextButton.icon(
-                                          onPressed: () => onMarkPaid(inv),
-                                          icon: const Icon(
-                                            Icons.check_rounded,
-                                            size: 15,
-                                          ),
-                                          label: const Text('Mark Paid'),
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: AppColors.success,
-                                            textStyle: const TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                            padding: EdgeInsets.zero,
-                                            alignment: Alignment.centerLeft,
-                                          ),
-                                        )
-                                      : const SizedBox.shrink(),
-                                ),
-                              ],
-                            ),
+                          return VendorInvoiceRowWidget(
+                            invoice: inv,
+                            onMarkPaid: () => onMarkPaid(inv),
                           );
                         },
                       ),
@@ -2911,10 +2376,104 @@ class _InvoicesSection extends StatelessWidget {
   }
 }
 
-class _InvoiceStatusChip extends StatelessWidget {
+class VendorInvoiceRowWidget extends StatelessWidget {
+  final VendorInvoiceItem invoice;
+  final VoidCallback onMarkPaid;
+
+  const VendorInvoiceRowWidget({
+    super.key,
+    required this.invoice,
+    required this.onMarkPaid,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  invoice.vendorName,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  invoice.invoiceNumber,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              'Due: ${invoice.dueDate}',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              '\$${_FinanceViewBodyState.formatCurrency(invoice.amount)}',
+              style: AppTextStyles.headlineMedium.copyWith(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: VendorInvoiceStatusChipWidget(status: invoice.status),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: invoice.status == InvoiceStatus.unpaid
+                ? TextButton.icon(
+                    onPressed: onMarkPaid,
+                    icon: const Icon(Icons.check_rounded, size: 15),
+                    label: const Text('Mark Paid'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.success,
+                      textStyle: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.centerLeft,
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class VendorInvoiceStatusChipWidget extends StatelessWidget {
   final InvoiceStatus status;
 
-  const _InvoiceStatusChip({required this.status});
+  const VendorInvoiceStatusChipWidget({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -2924,18 +2483,18 @@ class _InvoiceStatusChip extends StatelessWidget {
 
     switch (status) {
       case InvoiceStatus.unpaid:
-        bg = const Color(0xFFFEE2E2);
-        text = const Color(0xFFDC2626);
+        bg = AppColors.error.withAlpha(26);
+        text = AppColors.error;
         label = 'Unpaid';
         break;
       case InvoiceStatus.paid:
-        bg = const Color(0xFFDCFCE7);
-        text = const Color(0xFF16A34A);
+        bg = AppColors.success.withAlpha(26);
+        text = AppColors.success;
         label = 'Paid';
         break;
       case InvoiceStatus.overdue:
-        bg = const Color(0xFFFEF3C7);
-        text = const Color(0xFFD97706);
+        bg = AppColors.warning.withAlpha(26);
+        text = AppColors.warning;
         label = 'Overdue';
         break;
     }
@@ -2956,4 +2515,533 @@ class _InvoiceStatusChip extends StatelessWidget {
       ),
     );
   }
+}
+
+// =============================================================
+// 7. MODAL DIALOGS CUSTOM WIDGETS
+// =============================================================
+
+class AddExpenseClaimDialog extends StatefulWidget {
+  final ValueChanged<ExpenseClaimItem> onSubmit;
+
+  const AddExpenseClaimDialog({super.key, required this.onSubmit});
+
+  @override
+  State<AddExpenseClaimDialog> createState() => _AddExpenseClaimDialogState();
+}
+
+class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final amountController = TextEditingController();
+  final noteController = TextEditingController();
+  String category = 'Food';
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: theme.cardColor,
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.warning.withAlpha(30),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.receipt_long_rounded,
+              color: AppColors.warning,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'New Expense Claim',
+              style: AppTextStyles.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 440,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Employee Name', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: nameController,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'e.g. Hassan Khan',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text('Email Address', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: emailController,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'e.g. hassan@hrm.com',
+                ),
+              ),
+              const SizedBox(height: 12),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isNarrow = constraints.maxWidth < 340;
+                  if (isNarrow) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Category', style: AppTextStyles.labelMedium),
+                        const SizedBox(height: 6),
+                        DropdownButtonFormField<String>(
+                          initialValue: category,
+                          items:
+                              [
+                                    'Food',
+                                    'Travel',
+                                    'Software',
+                                    'Office Supplies',
+                                    'Equipment',
+                                  ]
+                                  .map(
+                                    (cat) => DropdownMenuItem(
+                                      value: cat,
+                                      child: Text(cat),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged: (val) {
+                            if (val != null) setState(() => category = val);
+                          },
+                          decoration: _financeDialogInputDecoration(theme, ''),
+                        ),
+                        const SizedBox(height: 12),
+                        Text('Amount (\$)', style: AppTextStyles.labelMedium),
+                        const SizedBox(height: 6),
+                        TextField(
+                          controller: amountController,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
+                          decoration: _financeDialogInputDecoration(
+                            theme,
+                            '0.00',
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Category', style: AppTextStyles.labelMedium),
+                            const SizedBox(height: 6),
+                            DropdownButtonFormField<String>(
+                              initialValue: category,
+                              items:
+                                  [
+                                        'Food',
+                                        'Travel',
+                                        'Software',
+                                        'Office Supplies',
+                                        'Equipment',
+                                      ]
+                                      .map(
+                                        (cat) => DropdownMenuItem(
+                                          value: cat,
+                                          child: Text(cat),
+                                        ),
+                                      )
+                                      .toList(),
+                              onChanged: (val) {
+                                if (val != null) setState(() => category = val);
+                              },
+                              decoration: _financeDialogInputDecoration(
+                                theme,
+                                '',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Amount (\$)',
+                              style: AppTextStyles.labelMedium,
+                            ),
+                            const SizedBox(height: 6),
+                            TextField(
+                              controller: amountController,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
+                              decoration: _financeDialogInputDecoration(
+                                theme,
+                                '0.00',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              Text('Description / Note', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: noteController,
+                maxLines: 2,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'Brief details regarding this expense...',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ),
+        FilledButton(
+          onPressed: () {
+            final amount = double.tryParse(amountController.text.trim()) ?? 0.0;
+            final name = nameController.text.trim().isEmpty
+                ? 'N/A'
+                : nameController.text.trim();
+            if (amount > 0) {
+              final newItem = ExpenseClaimItem(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                employeeName: name,
+                employeeEmail: emailController.text.trim(),
+                category: category,
+                date: 'Today',
+                amount: amount,
+                status: ClaimStatus.pending,
+                note: noteController.text.trim(),
+              );
+              widget.onSubmit(newItem);
+              Navigator.of(context).pop();
+            }
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.warning,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text('Submit Claim'),
+        ),
+      ],
+    );
+  }
+}
+
+class AddDepartmentBudgetDialog extends StatefulWidget {
+  final ValueChanged<DepartmentBudgetItem> onSubmit;
+
+  const AddDepartmentBudgetDialog({super.key, required this.onSubmit});
+
+  @override
+  State<AddDepartmentBudgetDialog> createState() =>
+      _AddDepartmentBudgetDialogState();
+}
+
+class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
+  final deptController = TextEditingController();
+  final amountController = TextEditingController();
+  final spentController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: theme.cardColor,
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withAlpha(30),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.account_balance_wallet_rounded,
+              color: AppColors.primary,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Add Department Budget',
+              style: AppTextStyles.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Department Name', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: deptController,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'e.g. Operations',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text('Total Budget (\$)', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. 40000'),
+              ),
+              const SizedBox(height: 12),
+              Text('Initial Spent (\$)', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: spentController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: _financeDialogInputDecoration(theme, '0.00'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ),
+        FilledButton(
+          onPressed: () {
+            final dept = deptController.text.trim();
+            final total = double.tryParse(amountController.text.trim()) ?? 0.0;
+            final spent = double.tryParse(spentController.text.trim()) ?? 0.0;
+            if (dept.isNotEmpty && total > 0) {
+              final newItem = DepartmentBudgetItem(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                department: dept,
+                totalBudget: total,
+                spentAmount: spent,
+                fiscalQuarter: 'Q3 2026',
+              );
+              widget.onSubmit(newItem);
+              Navigator.of(context).pop();
+            }
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text('Add Budget'),
+        ),
+      ],
+    );
+  }
+}
+
+class AddVendorInvoiceDialog extends StatefulWidget {
+  final String defaultInvoiceNumber;
+  final ValueChanged<VendorInvoiceItem> onSubmit;
+
+  const AddVendorInvoiceDialog({
+    super.key,
+    required this.defaultInvoiceNumber,
+    required this.onSubmit,
+  });
+
+  @override
+  State<AddVendorInvoiceDialog> createState() => _AddVendorInvoiceDialogState();
+}
+
+class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
+  final vendorController = TextEditingController();
+  late final TextEditingController invNumberController;
+  final amountController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    invNumberController = TextEditingController(
+      text: widget.defaultInvoiceNumber,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      backgroundColor: theme.cardColor,
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.error.withAlpha(30),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.description_rounded,
+              color: AppColors.error,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Add Vendor Invoice',
+              style: AppTextStyles.titleMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: SizedBox(
+          width: 400,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Invoice Number', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: invNumberController,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'e.g. INV-2026-085',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text('Vendor Name', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: vendorController,
+                decoration: _financeDialogInputDecoration(
+                  theme,
+                  'e.g. Microsoft 365',
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text('Amount (\$)', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 6),
+              TextField(
+                controller: amountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                decoration: _financeDialogInputDecoration(theme, '0.00'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(
+            'Cancel',
+            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+          ),
+        ),
+        FilledButton(
+          onPressed: () {
+            final vendor = vendorController.text.trim();
+            final invNum = invNumberController.text.trim();
+            final amount = double.tryParse(amountController.text.trim()) ?? 0.0;
+            if (vendor.isNotEmpty && amount > 0) {
+              final newItem = VendorInvoiceItem(
+                id: DateTime.now().millisecondsSinceEpoch.toString(),
+                invoiceNumber: invNum.isEmpty ? 'INV-NEW' : invNum,
+                vendorName: vendor,
+                issueDate: 'Today',
+                dueDate: 'Net 30 Days',
+                amount: amount,
+                status: InvoiceStatus.unpaid,
+              );
+              widget.onSubmit(newItem);
+              Navigator.of(context).pop();
+            }
+          },
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text('Save Invoice'),
+        ),
+      ],
+    );
+  }
+}
+
+InputDecoration _financeDialogInputDecoration(ThemeData theme, String hint) {
+  return InputDecoration(
+    hintText: hint,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+    filled: true,
+    fillColor: theme.colorScheme.surface,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: theme.dividerColor),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: theme.dividerColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+    ),
+  );
 }
