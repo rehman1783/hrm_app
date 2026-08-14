@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 
 class AppPlaceholderPage extends StatelessWidget {
@@ -21,8 +20,8 @@ class AppPlaceholderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final backgroundColors = theme.brightness == Brightness.dark
-        ? [theme.colorScheme.background, theme.colorScheme.surface]
-        : [theme.colorScheme.surface, theme.colorScheme.background];
+        ? [theme.scaffoldBackgroundColor, theme.colorScheme.surface]
+        : [theme.colorScheme.surface, theme.scaffoldBackgroundColor];
 
     return Scaffold(
       drawer: drawer,

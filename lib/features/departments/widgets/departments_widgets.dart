@@ -3,39 +3,372 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 
-class DepartmentsViewBody extends StatelessWidget {
+// =============================================================
+// DATA MODEL
+// =============================================================
+
+class DepartmentRecord {
+  final String id;
+  final String name;
+  final String code;
+  final String head;
+  int employeeCount;
+  final String location;
+  final String budget;
+  bool isActive;
+
+  DepartmentRecord({
+    required this.id,
+    required this.name,
+    required this.code,
+    required this.head,
+    required this.employeeCount,
+    required this.location,
+    required this.budget,
+    this.isActive = true,
+  });
+}
+
+// =============================================================
+// MAIN BODY (STATEFUL)
+// =============================================================
+
+class DepartmentsViewBody extends StatefulWidget {
   const DepartmentsViewBody({super.key});
 
   @override
+  State<DepartmentsViewBody> createState() => _DepartmentsViewBodyState();
+}
+
+class _DepartmentsViewBodyState extends State<DepartmentsViewBody> {
+  String _searchQuery = '';
+  String _selectedStatusFilter = 'All';
+
+  late List<DepartmentRecord> _departments;
+
+  @override
+  void initState() {
+    super.initState();
+    _departments = [
+      DepartmentRecord(
+        id: 'DEPT-001',
+        name: 'Engineering',
+        code: 'ENG',
+        head: 'Sarah Jenkins',
+        employeeCount: 3,
+        location: 'Building A, Floor 3',
+        budget: 'Rs. 4,500,000',
+        isActive: true,
+      ),
+      DepartmentRecord(
+        id: 'DEPT-002',
+        name: 'Human Resources',
+        code: 'HR',
+        head: 'User (HR Manager)',
+        employeeCount: 1,
+        location: 'Building A, Floor 1',
+        budget: 'Rs. 1,200,000',
+        isActive: true,
+      ),
+      DepartmentRecord(
+        id: 'DEPT-003',
+        name: 'Design & Creative',
+        code: 'DES',
+        head: 'Ali Khan',
+        employeeCount: 1,
+        location: 'Building B, Floor 2',
+        budget: 'Rs. 900,000',
+        isActive: true,
+      ),
+      DepartmentRecord(
+        id: 'DEPT-004',
+        name: 'Finance & Accounts',
+        code: 'FIN',
+        head: 'Tariq Mehmood',
+        employeeCount: 2,
+        location: 'Building A, Floor 2',
+        budget: 'Rs. 2,800,000',
+        isActive: true,
+      ),
+    ];
+  }
+
+  // --- STATS ---
+  int get _totalDepts => _departments.length;
+  int get _activeDepts => _departments.where((d) => d.isActive).length;
+  int get _totalStaff => _departments.fold(0, (sum, d) => sum + d.employeeCount);
+
+  List<DepartmentRecord> get _filteredDepts {
+    return _departments.where((d) {
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        final match = d.name.toLowerCase().contains(q) ||
+            d.code.toLowerCase().contains(q) ||
+            d.head.toLowerCase().contains(q);
+        if (!match) return false;
+      }
+      if (_selectedStatusFilter == 'Active' && !d.isActive) return false;
+      if (_selectedStatusFilter == 'Inactive' && d.isActive) return false;
+      return true;
+    }).toList();
+  }
+
+  // --- NEW DEPARTMENT MODAL ---
+  void _openNewDepartmentDialog() {
+    final nameCtrl = TextEditingController();
+    final codeCtrl = TextEditingController();
+    final headCtrl = TextEditingController();
+    final budgetCtrl = TextEditingController(text: 'Rs. 1,500,000');
+    final locCtrl = TextEditingController(text: 'Building A, Floor 2');
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withAlpha(25),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Icon(Icons.apartment_rounded, color: AppColors.primary, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          'Create New Department',
+                          style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w800, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+
+                    _buildInput('DEPARTMENT NAME', nameCtrl, theme),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(child: _buildInput('CODE (e.g. MKT)', codeCtrl, theme)),
+                        const SizedBox(width: 10),
+                        Expanded(child: _buildInput('HEAD OF DEPT', headCtrl, theme)),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    _buildInput('BUDGET ALLOCATION', budgetCtrl, theme),
+                    const SizedBox(height: 12),
+                    _buildInput('OFFICE LOCATION', locCtrl, theme),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+                        const SizedBox(width: 8),
+                        FilledButton.icon(
+                          onPressed: () {
+                            if (nameCtrl.text.trim().isEmpty) return;
+                            setState(() {
+                              _departments.add(
+                                DepartmentRecord(
+                                  id: 'DEPT-00${_departments.length + 1}',
+                                  name: nameCtrl.text.trim(),
+                                  code: codeCtrl.text.trim().isEmpty ? 'GEN' : codeCtrl.text.trim().toUpperCase(),
+                                  head: headCtrl.text.trim().isEmpty ? 'Unassigned' : headCtrl.text.trim(),
+                                  employeeCount: 0,
+                                  location: locCtrl.text.trim(),
+                                  budget: budgetCtrl.text.trim(),
+                                  isActive: true,
+                                ),
+                              );
+                            });
+                            Navigator.pop(ctx);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('${nameCtrl.text.trim()} department created!'),
+                                backgroundColor: AppColors.success,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.check_rounded, size: 16),
+                          label: const Text('Create Department'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDepartmentDetails(DepartmentRecord dept) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final theme = Theme.of(ctx);
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 440),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary.withAlpha(25),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(Icons.apartment_rounded, color: theme.colorScheme.primary, size: 22),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(dept.name, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w800, fontSize: 17)),
+                            Text('Code: ${dept.code}', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(height: 1),
+                  const SizedBox(height: 12),
+
+                  _buildDetailRow('Department ID', dept.id, theme),
+                  _buildDetailRow('Head of Department', dept.head, theme),
+                  _buildDetailRow('Staff Members', '${dept.employeeCount} employees', theme),
+                  _buildDetailRow('Budget Allocated', dept.budget, theme),
+                  _buildDetailRow('Office Location', dept.location, theme),
+
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          setState(() => dept.isActive = !dept.isActive);
+                          Navigator.pop(ctx);
+                        },
+                        icon: Icon(dept.isActive ? Icons.pause_circle_outline_rounded : Icons.play_circle_outline_rounded, size: 16),
+                        label: Text(dept.isActive ? 'Deactivate' : 'Activate'),
+                      ),
+                      FilledButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildInput(String label, TextEditingController ctrl, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.labelMedium.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+            fontSize: 11,
+          ),
+        ),
+        const SizedBox(height: 5),
+        TextField(
+          controller: ctrl,
+          style: const TextStyle(fontSize: 13),
+          decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            filled: true,
+            fillColor: theme.colorScheme.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: theme.dividerColor.withAlpha(80)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value, ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: theme.colorScheme.onSurfaceVariant, fontSize: 13)),
+          Text(value, style: TextStyle(color: theme.colorScheme.onSurface, fontWeight: FontWeight.w600, fontSize: 13)),
+        ],
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            _DepartmentsHeader(),
-            SizedBox(height: 12),
-            _StatsRow(),
-            SizedBox(height: 12),
-            _DepartmentInfoBar(),
-            SizedBox(height: 14),
-            _FilterDepartmentsSection(),
-            SizedBox(height: 14),
-            _DepartmentsRecordsSection(),
+          children: [
+            // 1. Header with New Department action
+            _buildHeader(theme),
+            const SizedBox(height: 12),
+
+            // 2. Stats
+            _buildStatsRow(theme),
+            const SizedBox(height: 12),
+
+            // 3. Search & Filter
+            _buildFilterSection(theme),
+            const SizedBox(height: 14),
+
+            // 4. Department Cards
+            _buildRecordsSection(theme),
           ],
         ),
       ),
     );
   }
-}
 
-class _DepartmentsHeader extends StatelessWidget {
-  const _DepartmentsHeader();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildHeader(ThemeData theme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,582 +378,65 @@ class _DepartmentsHeader extends StatelessWidget {
             children: [
               Text('Departments', style: AppTextStyles.headlineMedium),
               const SizedBox(height: 2),
-              Text(
-                '8/2026',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
+              Text('8/2026', style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onSurfaceVariant)),
             ],
           ),
         ),
         const SizedBox(width: 8),
         FilledButton.icon(
-          onPressed: () {},
+          onPressed: _openNewDepartmentDialog,
           icon: const Icon(Icons.add_rounded, size: 18),
           label: const Text('New Department'),
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
         ),
       ],
     );
   }
-}
 
-class _StatsRow extends StatelessWidget {
-  const _StatsRow();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildStatsRow(ThemeData theme) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 500;
         final statList = [
-          (
-            'TOTAL DEPARTMENTS',
-            '3',
-            'All active departments',
-            Icons.apartment_rounded,
-            const Color(0xFF60A5FA),
-          ),
-          (
-            'ACTIVE DEPARTMENTS',
-            '3',
-            'Operating actively\n100% active rate',
-            Icons.check_circle_rounded,
-            AppColors.success,
-          ),
-          (
-            'TOTAL EMPLOYEES',
-            '9',
-            'Team members in depts',
-            Icons.group_rounded,
-            const Color(0xFFF59E0B),
-          ),
-          (
-            'AVG PER DEPT',
-            '3',
-            'Average headcount',
-            Icons.show_chart_rounded,
-            const Color(0xFF8B5CF6),
-          ),
+          ('TOTAL DEPTS', '$_totalDepts', 'All organizational units', Icons.apartment_rounded, const Color(0xFF60A5FA)),
+          ('ACTIVE', '$_activeDepts', 'Operational units', Icons.check_circle_rounded, AppColors.success),
+          ('TOTAL WORKFORCE', '$_totalStaff', 'Employees assigned', Icons.groups_rounded, const Color(0xFF8B5CF6)),
         ];
 
         if (isMobile) {
-          return Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      title: statList[0].$1,
-                      value: statList[0].$2,
-                      subtitle: statList[0].$3,
-                      icon: statList[0].$4,
-                      color: statList[0].$5,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _StatCard(
-                      title: statList[1].$1,
-                      value: statList[1].$2,
-                      subtitle: statList[1].$3,
-                      icon: statList[1].$4,
-                      color: statList[1].$5,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: _StatCard(
-                      title: statList[2].$1,
-                      value: statList[2].$2,
-                      subtitle: statList[2].$3,
-                      icon: statList[2].$4,
-                      color: statList[2].$5,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _StatCard(
-                      title: statList[3].$1,
-                      value: statList[3].$2,
-                      subtitle: statList[3].$3,
-                      icon: statList[3].$4,
-                      color: statList[3].$5,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          return Row(
+            children: statList
+                .map((s) => Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: _buildStatCard(s, theme),
+                      ),
+                    ))
+                .toList(),
           );
         }
 
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: statList
-                .asMap()
-                .entries
-                .map(
-                  (entry) => Padding(
-                    padding: EdgeInsets.only(right: entry.key < 3 ? 10 : 0),
-                    child: SizedBox(
-                      width: 180,
-                      child: _StatCard(
-                        title: entry.value.$1,
-                        value: entry.value.$2,
-                        subtitle: entry.value.$3,
-                        icon: entry.value.$4,
-                        color: entry.value.$5,
-                      ),
+        return Row(
+          children: statList
+              .map((s) => Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: _buildStatCard(s, theme),
                     ),
-                  ),
-                )
-                .toList(),
-          ),
+                  ))
+              .toList(),
         );
       },
     );
   }
-}
 
-class _StatCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-
-  const _StatCard({
-    required this.title,
-    required this.value,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildStatCard((String, String, String, IconData, Color) s, ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withAlpha(12),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withAlpha(24),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: AppTextStyles.headlineMedium.copyWith(
-              fontSize: 18,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            subtitle,
-            style: AppTextStyles.bodyMedium.copyWith(
-              fontSize: 11,
-              color: theme.colorScheme.onSurfaceVariant,
-              height: 1.3,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DepartmentInfoBar extends StatelessWidget {
-  const _DepartmentInfoBar();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withAlpha(18),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.primary.withAlpha(40)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.apartment_rounded,
-            color: theme.colorScheme.primary,
-            size: 18,
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Organizational Structure:',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  'Manage departments, team heads, and member allocation',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            'Updated automatically',
-            style: AppTextStyles.labelMedium.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FilterDepartmentsSection extends StatelessWidget {
-  const _FilterDepartmentsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: theme.shadowColor.withAlpha(12),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.filter_list_rounded,
-                color: theme.colorScheme.primary,
-                size: 20,
-              ),
-              const SizedBox(width: 10),
-              const Text('Search & Filter', style: AppTextStyles.titleMedium),
-            ],
-          ),
-          const SizedBox(height: 14),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final isMobile = constraints.maxWidth < 600;
-              if (isMobile) {
-                return Column(
-                  children: [
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search department name, code...',
-                        prefixIcon: const Icon(Icons.search_rounded, size: 20),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        filled: true,
-                        fillColor: theme.colorScheme.surface,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            initialValue: 'All Status',
-                            items: const [
-                              DropdownMenuItem(
-                                value: 'All Status',
-                                child: Text('All Status'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Active',
-                                child: Text('Active'),
-                              ),
-                              DropdownMenuItem(
-                                value: 'Inactive',
-                                child: Text('Inactive'),
-                              ),
-                            ],
-                            onChanged: (v) {},
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 10,
-                              ),
-                              filled: true,
-                              fillColor: theme.colorScheme.surface,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        FilledButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.tune_rounded, size: 18),
-                          label: const Text('Filter'),
-                          style: FilledButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                );
-              }
-
-              return Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search department name, code, description...',
-                        prefixIcon: const Icon(Icons.search_rounded, size: 20),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        filled: true,
-                        fillColor: theme.colorScheme.surface,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 1,
-                    child: DropdownButtonFormField<String>(
-                      initialValue: 'All Status',
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'All Status',
-                          child: Text('All Status'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Active',
-                          child: Text('Active'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Inactive',
-                          child: Text('Inactive'),
-                        ),
-                      ],
-                      onChanged: (v) {},
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                        filled: true,
-                        fillColor: theme.colorScheme.surface,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  FilledButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.tune_rounded, size: 18),
-                    label: const Text('Apply Filter'),
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DepartmentsRecordsSection extends StatelessWidget {
-  const _DepartmentsRecordsSection();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(
-              Icons.business_rounded,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            const Text('Department Records', style: AppTextStyles.titleMedium),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withAlpha(20),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '${departments.length} entries',
-                style: AppTextStyles.labelMedium.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: const [
-            _FilterChip(label: 'All', selected: true),
-            SizedBox(width: 8),
-            _FilterChip(label: 'Active'),
-            SizedBox(width: 8),
-            _FilterChip(label: 'Inactive'),
-          ],
-        ),
-        const SizedBox(height: 12),
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: departments.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            return DepartmentCard(item: departments[index]);
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-
-  const _FilterChip({required this.label, this.selected = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: selected
-            ? theme.colorScheme.primary
-            : theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: selected ? null : Border.all(color: theme.dividerColor),
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: selected
-              ? theme.colorScheme.onPrimary
-              : theme.colorScheme.onSurface,
-          fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-          fontSize: 12,
-        ),
-      ),
-    );
-  }
-}
-
-class DepartmentCard extends StatelessWidget {
-  final DepartmentItem item;
-
-  const DepartmentCard({super.key, required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(18),
@@ -628,321 +444,266 @@ class DepartmentCard extends StatelessWidget {
           BoxShadow(
             color: theme.shadowColor.withAlpha(10),
             blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  s.$1,
+                  style: AppTextStyles.labelMedium.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: s.$5.withAlpha(25),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(s.$4, color: s.$5, size: 16),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            s.$2,
+            style: AppTextStyles.headlineMedium.copyWith(
+              color: theme.colorScheme.onSurface,
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            s.$3,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontSize: 10.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterSection(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: theme.shadowColor.withAlpha(10),
+            blurRadius: 14,
             offset: const Offset(0, 6),
           ),
         ],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isMobile = constraints.maxWidth < 550;
-          if (isMobile) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: theme.colorScheme.primary.withAlpha(25),
-                      child: Text(
-                        item.shortCode,
-                        style: TextStyle(
-                          color: theme.colorScheme.primary,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.name,
-                            style: AppTextStyles.titleMedium.copyWith(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            item.description,
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              fontSize: 12,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    _InfoChip(
-                      label: item.team,
-                      color: theme.colorScheme.primary.withAlpha(18),
-                      textColor: theme.colorScheme.primary,
-                    ),
-                    _InfoChip(
-                      label: 'Head: ${item.head}',
-                      color: theme.colorScheme.surface,
-                      textColor: theme.colorScheme.onSurface,
-                      borderColor: theme.dividerColor,
-                    ),
-                    _StatusChip(status: item.status),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                const Divider(height: 1),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _ActionButton(
-                      label: 'Edit',
-                      color: theme.colorScheme.primary,
-                      onTap: () {},
-                    ),
-                    const SizedBox(width: 8),
-                    _ActionButton(
-                      label: 'Delete',
-                      color: AppColors.error,
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              ],
-            );
-          }
-
-          return Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: theme.colorScheme.primary.withAlpha(25),
-                child: Text(
-                  item.shortCode,
-                  style: TextStyle(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
-                  ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              onChanged: (val) => setState(() => _searchQuery = val),
+              decoration: InputDecoration(
+                hintText: 'Search department name, code, or head...',
+                prefixIcon: const Icon(Icons.search_rounded, size: 18),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                filled: true,
+                fillColor: theme.colorScheme.surface,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: theme.dividerColor.withAlpha(60)),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 3,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Wrap(
+            spacing: 6,
+            children: ['All', 'Active'].map((f) {
+              final isSel = _selectedStatusFilter == f;
+              return InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: () => setState(() => _selectedStatusFilter = f),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSel ? theme.colorScheme.primary : theme.colorScheme.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isSel ? theme.colorScheme.primary : theme.dividerColor.withAlpha(80),
+                    ),
+                  ),
+                  child: Text(
+                    f,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                      color: isSel ? Colors.white : theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRecordsSection(ThemeData theme) {
+    final list = _filteredDepts;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.apartment_rounded, color: theme.colorScheme.primary, size: 18),
+            const SizedBox(width: 8),
+            const Text('Department List', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withAlpha(20),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                '${list.length} units',
+                style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.w700, fontSize: 11),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+
+        if (list.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(24),
+            alignment: Alignment.center,
+            child: Text('No departments match this filter', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
+          )
+        else
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: list.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final d = list[index];
+              return Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.shadowColor.withAlpha(10),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.name,
-                      style: AppTextStyles.titleMedium.copyWith(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withAlpha(25),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: Text(
+                              d.code,
+                              style: TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.w800, fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(d.name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                              const SizedBox(height: 2),
+                              Text('Head: ${d.head} • Staff: ${d.employeeCount}', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: d.isActive ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            d.isActive ? 'Active' : 'Inactive',
+                            style: TextStyle(
+                              color: d.isActive ? const Color(0xFF16A34A) : const Color(0xFFDC2626),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      item.description,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontSize: 12,
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
+                    const SizedBox(height: 10),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Budget: ${d.budget}', style: TextStyle(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
+                        Row(
+                          children: [
+                            OutlinedButton.icon(
+                              onPressed: () => _showDepartmentDetails(d),
+                              icon: const Icon(Icons.info_outline_rounded, size: 14),
+                              label: const Text('Details', style: TextStyle(fontSize: 11.5)),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            IconButton(
+                              onPressed: () {
+                                setState(() => _departments.removeWhere((item) => item.id == d.id));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('${d.name} deleted!'), behavior: SnackBarBehavior.floating),
+                                );
+                              },
+                              icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Colors.red),
+                              tooltip: 'Delete',
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 3,
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    _InfoChip(
-                      label: item.team,
-                      color: theme.colorScheme.primary.withAlpha(18),
-                      textColor: theme.colorScheme.primary,
-                    ),
-                    _InfoChip(
-                      label: 'Head: ${item.head}',
-                      color: theme.colorScheme.surface,
-                      textColor: theme.colorScheme.onSurface,
-                      borderColor: theme.dividerColor,
-                    ),
-                    _StatusChip(status: item.status),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _ActionButton(
-                    label: 'Edit',
-                    color: theme.colorScheme.primary,
-                    onTap: () {},
-                  ),
-                  const SizedBox(width: 8),
-                  _ActionButton(
-                    label: 'Delete',
-                    color: AppColors.error,
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String status;
-
-  const _StatusChip({required this.status});
-
-  @override
-  Widget build(BuildContext context) {
-    final isActive = status == 'Active';
-    final color = isActive ? AppColors.success : AppColors.warning;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withAlpha(24),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        status,
-        style: AppTextStyles.labelMedium.copyWith(
-          color: color,
-          fontWeight: FontWeight.w700,
-          fontSize: 11,
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final String label;
-  final Color color;
-  final Color textColor;
-  final Color? borderColor;
-
-  const _InfoChip({
-    required this.label,
-    required this.color,
-    required this.textColor,
-    this.borderColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(8),
-        border: borderColor != null ? Border.all(color: borderColor!) : null,
-      ),
-      child: Text(
-        label,
-        style: AppTextStyles.labelMedium.copyWith(
-          color: textColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 11,
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionButton extends StatelessWidget {
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: color.withAlpha(24),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.labelMedium.copyWith(
-            color: color,
-            fontWeight: FontWeight.w700,
-            fontSize: 11,
+              );
+            },
           ),
-        ),
-      ),
+      ],
     );
   }
 }
-
-class DepartmentItem {
-  final String shortCode;
-  final String name;
-  final String description;
-  final String team;
-  final String head;
-  final String status;
-
-  const DepartmentItem({
-    required this.shortCode,
-    required this.name,
-    required this.description,
-    required this.team,
-    required this.head,
-    required this.status,
-  });
-}
-
-const departments = [
-  DepartmentItem(
-    shortCode: 'M',
-    name: 'Marketing',
-    description: 'WholCure Marketing & Brand Management',
-    team: '5 members',
-    head: 'Unassigned',
-    status: 'Active',
-  ),
-  DepartmentItem(
-    shortCode: 'RE',
-    name: 'Real Estate',
-    description: 'Property & Facilities Management',
-    team: '1 member',
-    head: 'Unassigned',
-    status: 'Active',
-  ),
-  DepartmentItem(
-    shortCode: 'WT',
-    name: 'WholCure Technology',
-    description: 'Company IT Infrastructure & Engineering',
-    team: '3 members',
-    head: 'Unassigned',
-    status: 'Active',
-  ),
-];
