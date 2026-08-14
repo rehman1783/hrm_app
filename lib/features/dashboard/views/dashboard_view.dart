@@ -25,7 +25,8 @@ class DashboardView extends StatelessWidget {
             icon: const Icon(Icons.notifications_none_rounded),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, '/profile'),
+            tooltip: 'View Profile',
             icon: CircleAvatar(
               radius: 14,
               backgroundColor: AppColors.primary,
