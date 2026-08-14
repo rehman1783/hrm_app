@@ -237,9 +237,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Expense claim of \$${formatCurrency(claim.amount)} approved successfully!',
-        ),
+        content: Text('Expense claim of \$${formatCurrency(claim.amount)} approved successfully!'),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -253,9 +251,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Expense claim of \$${formatCurrency(claim.amount)} rejected.',
-        ),
+        content: Text('Expense claim of \$${formatCurrency(claim.amount)} rejected.'),
         backgroundColor: AppColors.error,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -288,9 +284,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
               content: const Text('Expense claim submitted for approval!'),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
@@ -309,9 +303,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
               content: Text('Budget allocated for ${newItem.department}!'),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
@@ -331,9 +323,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
               content: Text('Invoice ${newItem.invoiceNumber} created!'),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
           );
         },
@@ -389,8 +379,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                 searchQuery: _claimsSearchQuery,
                 statusFilter: _claimsStatusFilter,
                 onSearchChanged: (q) => setState(() => _claimsSearchQuery = q),
-                onStatusFilterChanged: (s) =>
-                    setState(() => _claimsStatusFilter = s),
+                onStatusFilterChanged: (s) => setState(() => _claimsStatusFilter = s),
                 onApprove: _approveClaim,
                 onReject: _rejectClaim,
                 onAddClaim: _showAddClaimDialog,
@@ -408,8 +397,7 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
                 searchQuery: _invoiceSearchQuery,
                 statusFilter: _invoiceStatusFilter,
                 onSearchChanged: (q) => setState(() => _invoiceSearchQuery = q),
-                onStatusFilterChanged: (s) =>
-                    setState(() => _invoiceStatusFilter = s),
+                onStatusFilterChanged: (s) => setState(() => _invoiceStatusFilter = s),
                 onMarkPaid: _markInvoicePaid,
                 onAddInvoice: _showAddInvoiceDialog,
               ),
@@ -421,24 +409,15 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
 
   List<ExpenseClaimItem> get _filteredClaims {
     return _claims.where((c) {
-      final matchesSearch =
-          _claimsSearchQuery.isEmpty ||
-          c.employeeName.toLowerCase().contains(
-            _claimsSearchQuery.toLowerCase(),
-          ) ||
-          c.employeeEmail.toLowerCase().contains(
-            _claimsSearchQuery.toLowerCase(),
-          ) ||
+      final matchesSearch = _claimsSearchQuery.isEmpty ||
+          c.employeeName.toLowerCase().contains(_claimsSearchQuery.toLowerCase()) ||
+          c.employeeEmail.toLowerCase().contains(_claimsSearchQuery.toLowerCase()) ||
           c.category.toLowerCase().contains(_claimsSearchQuery.toLowerCase());
 
-      final matchesStatus =
-          _claimsStatusFilter == 'All Statuses' ||
-          (_claimsStatusFilter == 'Pending' &&
-              c.status == ClaimStatus.pending) ||
-          (_claimsStatusFilter == 'Approved' &&
-              c.status == ClaimStatus.approved) ||
-          (_claimsStatusFilter == 'Rejected' &&
-              c.status == ClaimStatus.rejected);
+      final matchesStatus = _claimsStatusFilter == 'All Statuses' ||
+          (_claimsStatusFilter == 'Pending' && c.status == ClaimStatus.pending) ||
+          (_claimsStatusFilter == 'Approved' && c.status == ClaimStatus.approved) ||
+          (_claimsStatusFilter == 'Rejected' && c.status == ClaimStatus.rejected);
 
       return matchesSearch && matchesStatus;
     }).toList();
@@ -453,23 +432,14 @@ class _FinanceViewBodyState extends State<FinanceViewBody> {
 
   List<VendorInvoiceItem> get _filteredInvoices {
     return _invoices.where((inv) {
-      final matchesSearch =
-          _invoiceSearchQuery.isEmpty ||
-          inv.vendorName.toLowerCase().contains(
-            _invoiceSearchQuery.toLowerCase(),
-          ) ||
-          inv.invoiceNumber.toLowerCase().contains(
-            _invoiceSearchQuery.toLowerCase(),
-          );
+      final matchesSearch = _invoiceSearchQuery.isEmpty ||
+          inv.vendorName.toLowerCase().contains(_invoiceSearchQuery.toLowerCase()) ||
+          inv.invoiceNumber.toLowerCase().contains(_invoiceSearchQuery.toLowerCase());
 
-      final matchesStatus =
-          _invoiceStatusFilter == 'All Statuses' ||
-          (_invoiceStatusFilter == 'Unpaid' &&
-              inv.status == InvoiceStatus.unpaid) ||
-          (_invoiceStatusFilter == 'Paid' &&
-              inv.status == InvoiceStatus.paid) ||
-          (_invoiceStatusFilter == 'Overdue' &&
-              inv.status == InvoiceStatus.overdue);
+      final matchesStatus = _invoiceStatusFilter == 'All Statuses' ||
+          (_invoiceStatusFilter == 'Unpaid' && inv.status == InvoiceStatus.unpaid) ||
+          (_invoiceStatusFilter == 'Paid' && inv.status == InvoiceStatus.paid) ||
+          (_invoiceStatusFilter == 'Overdue' && inv.status == InvoiceStatus.overdue);
 
       return matchesSearch && matchesStatus;
     }).toList();
@@ -513,14 +483,11 @@ class FinanceHeaderWidget extends StatelessWidget {
 
     String buttonLabel = 'Create Claim';
     IconData buttonIcon = Icons.add_rounded;
-    Color buttonBg = AppColors.warning;
 
     if (activeTab == FinanceTab.budgets) {
       buttonLabel = 'Add Budget';
-      buttonBg = AppColors.primary;
     } else if (activeTab == FinanceTab.invoices) {
       buttonLabel = 'New Invoice';
-      buttonBg = AppColors.primary;
     }
 
     return LayoutBuilder(
@@ -538,9 +505,9 @@ class FinanceHeaderWidget extends StatelessWidget {
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       gradient: const LinearGradient(
-                        colors: [AppColors.accent, Color(0xFF06B6D4)],
+                        colors: [AppColors.primary, AppColors.accent],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -570,13 +537,9 @@ class FinanceHeaderWidget extends StatelessWidget {
                             ),
                             const SizedBox(width: 6),
                             Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: theme.colorScheme.onSurfaceVariant
-                                    .withAlpha(24),
+                                color: theme.colorScheme.onSurfaceVariant.withAlpha(24),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -613,11 +576,9 @@ class FinanceHeaderWidget extends StatelessWidget {
                   icon: Icon(buttonIcon, size: 18),
                   label: Text(buttonLabel),
                   style: FilledButton.styleFrom(
-                    backgroundColor: buttonBg,
+                    backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
                 ),
@@ -635,13 +596,13 @@ class FinanceHeaderWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 gradient: const LinearGradient(
-                  colors: [AppColors.accent, Color(0xFF06B6D4)],
+                  colors: [AppColors.primary, AppColors.accent],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.accent.withAlpha(60),
+                    color: AppColors.primary.withAlpha(40),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -673,14 +634,9 @@ class FinanceHeaderWidget extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.onSurfaceVariant.withAlpha(
-                            24,
-                          ),
+                          color: theme.colorScheme.onSurfaceVariant.withAlpha(24),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -714,15 +670,10 @@ class FinanceHeaderWidget extends StatelessWidget {
                 icon: Icon(buttonIcon, size: 18),
                 label: Text(buttonLabel),
                 style: FilledButton.styleFrom(
-                  backgroundColor: buttonBg,
+                  backgroundColor: AppColors.primary,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
               ),
             ],
@@ -768,7 +719,7 @@ class FinanceStatsRowWidget extends StatelessWidget {
           subInfo: 'Utilized: $utilizedBudget',
           trendText: '8.5 vs last month',
           isTrendPositive: true,
-          badgeColor: AppColors.success,
+          accentColor: const Color(0xFF60A5FA),
           badgeIcon: Icons.attach_money_rounded,
         );
 
@@ -776,7 +727,7 @@ class FinanceStatsRowWidget extends StatelessWidget {
           title: 'PENDING APPROVALS',
           value: pendingApprovals,
           subInfo: 'Total Claims: $totalClaims',
-          badgeColor: AppColors.warning,
+          accentColor: AppColors.warning,
           badgeIcon: Icons.request_quote_rounded,
         );
 
@@ -786,7 +737,7 @@ class FinanceStatsRowWidget extends StatelessWidget {
           subInfo: 'Total Invoices: $totalInvoices',
           trendText: '3.2 vs last month',
           isTrendPositive: false,
-          badgeColor: AppColors.error,
+          accentColor: AppColors.error,
           badgeIcon: Icons.description_rounded,
         );
 
@@ -826,7 +777,7 @@ class FinanceStatCardWidget extends StatelessWidget {
   final String subInfo;
   final String? trendText;
   final bool? isTrendPositive;
-  final Color badgeColor;
+  final Color accentColor;
   final IconData badgeIcon;
 
   const FinanceStatCardWidget({
@@ -836,7 +787,7 @@ class FinanceStatCardWidget extends StatelessWidget {
     required this.subInfo,
     this.trendText,
     this.isTrendPositive,
-    required this.badgeColor,
+    required this.accentColor,
     required this.badgeIcon,
   });
 
@@ -851,12 +802,15 @@ class FinanceStatCardWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withAlpha(10),
+            color: theme.shadowColor.withAlpha(12),
             blurRadius: 14,
             offset: const Offset(0, 4),
           ),
         ],
-        border: Border.all(color: theme.dividerColor.withAlpha(50), width: 1),
+        border: Border.all(
+          color: theme.dividerColor.withAlpha(50),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -902,10 +856,10 @@ class FinanceStatCardWidget extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: badgeColor.withAlpha(26),
+                  color: accentColor.withAlpha(24),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(badgeIcon, color: badgeColor, size: 20),
+                child: Icon(badgeIcon, color: accentColor, size: 20),
               ),
             ],
           ),
@@ -928,21 +882,15 @@ class FinanceStatCardWidget extends StatelessWidget {
               child: Row(
                 children: [
                   Icon(
-                    isTrendPositive == true
-                        ? Icons.arrow_outward_rounded
-                        : Icons.arrow_downward_rounded,
+                    isTrendPositive == true ? Icons.arrow_outward_rounded : Icons.arrow_downward_rounded,
                     size: 13,
-                    color: isTrendPositive == true
-                        ? AppColors.success
-                        : AppColors.error,
+                    color: isTrendPositive == true ? AppColors.success : AppColors.error,
                   ),
                   const SizedBox(width: 3),
                   Text(
                     trendText!,
                     style: AppTextStyles.labelMedium.copyWith(
-                      color: isTrendPositive == true
-                          ? AppColors.success
-                          : AppColors.error,
+                      color: isTrendPositive == true ? AppColors.success : AppColors.error,
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                     ),
@@ -1033,13 +981,13 @@ class FinanceTabItemWidget extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: const LinearGradient(
-              colors: [AppColors.warning, Color(0xFFD97706)],
+              colors: [AppColors.primary, Color(0xFF1D4ED8)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.warning.withAlpha(60),
+                color: AppColors.primary.withAlpha(50),
                 blurRadius: 10,
                 offset: const Offset(0, 3),
               ),
@@ -1161,11 +1109,7 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                         color: AppColors.primary.withAlpha(24),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.layers_rounded,
-                        color: AppColors.primary,
-                        size: 18,
-                      ),
+                      child: const Icon(Icons.layers_rounded, color: AppColors.primary, size: 18),
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -1177,10 +1121,7 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(20),
                         borderRadius: BorderRadius.circular(10),
@@ -1200,11 +1141,7 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                 final rightDate = Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.calendar_today_rounded,
-                      size: 13,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    Icon(Icons.calendar_today_rounded, size: 13, color: theme.colorScheme.onSurfaceVariant),
                     const SizedBox(width: 5),
                     Text(
                       'Last updated: $dateString',
@@ -1219,13 +1156,20 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                 if (isCompact) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [leftTitle, const SizedBox(height: 8), rightDate],
+                    children: [
+                      leftTitle,
+                      const SizedBox(height: 8),
+                      rightDate,
+                    ],
                   );
                 }
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [leftTitle, rightDate],
+                  children: [
+                    leftTitle,
+                    rightDate,
+                  ],
                 );
               },
             ),
@@ -1244,14 +1188,8 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                         onChanged: onSearchChanged,
                         decoration: InputDecoration(
                           hintText: 'Search employee or category...',
-                          prefixIcon: const Icon(
-                            Icons.search_rounded,
-                            size: 20,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
+                          prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -1270,35 +1208,19 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                           Expanded(
                             child: DropdownButtonFormField<String>(
                               initialValue: statusFilter,
-                              items:
-                                  [
-                                        'All Statuses',
-                                        'Pending',
-                                        'Approved',
-                                        'Rejected',
-                                      ]
-                                      .map(
-                                        (s) => DropdownMenuItem(
-                                          value: s,
-                                          child: Text(s),
-                                        ),
-                                      )
-                                      .toList(),
+                              items: ['All Statuses', 'Pending', 'Approved', 'Rejected']
+                                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                                  .toList(),
                               onChanged: (val) {
                                 if (val != null) onStatusFilterChanged(val);
                               },
                               decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 10,
-                                ),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 filled: true,
                                 fillColor: theme.colorScheme.surface,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(
-                                    color: theme.dividerColor,
-                                  ),
+                                  borderSide: BorderSide(color: theme.dividerColor),
                                 ),
                               ),
                             ),
@@ -1308,10 +1230,8 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                             onPressed: onAddClaim,
                             icon: const Icon(Icons.add_rounded),
                             style: IconButton.styleFrom(
-                              backgroundColor: AppColors.warning,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                              backgroundColor: AppColors.primary,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
                         ],
@@ -1327,16 +1247,9 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                       child: TextField(
                         onChanged: onSearchChanged,
                         decoration: InputDecoration(
-                          hintText:
-                              'Search by employee name, email or category...',
-                          prefixIcon: const Icon(
-                            Icons.search_rounded,
-                            size: 20,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
+                          hintText: 'Search by employee name, email or category...',
+                          prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -1355,23 +1268,14 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                       flex: 2,
                       child: DropdownButtonFormField<String>(
                         initialValue: statusFilter,
-                        items:
-                            ['All Statuses', 'Pending', 'Approved', 'Rejected']
-                                .map(
-                                  (s) => DropdownMenuItem(
-                                    value: s,
-                                    child: Text(s),
-                                  ),
-                                )
-                                .toList(),
+                        items: ['All Statuses', 'Pending', 'Approved', 'Rejected']
+                            .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                            .toList(),
                         onChanged: (val) {
                           if (val != null) onStatusFilterChanged(val);
                         },
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -1391,15 +1295,10 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                       icon: const Icon(Icons.add_rounded, size: 18),
                       label: const Text('Add Claim'),
                       style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.warning,
+                        backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       ),
                     ),
                   ],
@@ -1413,9 +1312,7 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final minTableWidth = 720.0;
-              final tableWidth = constraints.maxWidth < minTableWidth
-                  ? minTableWidth
-                  : constraints.maxWidth;
+              final tableWidth = constraints.maxWidth < minTableWidth ? minTableWidth : constraints.maxWidth;
 
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -1425,43 +1322,21 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                     children: [
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 12,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.success.withAlpha(16),
+                          color: AppColors.primary.withAlpha(14),
                           border: Border(
-                            top: BorderSide(
-                              color: AppColors.success.withAlpha(30),
-                            ),
-                            bottom: BorderSide(
-                              color: AppColors.success.withAlpha(30),
-                            ),
+                            top: BorderSide(color: AppColors.primary.withAlpha(24)),
+                            bottom: BorderSide(color: AppColors.primary.withAlpha(24)),
                           ),
                         ),
                         child: const Row(
                           children: [
-                            Expanded(
-                              flex: 3,
-                              child: _FinanceTableHeaderCell('EMPLOYEE'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('CATEGORY / DATE'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('AMOUNT'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('STATUS'),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: _FinanceTableHeaderCell('ACTIONS'),
-                            ),
+                            Expanded(flex: 3, child: _FinanceTableHeaderCell('EMPLOYEE')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('CATEGORY / DATE')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('AMOUNT')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('STATUS')),
+                            Expanded(flex: 3, child: _FinanceTableHeaderCell('ACTIONS')),
                           ],
                         ),
                       ),
@@ -1471,19 +1346,9 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                           child: Center(
                             child: Column(
                               children: [
-                                Icon(
-                                  Icons.receipt_long_outlined,
-                                  size: 42,
-                                  color: theme.colorScheme.onSurfaceVariant
-                                      .withAlpha(100),
-                                ),
+                                Icon(Icons.receipt_long_outlined, size: 42, color: theme.colorScheme.onSurfaceVariant.withAlpha(100)),
                                 const SizedBox(height: 10),
-                                Text(
-                                  'No expense claims found',
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
+                                Text('No expense claims found', style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                               ],
                             ),
                           ),
@@ -1493,10 +1358,7 @@ class ExpenseClaimsSectionWidget extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: claims.length,
-                          separatorBuilder: (ctx, idx) => Divider(
-                            height: 1,
-                            color: theme.dividerColor.withAlpha(40),
-                          ),
+                          separatorBuilder: (ctx, idx) => Divider(height: 1, color: theme.dividerColor.withAlpha(40)),
                           itemBuilder: (context, index) {
                             final claim = claims[index];
                             return ExpenseClaimRowWidget(
@@ -1527,7 +1389,7 @@ class _FinanceTableHeaderCell extends StatelessWidget {
     return Text(
       text,
       style: AppTextStyles.labelMedium.copyWith(
-        color: AppColors.success,
+        color: AppColors.primary,
         fontWeight: FontWeight.w800,
         fontSize: 12,
         letterSpacing: 0.5,
@@ -1643,17 +1505,9 @@ class ExpenseClaimRowWidget extends StatelessWidget {
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.success,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                         ),
                       ),
                       const SizedBox(width: 6),
@@ -1664,17 +1518,9 @@ class ExpenseClaimRowWidget extends StatelessWidget {
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.error,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ],
@@ -1702,21 +1548,21 @@ class ExpenseClaimStatusChipWidget extends StatelessWidget {
 
     switch (status) {
       case ClaimStatus.pending:
-        bg = AppColors.warning.withAlpha(26);
+        bg = AppColors.warning.withAlpha(24);
         border = AppColors.warning.withAlpha(60);
         text = AppColors.warning;
         icon = Icons.schedule_rounded;
         label = 'Pending';
         break;
       case ClaimStatus.approved:
-        bg = AppColors.success.withAlpha(26);
+        bg = AppColors.success.withAlpha(24);
         border = AppColors.success.withAlpha(60);
         text = AppColors.success;
         icon = Icons.check_circle_outline_rounded;
         label = 'Approved';
         break;
       case ClaimStatus.rejected:
-        bg = AppColors.error.withAlpha(26);
+        bg = AppColors.error.withAlpha(24);
         border = AppColors.error.withAlpha(60);
         text = AppColors.error;
         icon = Icons.cancel_outlined;
@@ -1738,11 +1584,7 @@ class ExpenseClaimStatusChipWidget extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             label,
-            style: TextStyle(
-              color: text,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-            ),
+            style: TextStyle(color: text, fontSize: 11, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -1803,11 +1645,7 @@ class DepartmentBudgetsSectionWidget extends StatelessWidget {
                         color: AppColors.primary.withAlpha(24),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.account_balance_wallet_rounded,
-                        color: AppColors.primary,
-                        size: 18,
-                      ),
+                      child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.primary, size: 18),
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -1819,10 +1657,7 @@ class DepartmentBudgetsSectionWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withAlpha(20),
                         borderRadius: BorderRadius.circular(10),
@@ -1845,13 +1680,8 @@ class DepartmentBudgetsSectionWidget extends StatelessWidget {
                   label: const Text('Allocate Budget'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                 );
 
@@ -1868,7 +1698,10 @@ class DepartmentBudgetsSectionWidget extends StatelessWidget {
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [leftTitle, actionBtn],
+                  children: [
+                    leftTitle,
+                    actionBtn,
+                  ],
                 );
               },
             ),
@@ -1881,10 +1714,7 @@ class DepartmentBudgetsSectionWidget extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Search department...',
                 prefixIcon: const Icon(Icons.search_rounded, size: 20),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 filled: true,
                 fillColor: theme.colorScheme.surface,
                 border: OutlineInputBorder(
@@ -1930,18 +1760,18 @@ class DepartmentBudgetCardWidget extends StatelessWidget {
 
     Color progressColor = AppColors.success;
     String statusText = 'On Track';
-    Color statusBg = AppColors.success.withAlpha(26);
+    Color statusBg = AppColors.success.withAlpha(24);
     Color statusFg = AppColors.success;
 
     if (item.percentage >= 0.9 && item.percentage <= 1.0) {
       progressColor = AppColors.warning;
       statusText = 'Near Limit';
-      statusBg = AppColors.warning.withAlpha(26);
+      statusBg = AppColors.warning.withAlpha(24);
       statusFg = AppColors.warning;
     } else if (item.percentage > 1.0) {
       progressColor = AppColors.error;
       statusText = 'Over Budget';
-      statusBg = AppColors.error.withAlpha(26);
+      statusBg = AppColors.error.withAlpha(24);
       statusFg = AppColors.error;
     }
 
@@ -1985,17 +1815,10 @@ class DepartmentBudgetCardWidget extends StatelessWidget {
               const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: statusBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
+                decoration: BoxDecoration(color: statusBg, borderRadius: BorderRadius.circular(10)),
                 child: Text(
                   statusText,
-                  style: TextStyle(
-                    color: statusFg,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: TextStyle(color: statusFg, fontSize: 10, fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -2105,11 +1928,7 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                         color: AppColors.error.withAlpha(24),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(
-                        Icons.description_rounded,
-                        color: AppColors.error,
-                        size: 18,
-                      ),
+                      child: const Icon(Icons.description_rounded, color: AppColors.error, size: 18),
                     ),
                     const SizedBox(width: 8),
                     Text(
@@ -2121,10 +1940,7 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: AppColors.error.withAlpha(20),
                         borderRadius: BorderRadius.circular(10),
@@ -2147,13 +1963,8 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                   label: const Text('Add Invoice'),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                 );
 
@@ -2170,7 +1981,10 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [leftTitle, actionBtn],
+                  children: [
+                    leftTitle,
+                    actionBtn,
+                  ],
                 );
               },
             ),
@@ -2189,14 +2003,8 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                         onChanged: onSearchChanged,
                         decoration: InputDecoration(
                           hintText: 'Search vendor or invoice #...',
-                          prefixIcon: const Icon(
-                            Icons.search_rounded,
-                            size: 20,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
+                          prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -2209,18 +2017,13 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                       DropdownButtonFormField<String>(
                         initialValue: statusFilter,
                         items: ['All Statuses', 'Unpaid', 'Paid', 'Overdue']
-                            .map(
-                              (s) => DropdownMenuItem(value: s, child: Text(s)),
-                            )
+                            .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                             .toList(),
                         onChanged: (val) {
                           if (val != null) onStatusFilterChanged(val);
                         },
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -2241,14 +2044,8 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                         onChanged: onSearchChanged,
                         decoration: InputDecoration(
                           hintText: 'Search vendor or invoice #...',
-                          prefixIcon: const Icon(
-                            Icons.search_rounded,
-                            size: 20,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
+                          prefixIcon: const Icon(Icons.search_rounded, size: 20),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -2264,18 +2061,13 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                       child: DropdownButtonFormField<String>(
                         initialValue: statusFilter,
                         items: ['All Statuses', 'Unpaid', 'Paid', 'Overdue']
-                            .map(
-                              (s) => DropdownMenuItem(value: s, child: Text(s)),
-                            )
+                            .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                             .toList(),
                         onChanged: (val) {
                           if (val != null) onStatusFilterChanged(val);
                         },
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 10,
-                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           filled: true,
                           fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
@@ -2296,9 +2088,7 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final minTableWidth = 700.0;
-              final tableWidth = constraints.maxWidth < minTableWidth
-                  ? minTableWidth
-                  : constraints.maxWidth;
+              final tableWidth = constraints.maxWidth < minTableWidth ? minTableWidth : constraints.maxWidth;
 
               return SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -2308,43 +2098,21 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                     children: [
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 12,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
                         decoration: BoxDecoration(
-                          color: AppColors.error.withAlpha(14),
+                          color: AppColors.primary.withAlpha(14),
                           border: Border(
-                            top: BorderSide(
-                              color: AppColors.error.withAlpha(24),
-                            ),
-                            bottom: BorderSide(
-                              color: AppColors.error.withAlpha(24),
-                            ),
+                            top: BorderSide(color: AppColors.primary.withAlpha(24)),
+                            bottom: BorderSide(color: AppColors.primary.withAlpha(24)),
                           ),
                         ),
                         child: const Row(
                           children: [
-                            Expanded(
-                              flex: 3,
-                              child: _FinanceTableHeaderCell('VENDOR'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('DUE DATE'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('AMOUNT'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('STATUS'),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: _FinanceTableHeaderCell('ACTIONS'),
-                            ),
+                            Expanded(flex: 3, child: _FinanceTableHeaderCell('VENDOR')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('DUE DATE')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('AMOUNT')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('STATUS')),
+                            Expanded(flex: 2, child: _FinanceTableHeaderCell('ACTIONS')),
                           ],
                         ),
                       ),
@@ -2352,15 +2120,70 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: invoices.length,
-                        separatorBuilder: (ctx, idx) => Divider(
-                          height: 1,
-                          color: theme.dividerColor.withAlpha(40),
-                        ),
+                        separatorBuilder: (ctx, idx) => Divider(height: 1, color: theme.dividerColor.withAlpha(40)),
                         itemBuilder: (context, index) {
                           final inv = invoices[index];
-                          return VendorInvoiceRowWidget(
-                            invoice: inv,
-                            onMarkPaid: () => onMarkPaid(inv),
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        inv.vendorName,
+                                        style: AppTextStyles.bodyMedium.copyWith(fontWeight: FontWeight.w700, fontSize: 13),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        inv.invoiceNumber,
+                                        style: AppTextStyles.labelMedium.copyWith(color: theme.colorScheme.onSurfaceVariant, fontSize: 11),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    'Due: ${inv.dueDate}',
+                                    style: AppTextStyles.bodyMedium.copyWith(color: theme.colorScheme.onSurfaceVariant, fontSize: 12),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    '\$${_FinanceViewBodyState.formatCurrency(inv.amount)}',
+                                    style: AppTextStyles.headlineMedium.copyWith(fontSize: 14, fontWeight: FontWeight.w800),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: VendorInvoiceStatusChipWidget(status: inv.status),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: inv.status == InvoiceStatus.unpaid
+                                      ? TextButton.icon(
+                                          onPressed: () => onMarkPaid(inv),
+                                          icon: const Icon(Icons.check_rounded, size: 15),
+                                          label: const Text('Mark Paid'),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: AppColors.success,
+                                            textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700),
+                                            padding: EdgeInsets.zero,
+                                            alignment: Alignment.centerLeft,
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -2369,100 +2192,6 @@ class VendorInvoicesSectionWidget extends StatelessWidget {
                 ),
               );
             },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class VendorInvoiceRowWidget extends StatelessWidget {
-  final VendorInvoiceItem invoice;
-  final VoidCallback onMarkPaid;
-
-  const VendorInvoiceRowWidget({
-    super.key,
-    required this.invoice,
-    required this.onMarkPaid,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  invoice.vendorName,
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  invoice.invoiceNumber,
-                  style: AppTextStyles.labelMedium.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontSize: 11,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              'Due: ${invoice.dueDate}',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontSize: 12,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              '\$${_FinanceViewBodyState.formatCurrency(invoice.amount)}',
-              style: AppTextStyles.headlineMedium.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: VendorInvoiceStatusChipWidget(status: invoice.status),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: invoice.status == InvoiceStatus.unpaid
-                ? TextButton.icon(
-                    onPressed: onMarkPaid,
-                    icon: const Icon(Icons.check_rounded, size: 15),
-                    label: const Text('Mark Paid'),
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.success,
-                      textStyle: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      padding: EdgeInsets.zero,
-                      alignment: Alignment.centerLeft,
-                    ),
-                  )
-                : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -2483,17 +2212,17 @@ class VendorInvoiceStatusChipWidget extends StatelessWidget {
 
     switch (status) {
       case InvoiceStatus.unpaid:
-        bg = AppColors.error.withAlpha(26);
+        bg = AppColors.error.withAlpha(24);
         text = AppColors.error;
         label = 'Unpaid';
         break;
       case InvoiceStatus.paid:
-        bg = AppColors.success.withAlpha(26);
+        bg = AppColors.success.withAlpha(24);
         text = AppColors.success;
         label = 'Paid';
         break;
       case InvoiceStatus.overdue:
-        bg = AppColors.warning.withAlpha(26);
+        bg = AppColors.warning.withAlpha(24);
         text = AppColors.warning;
         label = 'Overdue';
         break;
@@ -2507,11 +2236,7 @@ class VendorInvoiceStatusChipWidget extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          color: text,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-        ),
+        style: TextStyle(color: text, fontSize: 11, fontWeight: FontWeight.w700),
       ),
     );
   }
@@ -2549,14 +2274,10 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.warning.withAlpha(30),
+              color: AppColors.primary.withAlpha(24),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.receipt_long_rounded,
-              color: AppColors.warning,
-              size: 20,
-            ),
+            child: const Icon(Icons.receipt_long_rounded, color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -2579,20 +2300,14 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
               const SizedBox(height: 6),
               TextField(
                 controller: nameController,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'e.g. Hassan Khan',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. Hassan Khan'),
               ),
               const SizedBox(height: 12),
               Text('Email Address', style: AppTextStyles.labelMedium),
               const SizedBox(height: 6),
               TextField(
                 controller: emailController,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'e.g. hassan@hrm.com',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. hassan@hrm.com'),
               ),
               const SizedBox(height: 12),
               LayoutBuilder(
@@ -2606,21 +2321,9 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
                         const SizedBox(height: 6),
                         DropdownButtonFormField<String>(
                           initialValue: category,
-                          items:
-                              [
-                                    'Food',
-                                    'Travel',
-                                    'Software',
-                                    'Office Supplies',
-                                    'Equipment',
-                                  ]
-                                  .map(
-                                    (cat) => DropdownMenuItem(
-                                      value: cat,
-                                      child: Text(cat),
-                                    ),
-                                  )
-                                  .toList(),
+                          items: ['Food', 'Travel', 'Software', 'Office Supplies', 'Equipment']
+                              .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
+                              .toList(),
                           onChanged: (val) {
                             if (val != null) setState(() => category = val);
                           },
@@ -2631,13 +2334,8 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
                         const SizedBox(height: 6),
                         TextField(
                           controller: amountController,
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
-                          decoration: _financeDialogInputDecoration(
-                            theme,
-                            '0.00',
-                          ),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          decoration: _financeDialogInputDecoration(theme, '0.00'),
                         ),
                       ],
                     );
@@ -2652,28 +2350,13 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
                             const SizedBox(height: 6),
                             DropdownButtonFormField<String>(
                               initialValue: category,
-                              items:
-                                  [
-                                        'Food',
-                                        'Travel',
-                                        'Software',
-                                        'Office Supplies',
-                                        'Equipment',
-                                      ]
-                                      .map(
-                                        (cat) => DropdownMenuItem(
-                                          value: cat,
-                                          child: Text(cat),
-                                        ),
-                                      )
-                                      .toList(),
+                              items: ['Food', 'Travel', 'Software', 'Office Supplies', 'Equipment']
+                                  .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
+                                  .toList(),
                               onChanged: (val) {
                                 if (val != null) setState(() => category = val);
                               },
-                              decoration: _financeDialogInputDecoration(
-                                theme,
-                                '',
-                              ),
+                              decoration: _financeDialogInputDecoration(theme, ''),
                             ),
                           ],
                         ),
@@ -2683,21 +2366,12 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Amount (\$)',
-                              style: AppTextStyles.labelMedium,
-                            ),
+                            Text('Amount (\$)', style: AppTextStyles.labelMedium),
                             const SizedBox(height: 6),
                             TextField(
                               controller: amountController,
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                    decimal: true,
-                                  ),
-                              decoration: _financeDialogInputDecoration(
-                                theme,
-                                '0.00',
-                              ),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              decoration: _financeDialogInputDecoration(theme, '0.00'),
                             ),
                           ],
                         ),
@@ -2712,10 +2386,7 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
               TextField(
                 controller: noteController,
                 maxLines: 2,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'Brief details regarding this expense...',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'Brief details regarding this expense...'),
               ),
             ],
           ),
@@ -2724,17 +2395,12 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            'Cancel',
-            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-          ),
+          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
         ),
         FilledButton(
           onPressed: () {
             final amount = double.tryParse(amountController.text.trim()) ?? 0.0;
-            final name = nameController.text.trim().isEmpty
-                ? 'N/A'
-                : nameController.text.trim();
+            final name = nameController.text.trim().isEmpty ? 'N/A' : nameController.text.trim();
             if (amount > 0) {
               final newItem = ExpenseClaimItem(
                 id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -2751,10 +2417,8 @@ class _AddExpenseClaimDialogState extends State<AddExpenseClaimDialog> {
             }
           },
           style: FilledButton.styleFrom(
-            backgroundColor: AppColors.warning,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            backgroundColor: AppColors.primary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: const Text('Submit Claim'),
         ),
@@ -2769,8 +2433,7 @@ class AddDepartmentBudgetDialog extends StatefulWidget {
   const AddDepartmentBudgetDialog({super.key, required this.onSubmit});
 
   @override
-  State<AddDepartmentBudgetDialog> createState() =>
-      _AddDepartmentBudgetDialogState();
+  State<AddDepartmentBudgetDialog> createState() => _AddDepartmentBudgetDialogState();
 }
 
 class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
@@ -2790,14 +2453,10 @@ class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primary.withAlpha(30),
+              color: AppColors.primary.withAlpha(24),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.account_balance_wallet_rounded,
-              color: AppColors.primary,
-              size: 20,
-            ),
+            child: const Icon(Icons.account_balance_wallet_rounded, color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -2820,19 +2479,14 @@ class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
               const SizedBox(height: 6),
               TextField(
                 controller: deptController,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'e.g. Operations',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. Operations'),
               ),
               const SizedBox(height: 12),
               Text('Total Budget (\$)', style: AppTextStyles.labelMedium),
               const SizedBox(height: 6),
               TextField(
                 controller: amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: _financeDialogInputDecoration(theme, 'e.g. 40000'),
               ),
               const SizedBox(height: 12),
@@ -2840,9 +2494,7 @@ class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
               const SizedBox(height: 6),
               TextField(
                 controller: spentController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: _financeDialogInputDecoration(theme, '0.00'),
               ),
             ],
@@ -2852,10 +2504,7 @@ class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            'Cancel',
-            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-          ),
+          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
         ),
         FilledButton(
           onPressed: () {
@@ -2876,9 +2525,7 @@ class _AddDepartmentBudgetDialogState extends State<AddDepartmentBudgetDialog> {
           },
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: const Text('Add Budget'),
         ),
@@ -2909,9 +2556,7 @@ class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
   @override
   void initState() {
     super.initState();
-    invNumberController = TextEditingController(
-      text: widget.defaultInvoiceNumber,
-    );
+    invNumberController = TextEditingController(text: widget.defaultInvoiceNumber);
   }
 
   @override
@@ -2926,14 +2571,10 @@ class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.error.withAlpha(30),
+              color: AppColors.primary.withAlpha(24),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.description_rounded,
-              color: AppColors.error,
-              size: 20,
-            ),
+            child: const Icon(Icons.description_rounded, color: AppColors.primary, size: 20),
           ),
           const SizedBox(width: 12),
           const Expanded(
@@ -2956,29 +2597,21 @@ class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
               const SizedBox(height: 6),
               TextField(
                 controller: invNumberController,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'e.g. INV-2026-085',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. INV-2026-085'),
               ),
               const SizedBox(height: 12),
               Text('Vendor Name', style: AppTextStyles.labelMedium),
               const SizedBox(height: 6),
               TextField(
                 controller: vendorController,
-                decoration: _financeDialogInputDecoration(
-                  theme,
-                  'e.g. Microsoft 365',
-                ),
+                decoration: _financeDialogInputDecoration(theme, 'e.g. Microsoft 365'),
               ),
               const SizedBox(height: 12),
               Text('Amount (\$)', style: AppTextStyles.labelMedium),
               const SizedBox(height: 6),
               TextField(
                 controller: amountController,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 decoration: _financeDialogInputDecoration(theme, '0.00'),
               ),
             ],
@@ -2988,10 +2621,7 @@ class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            'Cancel',
-            style: TextStyle(color: theme.colorScheme.onSurfaceVariant),
-          ),
+          child: Text('Cancel', style: TextStyle(color: theme.colorScheme.onSurfaceVariant)),
         ),
         FilledButton(
           onPressed: () {
@@ -3014,9 +2644,7 @@ class _AddVendorInvoiceDialogState extends State<AddVendorInvoiceDialog> {
           },
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           child: const Text('Save Invoice'),
         ),
