@@ -370,15 +370,15 @@ class PersonalOverviewCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Profile Header Container (ambient soft cyan gradient with dual-ring glowing avatar)
+            // Top Profile Header Container (mobile-optimized ambient soft cyan gradient with dual-ring avatar)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(16, 26, 16, 22),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFE0F2FE).withAlpha(140),
-                    const Color(0xFFF0FDF4).withAlpha(60),
+                    const Color(0xFFE0F2FE).withAlpha(120),
+                    const Color(0xFFF0FDF4).withAlpha(40),
                     theme.cardColor,
                   ],
                   begin: Alignment.topCenter,
@@ -387,43 +387,36 @@ class PersonalOverviewCardWidget extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Dual-ring Avatar with vibrant gradient & glowing aura shadow
+                  // Dual-ring Avatar with clean proportions and smooth shadow
                   Container(
-                    padding: const EdgeInsets.all(3.5),
+                    padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF38BDF8).withAlpha(190),
-                          const Color(0xFF818CF8).withAlpha(190),
+                          const Color(0xFF38BDF8).withAlpha(180),
+                          const Color(0xFF818CF8).withAlpha(180),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF0284C7).withAlpha(55),
-                          blurRadius: 24,
-                          spreadRadius: 2,
-                          offset: const Offset(0, 8),
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFF38BDF8).withAlpha(35),
-                          blurRadius: 14,
-                          offset: const Offset(0, 2),
+                          color: const Color(0xFF0284C7).withAlpha(45),
+                          blurRadius: 18,
+                          offset: const Offset(0, 6),
                         ),
                       ],
                     ),
                     child: Container(
-                      width: 84,
-                      height: 84,
+                      width: 76,
+                      height: 76,
                       decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
                           colors: [
-                            Color(0xFF0284C7), // Blue
-                            Color(0xFF2563EB), // Deep Blue
-                            Color(0xFF6366F1), // Indigo
+                            Color(0xFF0284C7), // Sky Blue
+                            Color(0xFF4F46E5), // Indigo
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -434,39 +427,39 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                         profile.name.isNotEmpty ? profile.name[0].toUpperCase() : 'U',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.w900,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
 
                   // User Name
                   Text(
                     profile.name,
                     style: AppTextStyles.titleMedium.copyWith(
                       fontWeight: FontWeight.w800,
-                      fontSize: 22,
-                      letterSpacing: -0.4,
+                      fontSize: 19,
+                      letterSpacing: -0.3,
                       color: theme.colorScheme.onSurface,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 2),
 
                   // Role Subtitle
                   Text(
                     profile.employeeType,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 13.5,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.w500,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
 
                   // Badges Row: Status ("⊘ Inactive" / "Active") + Role ("HR Manager")
                   Wrap(
@@ -476,17 +469,17 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                     children: [
                       // Status Chip
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4.5),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
                           color: profile.isActive
                               ? const Color(0xFFF0FDF4)
                               : const Color(0xFFFEF2F2),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: profile.isActive
                                 ? const Color(0xFFBBF7D0)
                                 : const Color(0xFFFECACA),
-                            width: 1,
+                            width: 0.9,
                           ),
                         ),
                         child: Row(
@@ -496,7 +489,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                               profile.isActive
                                   ? Icons.check_circle_outline_rounded
                                   : Icons.cancel_outlined,
-                              size: 13.5,
+                              size: 13,
                               color: profile.isActive
                                   ? const Color(0xFF16A34A)
                                   : const Color(0xFFDC2626),
@@ -508,7 +501,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                                 color: profile.isActive
                                     ? const Color(0xFF16A34A)
                                     : const Color(0xFFDC2626),
-                                fontSize: 11.5,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -518,20 +511,20 @@ class PersonalOverviewCardWidget extends StatelessWidget {
 
                       // Purple Role Badge
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4.5),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF3E8FF),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: const Color(0xFFE9D5FF),
-                            width: 1,
+                            width: 0.9,
                           ),
                         ),
                         child: Text(
                           profile.roleBadge,
                           style: const TextStyle(
                             color: Color(0xFF9333EA),
-                            fontSize: 11.5,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
