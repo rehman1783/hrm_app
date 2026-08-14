@@ -223,123 +223,118 @@ class ProfileHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < 450;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Title & Icon section
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(13),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF0284C7), Color(0xFF06B6D4)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF0284C7).withAlpha(45),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.person_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Profile',
+                      style: AppTextStyles.headlineMedium.copyWith(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                        letterSpacing: -0.4,
+                        color: theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      'View and manage your personal information',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 10),
 
-        final titleRow = Row(
-          children: [
-            Container(
-              width: 48,
-              height: 48,
+        // Compact & Stylish "Edit Profile" Button
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onEditPressed,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(10),
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF0284C7), Color(0xFF3B82F6)],
+                  colors: [
+                    Color(0xFF0284C7), // Sky Blue
+                    Color(0xFF8B5CF6), // Purple
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0284C7).withAlpha(50),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    color: const Color(0xFF0284C7).withAlpha(40),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-              child: const Icon(
-                Icons.person_rounded,
-                color: Colors.white,
-                size: 26,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  Icon(Icons.edit_rounded, color: Colors.white, size: 14),
+                  SizedBox(width: 5),
                   Text(
-                    'Profile',
-                    style: AppTextStyles.headlineMedium.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 22,
-                      letterSpacing: -0.4,
+                    'Edit Profile',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.1,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'View and manage your personal information',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 13,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
-            ),
-          ],
-        );
-
-        final editButton = InkWell(
-          onTap: onEditPressed,
-          borderRadius: BorderRadius.circular(14),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF0284C7), Color(0xFF8B5CF6)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF0284C7).withAlpha(40),
-                  blurRadius: 10,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.edit_rounded, color: Colors.white, size: 16),
-                SizedBox(width: 6),
-                Text(
-                  'Edit Profile',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
             ),
           ),
-        );
-
-        if (isNarrow) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              titleRow,
-              const SizedBox(height: 12),
-              SizedBox(width: double.infinity, child: editButton),
-            ],
-          );
-        }
-
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: titleRow),
-            const SizedBox(width: 12),
-            editButton,
-          ],
-        );
-      },
+        ),
+      ],
     );
   }
 }
@@ -375,15 +370,15 @@ class PersonalOverviewCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Profile Header Container (Light cyan-blue gradient background matching reference)
+            // Top Profile Header Container (ambient soft cyan gradient with dual-ring avatar)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    const Color(0xFFE0F2FE).withAlpha(120),
-                    const Color(0xFFF0FDF4).withAlpha(60),
+                    const Color(0xFFE0F2FE).withAlpha(130),
+                    const Color(0xFFF0FDF4).withAlpha(70),
                     theme.cardColor,
                   ],
                   begin: Alignment.topCenter,
@@ -392,55 +387,77 @@ class PersonalOverviewCardWidget extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Glowing avatar circle with "U"
+                  // Dual-ring Avatar with vibrant gradient & glowing shadow
                   Container(
-                    width: 80,
-                    height: 80,
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF0284C7), Color(0xFF6366F1)],
+                      gradient: LinearGradient(
+                        colors: [
+                          const Color(0xFF38BDF8).withAlpha(180),
+                          const Color(0xFF818CF8).withAlpha(180),
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF0284C7).withAlpha(70),
+                          color: const Color(0xFF0284C7).withAlpha(50),
                           blurRadius: 20,
                           offset: const Offset(0, 8),
                         ),
                       ],
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      profile.name.isNotEmpty ? profile.name[0].toUpperCase() : 'U',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 34,
-                        fontWeight: FontWeight.w800,
+                    child: Container(
+                      width: 82,
+                      height: 82,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF0284C7), // Blue
+                            Color(0xFF6366F1), // Indigo
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        profile.name.isNotEmpty ? profile.name[0].toUpperCase() : 'U',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
 
-                  // Name & Role
+                  // Name & Role Subtitle
                   Text(
                     profile.name,
                     style: AppTextStyles.titleMedium.copyWith(
                       fontWeight: FontWeight.w800,
-                      fontSize: 20,
+                      fontSize: 22,
+                      letterSpacing: -0.4,
                       color: theme.colorScheme.onSurface,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 3),
                   Text(
                     profile.employeeType,
                     style: AppTextStyles.bodyMedium.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 13,
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w500,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 12),
 
                   // Badges Row: Status ("⊘ Inactive") + Role ("HR Manager")
                   Row(
@@ -448,7 +465,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                     children: [
                       // Status Chip
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4),
                         decoration: BoxDecoration(
                           color: profile.isActive
                               ? const Color(0xFFDCFCE7)
@@ -479,7 +496,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                                 color: profile.isActive
                                     ? const Color(0xFF16A34A)
                                     : const Color(0xFFDC2626),
-                                fontSize: 11,
+                                fontSize: 11.5,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -490,7 +507,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
 
                       // Purple Role Badge
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF3E8FF),
                           borderRadius: BorderRadius.circular(20),
@@ -499,7 +516,7 @@ class PersonalOverviewCardWidget extends StatelessWidget {
                           profile.roleBadge,
                           style: const TextStyle(
                             color: Color(0xFF9333EA),
-                            fontSize: 11,
+                            fontSize: 11.5,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
