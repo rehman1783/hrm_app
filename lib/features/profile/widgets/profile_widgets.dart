@@ -36,29 +36,29 @@ class UserProfileData {
   String since;
 
   UserProfileData({
-    this.name = 'User',
+    this.name = 'Rehman',
     this.employeeType = 'Employee',
-    this.isActive = false,
+    this.isActive = true,
     this.roleBadge = 'HR Manager',
-    this.email = 'hr@hrm.com',
-    this.employeeId = '-',
-    this.fatherName = '-',
-    this.cnic = '-',
-    this.phone = '-',
-    this.department = '-',
-    this.joiningDate = '-',
-    this.location = '—',
-    this.shift = '-',
-    this.designation = '-',
-    this.workMode = '-',
-    this.workType = '-',
-    this.paymentType = '-',
-    this.salary = '-',
-    this.projectBudget = '-',
-    this.gender = '-',
+    this.email = 'abdulrehman78ali@gmail.com',
+    this.employeeId = 'EMP-2024-001',
+    this.fatherName = 'Ali Muhammad',
+    this.cnic = '35201-1234567-1',
+    this.phone = '+92 300 1234567',
+    this.department = 'Human Resources',
+    this.joiningDate = '15 Jan 2024',
+    this.location = 'Lahore, Pakistan',
+    this.shift = 'Morning (09:00 - 17:00)',
+    this.designation = 'Lead HR & Operations',
+    this.workMode = 'On-site',
+    this.workType = 'Full Time',
+    this.paymentType = 'Bank Transfer',
+    this.salary = 'Rs. 250,000 / month',
+    this.projectBudget = 'Rs. 1,500,000',
+    this.gender = 'Male',
     List<String>? skills,
-    this.since = '-',
-  }) : skills = skills ?? [];
+    this.since = '2024',
+  }) : skills = skills ?? ['Flutter', 'HR Management', 'Team Leadership', 'Recruitment', 'Payroll Management'];
 }
 
 // =============================================================
@@ -105,6 +105,74 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showImagePickerDialog() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Change Profile Photo',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 18,
+                ),
+              ),
+              const SizedBox(height: 14),
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withAlpha(25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.photo_camera_rounded, color: AppColors.primary),
+                ),
+                title: const Text('Take Photo', style: TextStyle(fontWeight: FontWeight.w600)),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Camera photo captured and updated!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF8B5CF6).withAlpha(25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.photo_library_rounded, color: Color(0xFF8B5CF6)),
+                ),
+                title: const Text('Choose from Gallery', style: TextStyle(fontWeight: FontWeight.w600)),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Gallery photo uploaded successfully!'),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -161,7 +229,11 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                       // Left Column: Personal Overview Card
                       Expanded(
                         flex: 5,
-                        child: PersonalOverviewCardWidget(profile: _profile),
+                        child: PersonalOverviewCardWidget(
+                          profile: _profile,
+                          onEditPressed: _showEditProfileDialog,
+                          onImagePickerPressed: _showImagePickerDialog,
+                        ),
                       ),
                       const SizedBox(width: 16),
 
@@ -188,7 +260,11 @@ class _ProfileViewBodyState extends State<ProfileViewBody> {
                 // Mobile / Tablet stacked view
                 return Column(
                   children: [
-                    PersonalOverviewCardWidget(profile: _profile),
+                    PersonalOverviewCardWidget(
+                      profile: _profile,
+                      onEditPressed: _showEditProfileDialog,
+                      onImagePickerPressed: _showImagePickerDialog,
+                    ),
                     const SizedBox(height: 16),
                     ProfessionalDetailsCardWidget(profile: _profile),
                     const SizedBox(height: 16),
@@ -262,7 +338,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Profile',
+                      'Profile & Settings',
                       style: AppTextStyles.headlineMedium.copyWith(
                         fontWeight: FontWeight.w800,
                         fontSize: 20,
@@ -287,53 +363,6 @@ class ProfileHeaderWidget extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 10),
-
-        // Compact & Stylish "Edit Profile" Button
-        Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onEditPressed,
-            borderRadius: BorderRadius.circular(10),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF0284C7), // Sky Blue
-                    Color(0xFF8B5CF6), // Purple
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF0284C7).withAlpha(40),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.edit_rounded, color: Colors.white, size: 14),
-                  SizedBox(width: 5),
-                  Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.1,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
       ],
     );
   }
@@ -345,8 +374,15 @@ class ProfileHeaderWidget extends StatelessWidget {
 
 class PersonalOverviewCardWidget extends StatelessWidget {
   final UserProfileData profile;
+  final VoidCallback? onEditPressed;
+  final VoidCallback? onImagePickerPressed;
 
-  const PersonalOverviewCardWidget({super.key, required this.profile});
+  const PersonalOverviewCardWidget({
+    super.key,
+    required this.profile,
+    this.onEditPressed,
+    this.onImagePickerPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -370,166 +406,237 @@ class PersonalOverviewCardWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Profile Header Container (mobile-optimized ambient soft cyan gradient with dual-ring avatar)
+            // Top Profile Header (matching app color scheme)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    const Color(0xFFE0F2FE).withAlpha(120),
-                    const Color(0xFFF0FDF4).withAlpha(40),
-                    theme.cardColor,
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                color: theme.cardColor,
+                border: Border(
+                  bottom: BorderSide(
+                    color: theme.dividerColor.withAlpha(40),
+                    width: 1,
+                  ),
                 ),
               ),
-              child: Column(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Dual-ring Avatar with clean proportions and smooth shadow
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF38BDF8).withAlpha(180),
-                          const Color(0xFF818CF8).withAlpha(180),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF0284C7).withAlpha(45),
-                          blurRadius: 18,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Container(
-                      width: 76,
-                      height: 76,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            Color(0xFF0284C7), // Sky Blue
-                            Color(0xFF4F46E5), // Indigo
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        profile.name.isNotEmpty ? profile.name[0].toUpperCase() : 'U',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // User Name
-                  Text(
-                    profile.name,
-                    style: AppTextStyles.titleMedium.copyWith(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 19,
-                      letterSpacing: -0.3,
-                      color: theme.colorScheme.onSurface,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 2),
-
-                  // Role Subtitle
-                  Text(
-                    profile.employeeType,
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Badges Row: Status ("⊘ Inactive" / "Active") + Role ("HR Manager")
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 8,
-                    runSpacing: 6,
+                  // 1. Circle Avatar with Image Picker floating camera button
+                  Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      // Status Chip
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        width: 76,
+                        height: 76,
                         decoration: BoxDecoration(
-                          color: profile.isActive
-                              ? const Color(0xFFF0FDF4)
-                              : const Color(0xFFFEF2F2),
-                          borderRadius: BorderRadius.circular(16),
+                          shape: BoxShape.circle,
+                          color: AppColors.primary.withAlpha(22),
                           border: Border.all(
-                            color: profile.isActive
-                                ? const Color(0xFFBBF7D0)
-                                : const Color(0xFFFECACA),
-                            width: 0.9,
+                            color: AppColors.primary.withAlpha(50),
+                            width: 1.5,
                           ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              profile.isActive
-                                  ? Icons.check_circle_outline_rounded
-                                  : Icons.cancel_outlined,
-                              size: 13,
-                              color: profile.isActive
-                                  ? const Color(0xFF16A34A)
-                                  : const Color(0xFFDC2626),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withAlpha(25),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              profile.isActive ? 'Active' : 'Inactive',
-                              style: TextStyle(
-                                color: profile.isActive
-                                    ? const Color(0xFF16A34A)
-                                    : const Color(0xFFDC2626),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.person_rounded,
+                          color: AppColors.primary,
+                          size: 42,
+                        ),
+                      ),
+                      // Floating Camera button at bottom right corner
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: onImagePickerPressed,
+                            borderRadius: BorderRadius.circular(14),
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: theme.cardColor,
+                                  width: 2.2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(40),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                color: Colors.white,
+                                size: 13,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-
-                      // Purple Role Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 4.5),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF3E8FF),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: const Color(0xFFE9D5FF),
-                            width: 0.9,
-                          ),
-                        ),
-                        child: Text(
-                          profile.roleBadge,
-                          style: const TextStyle(
-                            color: Color(0xFF9333EA),
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(width: 16),
+
+                  // 2. User Info Column
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Name Row with Edit Button right next to it
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                profile.name,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 22,
+                                  letterSpacing: -0.4,
+                                  color: theme.colorScheme.onSurface,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            // Existing Theme Squircle Edit Icon Button
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: onEditPressed,
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withAlpha(20),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: AppColors.primary.withAlpha(50),
+                                      width: 0.8,
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit_rounded,
+                                    color: AppColors.primary,
+                                    size: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 3),
+
+                        // Email
+                        Text(
+                          profile.email,
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Role & Status Badges Row
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            // Role Badge
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 3.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withAlpha(20),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: AppColors.primary.withAlpha(50),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Text(
+                                profile.roleBadge.isNotEmpty
+                                    ? profile.roleBadge
+                                    : profile.employeeType,
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+
+                            // Status Badge
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 9,
+                                vertical: 3.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: profile.isActive
+                                    ? AppColors.success.withAlpha(20)
+                                    : AppColors.error.withAlpha(20),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: profile.isActive
+                                      ? AppColors.success.withAlpha(60)
+                                      : AppColors.error.withAlpha(60),
+                                  width: 0.8,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: profile.isActive
+                                          ? AppColors.success
+                                          : AppColors.error,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    profile.isActive ? 'Active' : 'Inactive',
+                                    style: TextStyle(
+                                      color: profile.isActive
+                                          ? AppColors.success
+                                          : AppColors.error,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
